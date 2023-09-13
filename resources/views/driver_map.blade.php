@@ -189,7 +189,7 @@
                                                     </svg>
                                                     </div>
                                                     <div style="margin-left: 40%;">
-                                                    <span id="span_address_status" style="color: #233A85; font-size: smaller; font-weight: 600;">{{ $adrsStatus_trans[$address['address_status']] }}</span>
+                                                    <p id="span_address_status" style="color: #233A85; font-size: smaller; font-weight: 600;">{{ $adrsStatus_trans[$address['address_status']] }}</p>
                                                     </div>
                                                     <svg id="svg_skip_address" class="{{ ($address['address_status'] == 1 ||$address['address_status'] == 2) ? 'skip_address' : ''}}" data-address_id="{{$address['id']}}" style="cursor: pointer !important;" class="pt-1"  width="17" height="20" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M1.14076 4.76329C2.28309 -0.258295 9.72273 -0.252496 10.8593 4.76909C11.5261 7.71478 9.69373 10.2082 8.08752 11.7506C6.922 12.8755 5.07805 12.8755 3.9067 11.7506C2.30628 10.2082 0.473925 7.70898 1.14076 4.76329Z" stroke="#5D626B" stroke-width="1" stroke-opacity="0.3" />
@@ -761,69 +761,95 @@
             return false;
         }
 
-        function generateRoute(addresses) {
-            console.log(addresses);
-            var geocoder = new google.maps.Geocoder();
-            var locations = [];
+        function generateRoute(addresses, optimizeWaypoints) {
+            //if(addresses !== 'pending'){
+    console.log(addresses);
+    var geocoder = new google.maps.Geocoder();
+    var locations = [];
 
-            // Convert address strings to coordinates using geocoding
-            $.each(addresses, function(index, address) {
-                geocoder.geocode({ address: address }, function (results, status) {
-                if (status === google.maps.GeocoderStatus.OK) {
-                    var location = results[0].geometry.location;
-                    locations.push(location);
+    // Function to handle geocoding results
+    function handleGeocodeResult(location) {
+        if (location) {
+            locations.push(location);
 
-                    // Create markers for each location
-                    var marker = new google.maps.Marker({
-                    position: location,
-                    map: map
-                    });
-
-                    // Set the map center to the first location
-                    if (locations.length === 1) {
-                    map.setCenter(location);
-                    }
-
-                    // Calculate and display the route
-                    if (locations.length > 1) {
-                    var directionsService = new google.maps.DirectionsService();
-                    var directionsDisplay = new google.maps.DirectionsRenderer({
-                        suppressMarkers: true, // Hide default markers
-                        map: map
-                    });
-
-                    var origin = locations[0];
-                    var destination = locations[locations.length - 1];
-
-                    var waypoints = locations.slice(1, locations.length - 1).map(function(location) {
-                        return {
-                        location: location,
-                        stopover: true
-                        };
-                    });
-
-                    var request = {
-                        origin: origin,
-                        destination: destination,
-                        waypoints: waypoints,
-                        optimizeWaypoints: true,
-                        travelMode: google.maps.TravelMode.DRIVING
-                    };
-
-                    directionsService.route(request, function (result, status) {
-                        if (status === google.maps.DirectionsStatus.OK) {
-                        directionsDisplay.setDirections(result);
-                        } else {
-                        console.log("Directions request failed: " + status);
-                        }
-                    });
-                    }
-                } else {
-                    console.log("Geocode was not successful for the following reason: " + status);
-                }
-                });
+            // Create markers for each location
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map
             });
+
+            // Set the map center to the first location
+            if (locations.length === 1) {
+                map.setCenter(location);
+            }
         }
+    }
+
+    // Convert address strings to coordinates using geocoding
+    $.each(addresses, function (index, address) {
+        geocoder.geocode({ address: address }, function (results, status) {
+            console.log(address);
+            if (status === google.maps.GeocoderStatus.OK) {
+                var location = results[0].geometry.location;
+                handleGeocodeResult(location);
+            } else if (status === google.maps.GeocoderStatus.ZERO_RESULTS) {
+                console.log("Geocode found no results for the address: " + address);
+            } else {
+                console.log("Geocode request failed for the following reason: " + status);
+            }
+
+            // Calculate and display the route when all geocoding is complete
+            if (index === addresses.length - 1) {
+                calculateAndDisplayRoute();
+            }
+        });
+    });
+
+    // Function to calculate and display the route
+    function calculateAndDisplayRoute() {
+        // Check if any valid locations were found
+        if (locations.length < 2) {
+            console.log("Insufficient valid locations for route calculation.");
+            return;
+        }
+
+        var directionsService = new google.maps.DirectionsService();
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+            suppressMarkers: true, // Hide default markers
+            map: map
+        });
+
+        var origin = locations[0];
+        var destination = locations[locations.length - 1];
+
+        var waypoints = locations.slice(1, locations.length - 1).map(function (location) {
+            return {
+                location: location,
+                stopover: true
+            };
+        });
+
+        var request = {
+            origin: origin,
+            destination: destination,
+            waypoints: waypoints,
+            optimizeWaypoints: optimizeWaypoints, // Optimize the order of waypoints
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+
+        directionsService.route(request, function (result, status) {
+            if (status === google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(result);
+
+                if (optimizeWaypoints) {
+                    console.log("Waypoints successfully optimized.");
+                }
+            } else {
+                console.log("Directions request failed: " + status);
+            }
+        });
+    }
+}
 
         function initializeMap() {
             map = new google.maps.Map(document.getElementById('map'), {

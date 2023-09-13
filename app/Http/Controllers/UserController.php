@@ -308,6 +308,7 @@ class UserController extends Controller
             $data['duplicate_trip'] = $request->duplicate_trip ?? NULL;
             
             if(isset($user->role) && ($user->role == user_roles('1'))){   
+                //for admin
                 $trip = Trip::with(['addresses' => function ($query) {
                     $query->orderBy('order_no', 'ASC');
                 }])->find($request->id);
@@ -337,10 +338,11 @@ class UserController extends Controller
                 $data['data'] = $trip->toArray();
                 $data['data']['addresses'] = $trip->addresses->toArray();
                 
-                $data['driver_list'] = User::where(['role' => user_roles('3')])->orderBy('id', 'desc')->select('id','name')->get()->toArray();
+                $data['driver_list'] = User::where(['client_id' => $trip->client_id])->orderBy('id', 'desc')->select('id','name')->get()->toArray();
                 if ($request->dashboard_data == 1) {
                     $data['client_list'] = User::where('id', $trip->client_id)->first();
                     $data['driver_list'] = User::where('id', $trip->driver_id)->first();
+                    
                     // dd($data);
                     return view('pdf_templates',$data);                    
                     }else{
