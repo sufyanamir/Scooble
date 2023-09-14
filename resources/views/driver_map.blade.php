@@ -762,94 +762,71 @@
         }
 
         function generateRoute(addresses, optimizeWaypoints) {
-            //if(addresses !== 'pending'){
-    console.log(addresses);
-    var geocoder = new google.maps.Geocoder();
-    var locations = [];
-
-    // Function to handle geocoding results
-    function handleGeocodeResult(location) {
-        if (location) {
-            locations.push(location);
-
-            // Create markers for each location
-            var marker = new google.maps.Marker({
-                position: location,
-                map: map
-            });
-
-            // Set the map center to the first location
-            if (locations.length === 1) {
-                map.setCenter(location);
-            }
-        }
-    }
-
-    // Convert address strings to coordinates using geocoding
-    $.each(addresses, function (index, address) {
-        geocoder.geocode({ address: address }, function (results, status) {
-            console.log(address);
-            if (status === google.maps.GeocoderStatus.OK) {
-                var location = results[0].geometry.location;
-                handleGeocodeResult(location);
-            } else if (status === google.maps.GeocoderStatus.ZERO_RESULTS) {
-                console.log("Geocode found no results for the address: " + address);
-            } else {
-                console.log("Geocode request failed for the following reason: " + status);
-            }
-
-            // Calculate and display the route when all geocoding is complete
-            if (index === addresses.length - 1) {
-                calculateAndDisplayRoute();
-            }
-        });
+    // Initialize the map
+    var map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 0, lng: 0 },
+        zoom: 12
     });
 
-    // Function to calculate and display the route
-    function calculateAndDisplayRoute() {
-        // Check if any valid locations were found
-        if (locations.length < 2) {
-            console.log("Insufficient valid locations for route calculation.");
-            return;
-        }
+    // Initialize variables
+    var geocoder = new google.maps.Geocoder();
+    var directionsService = new google.maps.DirectionsService();
+    var directionsDisplay = new google.maps.DirectionsRenderer({
+        map: map
+    });
 
-        var directionsService = new google.maps.DirectionsService();
-        var directionsDisplay = new google.maps.DirectionsRenderer({
-            suppressMarkers: true, // Hide default markers
-            map: map
-        });
-
-        var origin = locations[0];
-        var destination = locations[locations.length - 1];
-
-        var waypoints = locations.slice(1, locations.length - 1).map(function (location) {
-            return {
-                location: location,
-                stopover: true
-            };
-        });
-
+    // Function to optimize and display the route
+    function optimizeAndDisplayRoute(waypoints) {
         var request = {
-            origin: origin,
-            destination: destination,
-            waypoints: waypoints,
-            optimizeWaypoints: optimizeWaypoints, // Optimize the order of waypoints
+            origin: waypoints[0].location,
+            destination: waypoints[waypoints.length - 1].location,
+            waypoints: waypoints.slice(1, waypoints.length - 1),
+            optimizeWaypoints: true, // Optimize the order of waypoints
             travelMode: google.maps.TravelMode.DRIVING
         };
 
         directionsService.route(request, function (result, status) {
             if (status === google.maps.DirectionsStatus.OK) {
                 directionsDisplay.setDirections(result);
-
-                if (optimizeWaypoints) {
-                    console.log("Waypoints successfully optimized.");
-                }
             } else {
                 console.log("Directions request failed: " + status);
             }
         });
     }
+
+    // Handle the "Optimize Route" button click event
+        var waypoints = [];
+        var geocodeCount = 0;
+
+        function geocodeNextAddress() {
+            if (geocodeCount < addresses.length) {
+                geocoder.geocode({ address: addresses[geocodeCount] }, function (results, status) {
+                    if (status === google.maps.GeocoderStatus.OK) {
+                        waypoints.push({
+                            location: results[0].geometry.location,
+                            stopover: true
+                        });
+                    } else {
+                        console.log("Geocode failed for address: " + addresses[geocodeCount]);
+                    }
+
+                    // Continue geocoding the next address
+                    geocodeCount++;
+                    geocodeNextAddress();
+                });
+            } else {
+                // All addresses have been geocoded, optimize and display the route
+                optimizeAndDisplayRoute(waypoints);
+            }
+        }
+
+        // Start geocoding
+        geocodeNextAddress();
+
+        
+   
 }
+
 
         function initializeMap() {
             map = new google.maps.Map(document.getElementById('map'), {
@@ -870,7 +847,7 @@
                 addresses.push(element.textContent);
             });
 
-            generateRoute(addresses);
+            generateRoute(addresses,true);
         }
 
         // Load the Google Maps API asynchronously
@@ -1015,7 +992,7 @@
 
                             // showAlert("Success", response.message, response.status);
                             addresses =  response.data;
-                            generateRoute(addresses) 
+                            generateRoute(addresses,true) 
                         },
                         error: function(xhr, status, error) {
                             console.log(status);
@@ -1031,7 +1008,7 @@
                     addresses.push(element.textContent);
                 });
 
-                generateRoute(addresses);
+                generateRoute(addresses,true);
 
                 $('.close').trigger('click');
                 $("#snackbar").text('Trip Adresses Optimized Successfully  ....');
