@@ -769,6 +769,7 @@
     });
 
     // Initialize variables
+    var location = '';
     var geocoder = new google.maps.Geocoder();
     var directionsService = new google.maps.DirectionsService();
     var directionsDisplay = new google.maps.DirectionsRenderer({
@@ -776,23 +777,59 @@
     });
 
     // Function to optimize and display the route
-    function optimizeAndDisplayRoute(waypoints) {
+    function optimizeAndDisplayRoute(addressArray) {
+
+        var addressElements = document.querySelectorAll('#address-container .card-body span');
+                var addresses = [];
+                addressElements.forEach(function (element) {
+                addresses.push(element.textContent);
+                });
+
+                console.log(addresses);
+
+                addressArray = addresses;
+
+        
+    if (addressArray && addressArray.length >= 2) {
+        console.log(addressArray.length);
+        var directionsService = new google.maps.DirectionsService();
+        var origin = addressArray[0];
+        console.log(addressArray[addressArray.length - 1]);
+        var destination = addressArray[addressArray.length - 1];
+
+        var waypoints = addressArray.slice(1, -1).map(function (waypoint) {
+            return {
+                location: waypoint,
+                stopover: true
+            };
+        });
+        console.log(waypoints);
+
         var request = {
-            origin: waypoints[0].location,
-            destination: waypoints[waypoints.length - 1].location,
-            waypoints: waypoints.slice(1, waypoints.length - 1),
-            optimizeWaypoints: true, // Optimize the order of waypoints
+            origin: origin,
+            destination: destination,
+            waypoints: waypoints,
+            optimizeWaypoints: true,
             travelMode: google.maps.TravelMode.DRIVING
         };
 
         directionsService.route(request, function (result, status) {
             if (status === google.maps.DirectionsStatus.OK) {
+                console.log("Directions OK:", result);
+
+                // Display the optimized route on the map
                 directionsDisplay.setDirections(result);
             } else {
-                console.log("Directions request failed: " + status);
+                console.log('Directions request failed: ' + status);
             }
         });
+    } else {
+        console.log("Invalid start or end points.");
     }
+}
+
+
+
 
     // Handle the "Optimize Route" button click event
         var waypoints = [];
@@ -823,9 +860,15 @@
         // Start geocoding
         geocodeNextAddress();
 
+      
+
         
    
 }
+
+
+
+
 
 
         function initializeMap() {
