@@ -294,73 +294,79 @@ class UserController extends Controller
     }
 
     public function create_trip(Request $request)
-    {
-        $user = auth()->user();
-        $data['user'] = $user;
-        $page_name = 'create_trip';
+{
+    $user = auth()->user();
+    $data['user'] = $user;
+    $page_name = 'create_trip';
 
-        if(!view_permission($page_name)){
-            return redirect()->back();  
-        }
-        $data['duplicate_trip'] = NULL;
-        if ($request->has('id')) {
+    if (!view_permission($page_name)) {
+        return redirect()->back();
+    }
+    $data['duplicate_trip'] = null;
+    if ($request->has('id')) {
 
-            $data['duplicate_trip'] = $request->duplicate_trip ?? NULL;
+        $data['duplicate_trip'] = $request->duplicate_trip ?? null;
+
+        if (isset($user->role) && ($user->role == user_roles('1'))) {
+            //for admin
+            $trip = Trip::with(['addresses' => function ($query) {
+                $query->orderBy('order_no', 'ASC');
+            }])->find($request->id);
+
+            $data['data'] = $trip->toArray();
+            $data['data']['addresses'] = $trip->addresses->toArray();
             
-            if(isset($user->role) && ($user->role == user_roles('1'))){   
-                //for admin
-                $trip = Trip::with(['addresses' => function ($query) {
-                    $query->orderBy('order_no', 'ASC');
-                }])->find($request->id);
+            if ($request->dashboard_data == 1) {
+                $data['client_list'] = User::where('id', $trip->client_id)->first();
+                $data['driver_list'] = User::where(['role' => user_roles('3'), 'client_id' => $data['data']['client_id']])
+                    ->where('status', '<>', 5) // Exclude drivers with status 5
+                    ->orderBy('id', 'desc')->get()->toArray();
                 
-                $data['data'] = $trip->toArray();
-                $data['data']['addresses'] = $trip->addresses->toArray();
-                //$data['client_list'] = User::where(['role' => user_roles('2'), 'status'=>auth_users()])->orderBy('id', 'desc')->select('id','name')->get()->toArray();
-                //$data['driver_list'] = User::where(['role' => user_roles('3'),'client_id' => $data['data']['client_id']])->orderBy('id', 'desc')->get()->toArray();
-                if ($request->dashboard_data == 1) {
-                    $data['client_list'] = User::where('id', $trip->client_id)->first();
-                    $data['driver_list'] = User::where('id', $trip->driver_id)->first();
-                    //dd($data);
-                     
-                return view('pdf_templates',$data);                    
-                }else{
-                    $data['client_list'] = User::where(['role' => user_roles('2'), 'status'=>auth_users()])->orderBy('id', 'desc')->select('id','name')->get()->toArray();
-                $data['driver_list'] = User::where(['role' => user_roles('3'),'client_id' => $data['data']['client_id']])->orderBy('id', 'desc')->get()->toArray();
-                    return view('create_trip',$data);
-                }
+                return view('pdf_templates', $data);
+            } else {
+                $data['client_list'] = User::where(['role' => user_roles('2'), 'status' => auth_users()])
+                    ->orderBy('id', 'desc')->select('id', 'name')->get()->toArray();
+                $data['driver_list'] = User::where(['role' => user_roles('3'), 'client_id' => $data['data']['client_id']])
+                    ->where('status', '<>', 5) // Exclude drivers with status 5
+                    ->orderBy('id', 'desc')->get()->toArray();
+                return view('create_trip', $data);
             }
-            
-            else{
-                $trip = Trip::with(['addresses' => function ($query) {
-                    $query->orderBy('order_no', 'ASC');
-                }])->find($request->id);
-                
-                $data['data'] = $trip->toArray();
-                $data['data']['addresses'] = $trip->addresses->toArray();
-                
-                $data['driver_list'] = User::where(['client_id' => $trip->client_id])->orderBy('id', 'desc')->select('id','name')->get()->toArray();
-                if ($request->dashboard_data == 1) {
-                    $data['client_list'] = User::where('id', $trip->client_id)->first();
-                    $data['driver_list'] = User::where('id', $trip->driver_id)->first();
-                    
-                    // dd($data);
-                    return view('pdf_templates',$data);                    
-                    }else{
-                        return view('create_trip',$data);
-                    }
+        } else {
+            $trip = Trip::with(['addresses' => function ($query) {
+                $query->orderBy('order_no', 'ASC');
+            }])->find($request->id);
+
+            $data['data'] = $trip->toArray();
+            $data['data']['addresses'] = $trip->addresses->toArray();
+
+            $data['driver_list'] = User::where(['client_id' => $trip->client_id])->orderBy('id', 'desc')
+                ->where('status', '<>', 5) // Exclude drivers with status 5
+                ->select('id', 'name')->get()->toArray();
+            if ($request->dashboard_data == 1) {
+                $data['client_list'] = User::where('id', $trip->client_id)->first();
+                $data['driver_list'] = User::where('id', $trip->driver_id)->first();
+
+                return view('pdf_templates', $data);
+            } else {
+                return view('create_trip', $data);
             }
         }
-        else{
-            if(isset($user->role) && $user->role == user_roles('1')){    
-                $data['driver_list'] = [];
-                $data['client_list'] = User::where(['role' => user_roles('2'),'status' => auth_users()])->orderBy('id', 'desc')->select('id','name')->get()->toArray();
-                return view('create_trip',$data);
-            }else{
-                $data['driver_list'] = User::where(['role' => user_roles('3'),'client_id' => $user->id])->orderBy('id', 'desc')->get()->toArray();
-                return view('create_trip',$data);
-            }
+    } else {
+        if (isset($user->role) && $user->role == user_roles('1')) {
+            $data['driver_list'] = [];
+            $data['client_list'] = User::where(['role' => user_roles('2'), 'status' => auth_users()])
+                ->orderBy('id', 'desc')->select('id', 'name')->get()->toArray();
+            return view('create_trip', $data);
+        } else {
+            $data['driver_list'] = User::where(['role' => user_roles('3'), 'client_id' => $user->id])
+                ->orderBy('id', 'desc')
+                ->where('status', '<>', 5) // Exclude drivers with status 5
+                ->get()->toArray();
+            return view('create_trip', $data);
         }
     }
+}
+
 
     public function get_drivers(Request $request)
     {

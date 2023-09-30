@@ -16,7 +16,7 @@
     </div>
 @endif
         <!-- ================header-text-start================ -->
-        <div class="col-md-5 ">
+        <div class="col-12 col-md-12 col-lg-6">
           <div class="d-flex align-items-center mx-1  main-heading">
             <div class="p-5 mb-5 ">
               <h1 style="font-weight: 700; color: #452C88; ">Your <span style="color: #E45F00;">Easiest</span> way <span
@@ -35,7 +35,7 @@
         <!-- ================header-text-End================== -->
 
         <!-- ================header-img-start================== -->
-        <div class="col-md-7">
+        <div class="col-12 col-md-12 col-lg-6">
           <div class="img-div  d-flex align-items-center justify-content-center ">
             <img style="width: 60%;" class=" h-100 mb-5" src="assets/images/header-img.svg" alt="image">
           </div>

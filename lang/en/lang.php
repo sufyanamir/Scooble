@@ -255,4 +255,7 @@ return [
   "you_dont_have_any_trips_yet" => "You don't have any trips yet",
   "client_email" => "Client Email",
 
+  "rftd" => "Requirements for the driver",
+  "optional" => "optional",
+
 ];

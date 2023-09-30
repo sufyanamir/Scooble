@@ -21,9 +21,9 @@
             Add {{$add_as_user}}
           </h4>
           <button type="button" class="close closeModalButton" id="closeicon" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
-          <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M28 16L16 28M16 16L28 28" stroke="#667085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+            <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M28 16L16 28M16 16L28 28" stroke="#667085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
           </button>
         </div>
         <form action="userStore" id="formData" method="post" enctype="multipart/form-data">
@@ -135,9 +135,9 @@
         <div class="modal-header pb-0" style="border: none;">
           <h5 class="modal-title" id="user_stsLabel"></h5>
           <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M28 16L16 28M16 16L28 28" stroke="#667085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+            <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M28 16L16 28M16 16L28 28" stroke="#667085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
           </button>
         </div>
         <form method="post" id="user_sts">
@@ -167,11 +167,11 @@
   </div>
   <!-- User Status Modal End -->
 
-   <!-- Delete Client Modal -->
+  <!-- Delete Client Modal -->
   <div class="modal fade" id="userDeleteModal" tabindex="-1" aria-labelledby="deleteAdminLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content bg-white" style="border-radius: 10px;">
-      @if($user_role_static == user_roles(1))
+        @if($user_role_static == user_roles(1))
         <div class="modal-body">
           <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle opacity="0.1" cx="18" cy="18" r="18" fill="#DF6F79" />
@@ -185,139 +185,164 @@
               <button class="btn btn-sm btn-outline px-5 closeModalButton" type="button" data-toggle="modal" data-target="#deleteclient" style="background-color: #ffffff; border: 1px solid #D0D5DD; border-radius: 8px; width: 100%;">@lang('lang.cancel')</button>
             </div>
             <div class="col-lg-6">
-             <form method="post" id="DeleteData" action="deleteUsers">
+              <form method="post" id="DeleteData" action="deleteUsers">
                 <input type="hidden" id="user_id" name="id">
                 <input type="hidden" id="deleted_by" name="deleted_by" value="{{ $login_userId ?? ''}}">
-                  <button  type="submit" class="btn  btn_deleteUser btn-sm btn-outline text-white px-5" style="background-color: #D92D20; border-radius: 8px; width: 100%;">
-                    <div class="spinner-border btn_spinner spinner-border-sm text-white d-none" ></div>
-                    <span id="add_btn">@lang('lang.delete')</span>
-                  </button>
+                <button type="submit" class="btn  btn_deleteUser btn-sm btn-outline text-white px-5" style="background-color: #D92D20; border-radius: 8px; width: 100%;">
+                  <div class="spinner-border btn_spinner spinner-border-sm text-white d-none"></div>
+                  <span id="add_btn">@lang('lang.delete')</span>
+                </button>
               </form>
             </div>
           </div>
         </div>
-      @elseif($user_role_static == user_roles(2))
-      <div class="modal-body">
-            <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="4" y="4" width="48" height="48" rx="24" fill="#FEE4E2"/>
-              <path d="M32 22V21.2C32 20.0799 32 19.5198 31.782 19.092C31.5903 18.7157 31.2843 18.4097 30.908 18.218C30.4802 18 29.9201 18 28.8 18H27.2C26.0799 18 25.5198 18 25.092 18.218C24.7157 18.4097 24.4097 18.7157 24.218 19.092C24 19.5198 24 20.0799 24 21.2V22M26 27.5V32.5M30 27.5V32.5M19 22H37M35 22V33.2C35 34.8802 35 35.7202 34.673 36.362C34.3854 36.9265 33.9265 37.3854 33.362 37.673C32.7202 38 31.8802 38 30.2 38H25.8C24.1198 38 23.2798 38 22.638 37.673C22.0735 37.3854 21.6146 36.9265 21.327 36.362C21 35.7202 21 34.8802 21 33.2V22" stroke="#D92D20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <rect x="4" y="4" width="48" height="48" rx="24" stroke="#FEF3F2" stroke-width="8"/>
+        @elseif($user_role_static == user_roles(2))
+        <div class="modal-body">
+          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="48" height="48" rx="24" fill="#FEE4E2" />
+            <path d="M32 22V21.2C32 20.0799 32 19.5198 31.782 19.092C31.5903 18.7157 31.2843 18.4097 30.908 18.218C30.4802 18 29.9201 18 28.8 18H27.2C26.0799 18 25.5198 18 25.092 18.218C24.7157 18.4097 24.4097 18.7157 24.218 19.092C24 19.5198 24 20.0799 24 21.2V22M26 27.5V32.5M30 27.5V32.5M19 22H37M35 22V33.2C35 34.8802 35 35.7202 34.673 36.362C34.3854 36.9265 33.9265 37.3854 33.362 37.673C32.7202 38 31.8802 38 30.2 38H25.8C24.1198 38 23.2798 38 22.638 37.673C22.0735 37.3854 21.6146 36.9265 21.327 36.362C21 35.7202 21 34.8802 21 33.2V22" stroke="#D92D20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <rect x="4" y="4" width="48" height="48" rx="24" stroke="#FEF3F2" stroke-width="8" />
+          </svg>
+          <button class="btn p-0 float-right closeModalButton" data-dismiss="modal">
+            <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M28 16L16 28M16 16L28 28" stroke="#667085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            <button class="btn p-0 float-right closeModalButton" data-dismiss="modal">
-              <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M28 16L16 28M16 16L28 28" stroke="#667085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
+          </button>
           <div class="mt-3">
             <h6>@lang('lang.really_want_to_delete_client')</h6>
             <p>@lang('lang.client_has_assigned_drivers_trips_what_to_do_with_them')</p>
           </div>
           <form method="post" id="DeleteData" action="deleteUsers">
-              <input type="hidden" id="user_id" name="id">
-              <input type="hidden" id="deleted_by" name="deleted_by" value="{{ $login_userId ?? ''}}">
-              <div class="mt-3">
-                <input type="checkbox" name="delete_all_drivers" id="delete_all_drivers"> @lang('lang.delete_all_drivers')
+            <input type="hidden" id="user_id" name="id">
+            <input type="hidden" id="deleted_by" name="deleted_by" value="{{ $login_userId ?? ''}}">
+            <div class="mt-3">
+              <input type="checkbox" name="delete_all_drivers" id="delete_all_drivers"> @lang('lang.delete_all_drivers')
+            </div>
+            <div class="mt-3">
+              <select class="form-select" name="choose_options" id="choose_options">
+                <option value="">@lang('lang.choose_additional_options')</option>
+                <option value="assigned">@lang('lang.delete_all_assigned_trips')</option>
+                <option value="completed">@lang('lang.delete_completed_trips')</option>
+                <option value="">@lang('lang.Dont_delete_any_trips')</option>
+              </select>
+            </div>
+            <div class="row mt-3 text-center">
+              <div class="col-lg-6">
+                <button data-dismiss="modal" type="button" class="btn btn-sm btn-outline px-5 closeModalButton" style="background-color: #ffffff; border: 1px solid #D0D5DD; border-radius: 8px; width: 100%;">@lang('lang.cancel')</button>
               </div>
-              <div class="mt-3">
-                <select class="form-select" name="choose_options" id="choose_options">
-                  <option value="">@lang('lang.choose_additional_options')</option>
-                  <option value="assigned">@lang('lang.delete_all_assigned_trips')</option>
-                  <option value="completed">@lang('lang.delete_completed_trips')</option>
-                  <option value="">@lang('lang.Dont_delete_any_trips')</option>
-                </select>
+              <div class="col-lg-6">
+                <button type="submit" class="btn  btn_deleteUser btn-sm btn-outline text-white px-5" style="background-color: #D92D20; border-radius: 8px; width: 100%;">
+                  <div class="spinner-border btn_spinner spinner-border-sm text-white d-none"></div>
+                  <span id="add_btn">@lang('lang.delete')</span>
+                </button>
               </div>
-              <div class="row mt-3 text-center">
-                <div class="col-lg-6">
-                  <button data-dismiss="modal" type="button" class="btn btn-sm btn-outline px-5 closeModalButton" style="background-color: #ffffff; border: 1px solid #D0D5DD; border-radius: 8px; width: 100%;">@lang('lang.cancel')</button>
-                </div>
-                <div class="col-lg-6">
-                <button  type="submit" class="btn  btn_deleteUser btn-sm btn-outline text-white px-5" style="background-color: #D92D20; border-radius: 8px; width: 100%;">
-                    <div class="spinner-border btn_spinner spinner-border-sm text-white d-none" ></div>
-                    <span id="add_btn">@lang('lang.delete')</span>
-                  </button>
-                </div>
-              </div>
+            </div>
           </form>
         </div>
-      @elseif($user_role_static == user_roles(3))
+        @elseif($user_role_static == user_roles(3))
         <div class="modal-body">
-            <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="4" y="4" width="48" height="48" rx="24" fill="#FEE4E2"/>
-              <path d="M32 22V21.2C32 20.0799 32 19.5198 31.782 19.092C31.5903 18.7157 31.2843 18.4097 30.908 18.218C30.4802 18 29.9201 18 28.8 18H27.2C26.0799 18 25.5198 18 25.092 18.218C24.7157 18.4097 24.4097 18.7157 24.218 19.092C24 19.5198 24 20.0799 24 21.2V22M26 27.5V32.5M30 27.5V32.5M19 22H37M35 22V33.2C35 34.8802 35 35.7202 34.673 36.362C34.3854 36.9265 33.9265 37.3854 33.362 37.673C32.7202 38 31.8802 38 30.2 38H25.8C24.1198 38 23.2798 38 22.638 37.673C22.0735 37.3854 21.6146 36.9265 21.327 36.362C21 35.7202 21 34.8802 21 33.2V22" stroke="#D92D20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <rect x="4" y="4" width="48" height="48" rx="24" stroke="#FEF3F2" stroke-width="8"/>
+          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="48" height="48" rx="24" fill="#FEE4E2" />
+            <path d="M32 22V21.2C32 20.0799 32 19.5198 31.782 19.092C31.5903 18.7157 31.2843 18.4097 30.908 18.218C30.4802 18 29.9201 18 28.8 18H27.2C26.0799 18 25.5198 18 25.092 18.218C24.7157 18.4097 24.4097 18.7157 24.218 19.092C24 19.5198 24 20.0799 24 21.2V22M26 27.5V32.5M30 27.5V32.5M19 22H37M35 22V33.2C35 34.8802 35 35.7202 34.673 36.362C34.3854 36.9265 33.9265 37.3854 33.362 37.673C32.7202 38 31.8802 38 30.2 38H25.8C24.1198 38 23.2798 38 22.638 37.673C22.0735 37.3854 21.6146 36.9265 21.327 36.362C21 35.7202 21 34.8802 21 33.2V22" stroke="#D92D20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <rect x="4" y="4" width="48" height="48" rx="24" stroke="#FEF3F2" stroke-width="8" />
+          </svg>
+          <button class="btn p-0 float-right closeModalButton" data-dismiss="modal">
+            <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M28 16L16 28M16 16L28 28" stroke="#667085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            <button class="btn p-0 float-right closeModalButton" data-dismiss="modal">
-              <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M28 16L16 28M16 16L28 28" stroke="#667085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
+          </button>
 
-            <div class="mt-3">
-              <h6>@lang('lang.really_want_to_delete_driver')</h6>
-              <p>@lang('lang.driver_has_assigned_trips_what_to_do_with_them')</p>
+          <div class="mt-3">
+            <h6>@lang('lang.really_want_to_delete_driver')</h6>
+            <p>@lang('lang.driver_has_assigned_trips_what_to_do_with_them')</p>
+          </div>
+
+          <form method="post" id="DeleteData" action="deleteUsers">
+            <input type="hidden" id="user_id" name="id">
+            <input type="hidden" id="deleted_by" name="deleted_by" value="{{ $login_userId ?? ''}}">
+            <div class="my-2">
+              <div>
+                <input type="checkbox" name="assigned" id="assignedCheckbox"> @lang('lang.delete_all_assigned_trips')
+              </div>
+              <div>
+                <input type="checkbox" name="completed" id="completedCheckbox"> @lang('lang.delete_completed_trips')
+              </div>
+              <div>
+                <input type="checkbox" name="dont_delete" id="dontDeleteCheckbox"> @lang('lang.dont_delete_any_trips')
+              </div>
             </div>
-
-            <form method="post" id="DeleteData" action="deleteUsers">
-               <input type="hidden" id="user_id" name="id">
-               <input type="hidden" id="deleted_by" name="deleted_by" value="{{ $login_userId ?? ''}}">
-               <div class="my-2">
-                <div>
-                  <input type="checkbox" name="assigned" id="assignedCheckbox"> @lang('lang.delete_all_assigned_trips')
-                </div>
-                <div>
-                  <input type="checkbox" name="completed" id="completedCheckbox"> @lang('lang.delete_completed_trips')
-                </div>
-                <div>
-                  <input type="checkbox" name="dont_delete" id="dontDeleteCheckbox"> @lang('lang.dont_delete_any_trips')
-                </div>
+            <div id="driver_list">
+              <p>please select a driver that you want to assign the other trips!</p>
+              <select name="driver_list" id="driverSelect" class="form-select">
+                <option value=""></option>
+                <!-- Add your options here -->
+              </select>
+            </div>
+            <div class="row mt-3 text-center">
+              <div class="col-lg-6">
+                <button data-dismiss="modal" type="button" class="btn btn-sm btn-outline px-5 closeModalButton" style="background-color: #ffffff; border: 1px solid #D0D5DD; border-radius: 8px; width: 100%;">@lang('lang.cancel')</button>
               </div>
-              <div class="row mt-3 text-center">
-                <div class="col-lg-6">
-                  <button data-dismiss="modal" type="button" class="btn btn-sm btn-outline px-5 closeModalButton" style="background-color: #ffffff; border: 1px solid #D0D5DD; border-radius: 8px; width: 100%;">@lang('lang.cancel')</button>
-                </div>
-                <div class="col-lg-6">
-                  <button  type="submit" class="btn  btn_deleteUser btn-sm btn-outline text-white px-5" style="background-color: #D92D20; border-radius: 8px; width: 100%;">
-                    <div class="spinner-border btn_spinner spinner-border-sm text-white d-none" ></div>
-                    <span id="add_btn">@lang('lang.delete')</span>
-                  </button>
-                  <!-- <button class="btn btn-sm btn-outline text-white px-5" style="background-color: #D92D20; border-radius: 8px; width: 100%;">@lang('lang.delete')</button> -->
-                </div>
+              <div class="col-lg-6">
+                <button type="submit" class="btn  btn_deleteUser btn-sm btn-outline text-white px-5" style="background-color: #D92D20; border-radius: 8px; width: 100%;">
+                  <div class="spinner-border btn_spinner spinner-border-sm text-white d-none"></div>
+                  <span id="add_btn">@lang('lang.delete')</span>
+                </button>
+                <!-- <button class="btn btn-sm btn-outline text-white px-5" style="background-color: #D92D20; border-radius: 8px; width: 100%;">@lang('lang.delete')</button> -->
               </div>
-            </form>
-        </div>       
-      @endif
+            </div>
+          </form>
+        </div>
+        @endif
       </div>
     </div>
   </div>
   <!-- Delete Client Modal End -->
 
+  <script>
+    $(document).ready(function () {
+        // Initially hide the dropdown
+        $("#driver_list").hide();
+
+        // Attach a change event listener to the checkboxes
+        $("#assignedCheckbox, #completedCheckbox, #dontDeleteCheckbox").change(function () {
+            // Check if either the 2nd or 3rd checkbox is checked
+            if ($("#completedCheckbox").is(":checked") || $("#dontDeleteCheckbox").is(":checked")) {
+                // Show the dropdown if either of the checkboxes is checked
+                $("#driver_list").show();
+            } else {
+                // Hide the dropdown if neither checkbox is checked
+                $("#driver_list").hide();
+            }
+        });
+    });
+</script>
 
   <script>
-  const assignedCheckbox = document.getElementById('assignedCheckbox');
-  const completedCheckbox = document.getElementById('completedCheckbox');
-  const dontDeleteCheckbox = document.getElementById('dontDeleteCheckbox');
+    const assignedCheckbox = document.getElementById('assignedCheckbox');
+    const completedCheckbox = document.getElementById('completedCheckbox');
+    const dontDeleteCheckbox = document.getElementById('dontDeleteCheckbox');
 
-  assignedCheckbox.addEventListener('change', function() {
-    if (this.checked) {
-      completedCheckbox.checked = false;
-      dontDeleteCheckbox.checked = false;
-    }
-  });
+    assignedCheckbox.addEventListener('change', function() {
+      if (this.checked) {
+        completedCheckbox.checked = false;
+        dontDeleteCheckbox.checked = false;
+      }
+    });
 
-  completedCheckbox.addEventListener('change', function() {
-    if (this.checked) {
-      assignedCheckbox.checked = false;
-      dontDeleteCheckbox.checked = false;
-    }
-  });
+    completedCheckbox.addEventListener('change', function() {
+      if (this.checked) {
+        assignedCheckbox.checked = false;
+        dontDeleteCheckbox.checked = false;
+      }
+    });
 
-  dontDeleteCheckbox.addEventListener('change', function() {
-    if (this.checked) {
-      assignedCheckbox.checked = false;
-      completedCheckbox.checked = false;
-    }
-  });
-</script>
+    dontDeleteCheckbox.addEventListener('change', function() {
+      if (this.checked) {
+        assignedCheckbox.checked = false;
+        completedCheckbox.checked = false;
+      }
+    });
+  </script>
 
 
   <script>
@@ -325,98 +350,96 @@
 
       const maxLength = 150;
       const textarea = $('#address');
-    const charCountElement = $('#charCount');
-    const charCountContainer = $('#charCountContainer');
-    const submitButton = $('#btn_save');
+      const charCountElement = $('#charCount');
+      const charCountContainer = $('#charCountContainer');
+      const submitButton = $('#btn_save');
 
-textarea.on('input', function() {
-    const currentLength = textarea.val().length;
-    const charCount = Math.max(maxLength - currentLength); // Ensure non-negative count
+      textarea.on('input', function() {
+        const currentLength = textarea.val().length;
+        const charCount = Math.max(maxLength - currentLength); // Ensure non-negative count
 
-    charCountElement.text(charCount);
+        charCountElement.text(charCount);
 
-    if (currentLength > 0) {
-        charCountContainer.show();
-    } else {
-        charCountContainer.hide();
+        if (currentLength > 0) {
+          charCountContainer.show();
+        } else {
+          charCountContainer.hide();
+        }
+
+        if (currentLength > maxLength) {
+          const exceededCount = currentLength - maxLength;
+          charCountElement.css('color', 'red'); // Set text color to red
+          charCountElement.text(`Your limit exceeded by ${exceededCount} characters`);
+          submitButton.prop('disabled', true);
+        } else if (currentLength === maxLength) {
+          charCountElement.css('color', ''); // Reset text color
+          charCountElement.text(''); // Clear the message
+          submitButton.prop('disabled', false);
+        } else {
+          charCountElement.css('color', ''); // Reset text color
+          charCountElement.text(`${maxLength - currentLength}`);
+          submitButton.prop('disabled', false);
+        }
+
+      });
+
+      // Add a click event handler to the submit button
+      $('#btn_save').click(function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        var isValid = true;
+
+        // Check if the client select element has a value
+        if ($('#client_id').val() === null) {
+          $('#clientError').removeClass('d-none'); // Display the error message
+          isValid = false;
+        } else {
+          $('#clientError').addClass('d-none'); // Hide the error message
+        }
+
+        // Validate email field
+        var email = $('#email').val();
+        if (!validateEmail(email)) {
+          $('#emailError').removeClass('d-none'); // Display the email error message
+          isValid = false;
+        } else {
+          $('#emailError').addClass('d-none'); // Hide the email error message
+        }
+
+        // Validate name field
+        var name = $('#name').val();
+        if (name.trim() === '') {
+          $('#nameError').removeClass('d-none'); // Display the name error message
+          isValid = false;
+        } else {
+          $('#nameError').addClass('d-none'); // Hide the name error message
+        }
+
+        if (isValid) {
+          $('#formData').submit(); // Trigger the form submission if all fields are valid
+        }
+      });
+
+      // Add input event handlers to the name and email fields
+      $('#name').on('input', function() {
+        $('#nameError').addClass('d-none'); // Hide the name error message when input is provided
+      });
+
+      $('#email').on('input', function() {
+        $('#emailError').addClass('d-none'); // Hide the email error message when input is provided
+      });
+
+      // Add a change event handler to the client select element
+      $('#client_id').change(function() {
+        if ($(this).val() !== null) {
+          $('#clientError').addClass('d-none'); // Hide the error message when client is selected
+        }
+      });
+    });
+
+    // Email validation function
+    function validateEmail(email) {
+      var re = /\S+@\S+\.\S+/;
+      return re.test(email);
     }
-
-    if (currentLength > maxLength) {  
-    const exceededCount = currentLength - maxLength;
-    charCountElement.css('color', 'red'); // Set text color to red
-    charCountElement.text(`Your limit exceeded by ${exceededCount} characters`);
-    submitButton.prop('disabled', true);
-} else if (currentLength === maxLength) {
-    charCountElement.css('color', ''); // Reset text color
-    charCountElement.text(''); // Clear the message
-    submitButton.prop('disabled', false);
-} else {
-    charCountElement.css('color', ''); // Reset text color
-    charCountElement.text(`${maxLength - currentLength}`);
-    submitButton.prop('disabled', false);
-}
-
-});
-
-  // Add a click event handler to the submit button
-  $('#btn_save').click(function(event) {
-    event.preventDefault(); // Prevent the default form submission
-
-    var isValid = true;
-
-    // Check if the client select element has a value
-    if ($('#client_id').val() === null) {
-      $('#clientError').removeClass('d-none'); // Display the error message
-      isValid = false;
-    } else {
-      $('#clientError').addClass('d-none'); // Hide the error message
-    }
-
-    // Validate email field
-    var email = $('#email').val();
-    if (!validateEmail(email)) {
-      $('#emailError').removeClass('d-none'); // Display the email error message
-      isValid = false;
-    } else {
-      $('#emailError').addClass('d-none'); // Hide the email error message
-    }
-
-    // Validate name field
-    var name = $('#name').val();
-    if (name.trim() === '') {
-      $('#nameError').removeClass('d-none'); // Display the name error message
-      isValid = false;
-    } else {
-      $('#nameError').addClass('d-none'); // Hide the name error message
-    }
-
-    if (isValid) {
-      $('#formData').submit(); // Trigger the form submission if all fields are valid
-    }
-  });
-
-  // Add input event handlers to the name and email fields
-  $('#name').on('input', function() {
-    $('#nameError').addClass('d-none'); // Hide the name error message when input is provided
-  });
-
-  $('#email').on('input', function() {
-    $('#emailError').addClass('d-none'); // Hide the email error message when input is provided
-  });
-
-  // Add a change event handler to the client select element
-  $('#client_id').change(function() {
-    if ($(this).val() !== null) {
-      $('#clientError').addClass('d-none'); // Hide the error message when client is selected
-    }
-  });
-});
-
-// Email validation function
-function validateEmail(email) {
-  var re = /\S+@\S+\.\S+/;
-  return re.test(email);
-}
-
-
   </script>

@@ -39,16 +39,16 @@
             /* max-width: 200px; */
             /* height: auto; */
         }
-        @media (max-width: 1100px){
+        /* @media (max-width: 1100px){
             .logo{
                 margin-left: 39% !important;
             }
-        }
+        } */
     </style>
 </head>
 <body style="background-color: #f9f9f9;">
     <div class="container" style="text-align: center;">
-        <div class="logo" style="margin-left: 42%;">
+        <div class="logo" style="display: felx; justify-content: center;">
             <img src="{{ $message->embed(public_path('assets/images/Group5.png')) }}" alt="logo" />
         </div>
         <h3>Dear, {{ $emailData['name'] }}</h3>

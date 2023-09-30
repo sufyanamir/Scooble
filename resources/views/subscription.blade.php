@@ -6,7 +6,7 @@
       <div class="row">
 
         <!-- ================header-text-start================ -->
-        <div class="col-md-5 ">
+        <div class="col-12 col-md-12 col-lg-6">
           <div class="main-heading d-flex  align-items-center mx-1 h-100">
             <div class="p-5 mb-5">
               <h2 style="color: #452C88;">Your <span
@@ -25,7 +25,7 @@
         <!-- ================header-text-End================== -->
 
         <!-- ================header-img-start================== -->
-        <div class="col-md-7">
+        <div class="col-12 col-md-12 col-lg-6">
           <div class="img-div  d-flex align-items-center justify-content-center ">
             <img style="width: 60%;" class=" h-100 mb-5" src="assets/images/header-img.svg" alt="image">
           </div>
@@ -54,7 +54,7 @@
       style="box-shadow: 1px 4px 20px 2px #00000040;">
       <div class="container pt-5 pb-5 pe-4 ps-4">
         <div class="row">
-          <div class="col-md-6 mx-auto" style="width: 40%; height: 100%;">
+          <div class="col-md-6 mx-auto" style="height: 100%;">
 
             <!-- ==================plan-1-Start========================= -->
             <div class="container">
@@ -90,7 +90,7 @@
             </div>
             <!-- ==================plan-1-End=========================== -->
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 my-3">
             <div class="">
               <div class="d-flex flex-column align-items-center ">
                 <button style="width:150px ; opacity: 65%; height:50px ; background: #452C88; box-shadow: 1px 4px 20px 2px #00000040;"

@@ -302,6 +302,9 @@
                             <p id="charCountContainer1" class="text-secondary text-right" style="display: none;"><span id="charCount1">250</span> /250</p>
                             <div class="validation-error-desc"></div>
                         </div>
+                        <div style="color: #452C88;">
+                            <p>@lang('lang.rftd')(@lang('lang.optional')).</p>
+                        </div>
                         <div class="form-group">
                             <div class="form-check">
                                 <input class="form-check-input" id="addressPicture" type="checkbox" />

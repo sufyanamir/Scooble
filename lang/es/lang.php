@@ -254,4 +254,7 @@ return [
   "you_dont_have_any_trips_yet" => "Henüz seyahatiniz yok",
   "client_email" => "Müşteri E-postası",
 
+  "rftd" => "Sürücü için gereksinimler",
+  "optional" => "isteğe bağlı",
+
 ];
