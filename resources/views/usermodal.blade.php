@@ -259,6 +259,7 @@
 
           <form method="post" id="DeleteData" action="deleteUsers">
             <input type="hidden" id="user_id" name="id">
+            <input type="hidden" id="delDriverId" name="delDriverId">
             <input type="hidden" id="deleted_by" name="deleted_by" value="{{ $login_userId ?? ''}}">
             <div class="my-2">
               <div>
@@ -274,8 +275,12 @@
             <div id="driver_list">
               <p>please select a driver that you want to assign the other trips!</p>
               <select name="driver_list" id="driverSelect" class="form-select">
-                <option value=""></option>
-                <!-- Add your options here -->
+                <option value="">Select Driver</option>
+                @foreach($activeData as $key => $value)
+                @if($value['id'] != old('delDriverId')) <!-- Use old('del_driver_id') to retrieve the stored driver ID -->
+                <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
+                @endif
+                @endforeach
               </select>
             </div>
             <div class="row mt-3 text-center">
@@ -299,23 +304,26 @@
   <!-- Delete Client Modal End -->
 
   <script>
-    $(document).ready(function () {
-        // Initially hide the dropdown
-        $("#driver_list").hide();
+    $(document).ready(function() {
+      // Initially hide the dropdown
+      $("#driver_list").hide();
 
-        // Attach a change event listener to the checkboxes
-        $("#assignedCheckbox, #completedCheckbox, #dontDeleteCheckbox").change(function () {
-            // Check if either the 2nd or 3rd checkbox is checked
-            if ($("#completedCheckbox").is(":checked") || $("#dontDeleteCheckbox").is(":checked")) {
-                // Show the dropdown if either of the checkboxes is checked
-                $("#driver_list").show();
-            } else {
-                // Hide the dropdown if neither checkbox is checked
-                $("#driver_list").hide();
-            }
-        });
+      // Attach a change event listener to the checkboxes
+      $("#assignedCheckbox, #completedCheckbox, #dontDeleteCheckbox").change(function() {
+        // Check if either the 2nd or 3rd checkbox is checked
+        if ($("#completedCheckbox").is(":checked") || $("#dontDeleteCheckbox").is(":checked")) {
+          // Show the dropdown if either of the checkboxes is checked
+          $("#driver_list").show();
+          $("#driver_list select").prop("required", true);
+
+        } else {
+          // Hide the dropdown if neither checkbox is checked
+          $("#driver_list").hide();
+          $("#driver_list select").prop("required", false);
+        }
+      });
     });
-</script>
+  </script>
 
   <script>
     const assignedCheckbox = document.getElementById('assignedCheckbox');

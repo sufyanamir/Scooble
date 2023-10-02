@@ -239,13 +239,14 @@ class UserController extends Controller
             ->get()
             ->toArray();
             $client_list = User::where(['role' => 'Client'])->orderBy('id', 'desc')->select('id','name')->get()->toArray();   
-            
-            return view('drivers', ['data' => $drivers,'user'=>$user,'add_as_user'=> user_roles('3'), 'client_list'=>$client_list]);
+            $activeDrivers = User::where(['role' => 'Driver'])->get()->toArray();;
+            return view('drivers', ['data' => $drivers, 'activeData' => $activeDrivers, 'user'=>$user,'add_as_user'=> user_roles('3'), 'client_list'=>$client_list]);
         } 
         else{
 
             $derivers = User::where(['role' => user_roles('3'),'client_id' => $user->id])->orderBy('id', 'desc')->get()->toArray();
-            return view('drivers', ['data' => $derivers,'user'=>$user ,'add_as_user'=> user_roles('3')]); 
+            $activeDrivers = User::where(['role' => user_roles('3'), 'client_id' => $user->id, 'status' => '1'])->get()->toArray();
+            return view('drivers', ['data' => $derivers, 'activeData' => $activeDrivers,'user'=>$user ,'add_as_user'=> user_roles('3')]);
         }
 
     }

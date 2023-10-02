@@ -883,7 +883,9 @@
         // deleting users ... calling modals
         $(document).on('click', '#btn_dell_user', function() {
             let user_id = $(this).attr('data-id');
+            let driver_id = $(this).attr('driver-id');
             $('#userDeleteModal #user_id').val(user_id);
+            $('#delDriverId').val(driver_id);
             $('#userDeleteModal').modal('show');
         });
 

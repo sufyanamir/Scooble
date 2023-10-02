@@ -1168,12 +1168,24 @@ class APIController extends Controller
                     $message = $save ? 'Driver Deleted successfully' : 'Driver can not deleted';
 
                     if($request->assigned){
+                        Trip::where(['driver_id' => $request->id, 'status' => $tripStatus['Pending']])->update(['status' => $tripStatus['Deleted']]);
+
                         Trip::where(['driver_id' => $request->id, 'status' => $tripStatus['In Progress']])->update(['status' => $tripStatus['Deleted']]);
+
+                        Trip::where(['driver_id' => $request->id, 'status' => $tripStatus['Completed']])->update(['status' => $tripStatus['Deleted']]);
                         $message .= "\nAll Assigned Trips of Driver deleted successfully";
                     }
                     if($request->completed){
+                        Trip::where(['driver_id' => $request->id, 'status' => $tripStatus['Pending']])->update(['driver_id' => $request->driver_list]);
+
+                        Trip::where(['driver_id' => $request->id, 'status' => $tripStatus['In Progress']])->update(['status' => $tripStatus['Deleted']]);
+
                         Trip::where(['driver_id' => $request->id, 'status' => $tripStatus['Completed']])->update(['status' => $tripStatus['Deleted']]);
-                        $message .= "\nAll Completed Trips of Driver deleted successfully";
+                        $message .= "\nAll Completed and In progress Trips of Driver deleted successfully and Pending trips assigned to the selected driver";
+                    }
+                    if ($request->dont_delete) {
+                        Trip::where(['driver_id' => $request->id, 'status' => $tripStatus['Pending']])->update(['driver_id' => $request->driver_list]);
+                        $message .= "\nThe Pending trips are assigned to the selected driver";
                     }
 
                     if($save){
