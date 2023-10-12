@@ -577,9 +577,14 @@
         });
 
         // Adding  data in through the api...
-        $('#formData').on('submit', function(e) {
-
+        $('#formData').on('submit', function (e) {
             e.preventDefault();
+
+            // Perform form validation here
+            if (!validateForm()) {
+                return; // Stop form submission if validation fails
+            }
+
             var button = $(this);
             var spinner = button.find('.btn_spinner');
             var buttonText = button.find('#text');
@@ -591,7 +596,7 @@
             var apiname = $(this).attr('action');
             var apiurl = "{{ end_url('') }}" + apiname;
             var formData = new FormData(this);
-            var bearerToken = "{{session('user')}}";
+            var bearerToken = "{{ session('user') }}";
             $.ajax({
                 url: apiurl,
                 type: 'POST',
@@ -601,66 +606,69 @@
                 },
                 contentType: false,
                 processData: false,
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#spinner').removeClass('d-none');
                     $('#add_btn').addClass('d-none');
                     showlogin('Wait', 'saving......');
                 },
-                success: function(response) {
-
+                success: function (response) {
                     $('#spinner').addClass('d-none');
                     $('#add_btn').removeClass('d-none').prop('disabled', false);
 
                     if (response.status === 'success') {
-
-                        // $('#formData')[0].reset();
-                        
                         const lastSegment = location.href.substring(location.href.lastIndexOf("/") + 1);
-                        
-                        if(lastSegment =='settings' || lastSegment == 'announcements'){
-                            setTimeout(function() {
+
+                        if (lastSegment == 'settings' || lastSegment == 'announcements') {
+                            setTimeout(function () {
                                 window.location.href = window.location.href;
                             }, 1500);
-                        }else{
+                        } else {
                             $('#tableData').load(location.href + " #tableData > *");
                             $('#formData').load(location.href + " #formData > *");
                             $('#closeicon').trigger('click');
                         }
-                       
+
                         $('#addclient').modal('hide');
                         showAlert("Success", response.message, response.status);
-                        // $('#formData').trigger('reset');
-                    }
-                    
-                    else if(response.status === 'error'){
-                       
+                    } else if (response.status === 'error') {
                         showAlert("Warning", "Please fill the form correctly", response.status);
                         console.log(response.message);
                         $('.error-label').remove();
 
-                        $.each(response.message, function(field, errorMessages) {
+                        $.each(response.message, function (field, errorMessages) {
                             var inputField = $('input[name="' + field + '"]');
 
-                            $.each(errorMessages, function(index, errorMessage) {
+                            $.each(errorMessages, function (index, errorMessage) {
                                 var errorLabel = $('<label class="error-label text-danger">* ' + errorMessage + '</label>');
                                 inputField.addClass('error');
                                 inputField.after(errorLabel);
                             });
                         });
-
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.log(status);
 
                     spinner.addClass('d-none');
                     buttonText.removeClass('d-none');
                     button.prop('disabled', false);
-                    showAlert("Error", 'Request Can not Procceed', 'Can not Procceed furhter');
+                    showAlert("Error", 'Request Can not Proceed', 'Can not Proceed further');
                 }
             });
         });
 
+        function validateForm() {
+            const price = parseFloat($("#price").val());
+            const users = parseFloat($("#users").val());
+            const drivers = parseFloat($("#drivers").val());
+            const mapApiCall = parseFloat($("#map_api_call").val());
+
+            if (price === 0 || users === 0 || drivers === 0 || mapApiCall === 0) {
+                swal("warning!", "Please enter values greater than 0 in price, users, drivers and map api call fields!", "warning");
+                return false;
+            }
+            return true;
+        }
         // Delete users  data in through the api...
         $('#DeleteData').on('submit', function(e) {
             e.preventDefault();

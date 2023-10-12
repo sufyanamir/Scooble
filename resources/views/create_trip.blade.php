@@ -145,7 +145,7 @@
 
                             <div class="col-lg-4 col-sm-6">
                                 <label for="start_address">@lang('lang.start_point')</label>
-                                <select required name="start_point" id="start_address" class="form-select">
+                                <select required name="start_point" disabled id="start_address" class="form-select">
                                     @if(isset($data['start_point']) && $data['start_point'] != '')
                                     <option value="{{ $data['start_point'] }}" selected>{{ $data['start_point'] }}</option>
                                     @endif
@@ -154,7 +154,7 @@
 
                             <div class="col-lg-4 col-sm-6">
                                 <label for="end_address">@lang('lang.end_point')</label>
-                                <select name="end_point" id="end_address" class="form-select">
+                                <select name="end_point" disabled id="end_address" class="form-select">
                                     @if(isset($data['end_point']) && $data['end_point'] != '')
                                     <option value="{{ $data['end_point'] }}" selected>{{ $data['end_point'] }}</option>
                                     @endif

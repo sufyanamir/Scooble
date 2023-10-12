@@ -21332,18 +21332,7 @@ body{
     
   }
 }
-@media (max-width: 760px)  and (min-width:320px) {
-  span.pro{
-    top: 50%;
-    
-  }
-}
-@media (max-width: 2660px) {
-  span.pro{
-    top: 35%;
-    
-  }
-}
+
 
 /*=============*/
 .card-header .title {

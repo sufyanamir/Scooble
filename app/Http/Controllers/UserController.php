@@ -202,7 +202,7 @@ class UserController extends Controller
             }
         }
         else {
-            $package = Package::orderBy('id', 'ASC')->get()->toArray();
+            $package = Package::where('status', 'on')->orderBy('id', 'ASC')->get()->toArray();
             return view('home', ['data' => $package]);
         }
     }
