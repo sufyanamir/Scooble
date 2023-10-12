@@ -55,12 +55,23 @@ span#procent {
   display: block;
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 52%;
   font-size: 30px;
   font-weight: 600;
   transform: translate(-50%, -50%);
   color: #3949AB;
 margin-top: 33px;
+}
+@media (max-width: 927px) and (min-width: 767px){
+  span#procent{
+    top: 59%;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1080px){
+  span#procent{
+    top: 56%;
+  }
 }
 
 span#procent::after {
@@ -70,12 +81,22 @@ span#procent1 {
   display: block;
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 52%;
   font-size: 30px;
   font-weight: 600;
   transform: translate(-50%, -50%);
   color: #3949AB;
 margin-top: 33px;
+}
+@media (max-width: 927px) and (min-width: 767px){
+  span#procent1{
+    top: 59%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1080px){
+  span#procent1{
+    top: 56%;
+  }
 }
 
 span#procent1::after {
@@ -85,12 +106,22 @@ span#procent2 {
   display: block;
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 52%;
   font-size: 30px;
   font-weight: 600;
   transform: translate(-50%, -50%);
   color: #3949AB;
 margin-top: 33px;
+}
+@media (max-width: 927px) and (min-width: 767px){
+  span#procent2{
+    top: 59%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1080px){
+  span#procent2{
+    top: 56%;
+  }
 }
 
 span#procent2::after {
@@ -249,7 +280,7 @@ span#procent2::after {
                 </div>
               </div>
             </div>
-            <div class="row justify-content-evenly" style="margin-top: 30px !important;">
+            <div class="row justify-content-evenly mb-3" style="margin-top: 30px !important;">
               <div class="col-lg-4 col-md-4">
                 <div class="prgrss-chart pb-4" style="box-shadow: 0px 0px 3px 0.75px rgba(0,0,0,0.25); 
             -webkit-box-shadow: 0px 0px 3px 0.75px rgba(0,0,0,0.25);

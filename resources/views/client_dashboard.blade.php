@@ -59,12 +59,23 @@ span#procent {
   display: block;
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 52%;
   font-size: 30px;
   font-weight: 600;
   transform: translate(-50%, -50%);
   color: #3949AB;
 margin-top: 33px;
+}
+@media (max-width: 927px) and (min-width: 767px){
+  span#procent{
+    top: 59%;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1080px){
+  span#procent{
+    top: 56%;
+  }
 }
 
 span#procent::after {
@@ -74,12 +85,22 @@ span#procent1 {
   display: block;
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 52%;
   font-size: 30px;
   font-weight: 600;
   transform: translate(-50%, -50%);
   color: #3949AB;
 margin-top: 33px;
+}
+@media (max-width: 927px) and (min-width: 767px){
+  span#procent1{
+    top: 59%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1080px){
+  span#procent1{
+    top: 56%;
+  }
 }
 
 span#procent1::after {
@@ -89,12 +110,22 @@ span#procent2 {
   display: block;
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 52%;
   font-size: 30px;
   font-weight: 600;
   transform: translate(-50%, -50%);
   color: #3949AB;
 margin-top: 33px;
+}
+@media (max-width: 927px) and (min-width: 767px){
+  span#procent2{
+    top: 59%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1080px){
+  span#procent2{
+    top: 56%;
+  }
 }
 
 span#procent2::after {
@@ -200,7 +231,7 @@ span#procent2::after {
                     </div>
                 </div>
                 <div class="row mt-4">
-                    <div class="col-lg-12 col-md-12 col-xl-8">
+                    <div class="col-lg-12 col-md-12 col-xl-8 mb-3">
                         <div class="row">
                             <div class="col-lg-5 col-md-5">
                                 <div>
@@ -265,12 +296,24 @@ span#procent2::after {
                                     display: block;
                                     position: absolute;
                                     left: 50%;
-                                    /* top: 35%; */
+                                    top: 36%;
                                     font-size: 30px;
                                     font-weight: 600;
                                     transform: translate(-50%, -50%);
                                     color: #3949AB;
-                                    /* margin-top: -4px; */
+                                    /* margin-top: 40px; */
+                                }
+                                /* @media (max-width: 760px)  and (min-width:320px) {
+                                    span.pro{
+                                        top: 50%;
+                                        
+                                    }
+                                } */
+                                    @media (max-width: 767px) and (min-width: 320px) {
+                                    span.pro{
+                                        top: 52%;
+                                        
+                                    }
                                 }
                                 span.pro::after {
                                 content: '%';

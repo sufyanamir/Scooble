@@ -49,7 +49,7 @@
 </head>
 <body style="background-color: #f9f9f9;">
     <div class="container" style="text-align: center;">
-        <div class="logo" style="display: felx; justify-content: center;">
+        <div class="logo" align="center">
         <img src="{{ $message->embed(public_path('assets/images/Group5.png')) }}" alt="logo" />
         </div>
         <h3>Dear, {{ $emailData['name'] }}</h3>

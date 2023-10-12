@@ -407,7 +407,7 @@ $('#btn_user_register').on('click',function () {
                         class: "custom-spinner"
                     }
                 },
-                text: 'Regitering',
+                text: 'Registering',
                 buttons: false,
                 closeOnClickOutside: false,
                 closeOnEsc: false,

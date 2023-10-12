@@ -43,10 +43,10 @@
               <div class="col-lg-6 mb-2">
                 <label for="user_pic">@lang('lang.upload_image')</label>
                 <div class="row">
-                  <div class="col-lg-10 col-10 col-sm-10 col-xl-10">
+                  <div class="col-lg-10 col-10 col-sm-10 col-xl-10 my-auto">
                     <input type="file" name="user_pic" id="user_pic" class="form-control" require>
                   </div>
-                  <div class="col-lg-2 col-2 col-sm-2 col-xl-2">
+                  <div class="col-lg-2 col-2 col-sm-2 col-xl-2 p-0">
                     <img src="" width="45px" height="45px" style="border-radius: 50%; object-fit: cover;" id="user_pic" class="d-none">
                   </div>
                 </div>
@@ -69,10 +69,10 @@
               <div class="col-lg-6 mb-2">
                 <label for="com_pic">@lang('lang.company_logo')</label>
                 <div class="row">
-                  <div class="col-lg-10 col-10 col-sm-10 col-xl-10">
+                  <div class="col-lg-10 col-10 col-sm-10 col-xl-10 my-auto">
                     <input type="file" name="com_pic" id="com_pic" class="form-control" require>
                   </div>
-                  <div class="col-lg-2 col-2 col-sm-2 col-xl-2">
+                  <div class="col-lg-2 col-2 col-sm-2 col-xl-2 p-0">
                     <img src="" width="45px" height="45px" style="border-radius: 50%; object-fit: cover;" id="com_pic" class="d-none">
                   </div>
                 </div>

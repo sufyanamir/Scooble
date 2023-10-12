@@ -65,8 +65,19 @@ Route::get('/get_drivers/{id}', [UserController::class, 'get_drivers']);
         return view('sub_expired_driver');
     });
 
+Route::get('/otp', function(){
+    return view('emails.email_opt');
+});
 
-
+Route::get('/sub', function(){
+    return view('emails.email_subscription');
+});
+Route::get('/profile', function(){
+    return view('emails.email_profile');
+});
+Route::get('/ver', function(){
+    return view('emails.email-verification');
+});
 
 
 
