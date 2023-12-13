@@ -208,18 +208,22 @@ class UserController extends Controller
     }
     
     public function clients()
-    {
-        $user = auth()->user();
-        $page_name = 'clients';
+{
+    $user = auth()->user();
+    $page_name = 'clients';
 
-        if(!view_permission($page_name)){
-            return redirect()->back();  
-        }
-
-        $clients = User::where(['role' => user_roles('2')])->orderBy('id', 'desc')->get()->toArray();
-        return view('clients', ['data' => $clients,'user'=>$user ,'add_as_user'=> user_roles('2')]);
-
+    if (!view_permission($page_name)) {
+        return redirect()->back();
     }
+
+    $clients = User::with('package')
+        ->where(['role' => user_roles('2')])
+        ->orderBy('id', 'desc')
+        ->get()
+        ->toArray();
+
+    return view('clients', ['data' => $clients, 'user' => $user, 'add_as_user' => user_roles('2')]);
+}
 
     public function drivers()
     {
@@ -319,16 +323,13 @@ class UserController extends Controller
             
             if ($request->dashboard_data == 1) {
                 $data['client_list'] = User::where('id', $trip->client_id)->first();
-                $data['driver_list'] = User::where(['role' => user_roles('3'), 'client_id' => $data['data']['client_id']])
-                    ->where('status', '<>', 5) // Exclude drivers with status 5
-                    ->orderBy('id', 'desc')->get()->toArray();
+                $data['driver_list'] = User::where('id', $trip->driver_id)->first();;
                 
                 return view('pdf_templates', $data);
             } else {
                 $data['client_list'] = User::where(['role' => user_roles('2'), 'status' => auth_users()])
                     ->orderBy('id', 'desc')->select('id', 'name')->get()->toArray();
-                $data['driver_list'] = User::where(['role' => user_roles('3'), 'client_id' => $data['data']['client_id']])
-                    ->where('status', '<>', 5) // Exclude drivers with status 5
+                $data['driver_list'] = User::where(['role' => user_roles('3'), 'client_id' => $data['data']['client_id'], 'status' => 1]) // Exclude drivers with status 5
                     ->orderBy('id', 'desc')->get()->toArray();
                 return view('create_trip', $data);
             }
@@ -340,8 +341,7 @@ class UserController extends Controller
             $data['data'] = $trip->toArray();
             $data['data']['addresses'] = $trip->addresses->toArray();
 
-            $data['driver_list'] = User::where(['client_id' => $trip->client_id])->orderBy('id', 'desc')
-                ->where('status', '<>', 5) // Exclude drivers with status 5
+            $data['driver_list'] = User::where(['client_id' => $trip->client_id, 'status' => 1])->orderBy('id', 'desc') // Exclude drivers with status 5
                 ->select('id', 'name')->get()->toArray();
             if ($request->dashboard_data == 1) {
                 $data['client_list'] = User::where('id', $trip->client_id)->first();
@@ -359,9 +359,8 @@ class UserController extends Controller
                 ->orderBy('id', 'desc')->select('id', 'name')->get()->toArray();
             return view('create_trip', $data);
         } else {
-            $data['driver_list'] = User::where(['role' => user_roles('3'), 'client_id' => $user->id])
-                ->orderBy('id', 'desc')
-                ->where('status', '<>', 5) // Exclude drivers with status 5
+            $data['driver_list'] = User::where(['role' => user_roles('3'), 'client_id' => $user->id, 'status' => 1])
+                ->orderBy('id', 'desc') // Exclude drivers with status 5
                 ->get()->toArray();
             return view('create_trip', $data);
         }
@@ -371,7 +370,7 @@ class UserController extends Controller
 
     public function get_drivers(Request $request)
     {
-        $driver_list = User::where(['role' => 'Driver', 'client_id' => $request->id])
+        $driver_list = User::where(['role' => 'Driver', 'client_id' => $request->id, 'status' => 1])
             ->orderBy('id', 'desc')
             ->get()
             ->toArray();
@@ -441,7 +440,7 @@ class UserController extends Controller
         } 
         else {
 
-        $package = Package::orderBy('id', 'ASC')->get()->toArray();
+        $package = Package::orderBy('id', 'ASC')->where('status', 'on')->get()->toArray();
         return view('home', ['data' => $package]);
         }
     }
@@ -631,8 +630,8 @@ class UserController extends Controller
             return redirect()->back();
         }
 
-        $user = auth()->user();
-        return view('settings',['user' => $user]);
+        $userWithPackage = User::with('package')->where('id', $user->id)->first();
+        return view('settings',['user' => $userWithPackage]);
     }
 
     public function user_store(REQUEST $request)

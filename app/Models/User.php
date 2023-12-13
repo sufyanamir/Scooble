@@ -56,4 +56,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Trip::class, 'client_id');
     }
+
+    public function package()
+    {
+        return $this->belongsTo(Package::class, 'sub_package_id');
+    }
 }

@@ -1,7 +1,7 @@
                       <!-- Trip Detail Modal -->
                       <div class="modal fade" id="tripdetail" tabindex="-1" aria-labelledby="tripdetailLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
-                          <div class="modal-content" style="border-radius: 12px;">
+                          <div class="modal-content" style="border-radius: 15px;">
                             <div class="modal-header" style="background: #452C88; border-radius: 12px 12px 0px 0px;">
                               <h5 class="modal-title mx-auto text-white" id="tripdetailLabel"><span>@lang('lang.trip_detail')</span></h5>
                               <button class="btn p-0" data-dismiss="modal">
@@ -76,6 +76,7 @@
                                 <table class="table" id="tripDetail_addresses">
                                   <thead>
                                     <tr>
+                                      <th style="color: #452C88;"><span></span></th>
                                       <th style="color: #452C88;"><span>@lang('lang.address')</span></th>
                                       <th style="color: #452C88;"><span>@lang('lang.description')</span></th>
                                       <th style="color: #452C88;"><span>@lang('lang.picture')</span></th>
@@ -85,6 +86,7 @@
                                   </thead>
                                   <tbody id="gettripdata">
                                     <tr>
+                                      <td></td>
                                       <td class="text-wrap">Lorem ipsum dolor sit</td>
                                       <td class="text-wrap">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</td>
                                       <td>
