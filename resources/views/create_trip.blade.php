@@ -104,7 +104,7 @@
 
                             <div class="col-lg-{{ $user->role === 'Client' ? '4' : '3' }} col-sm-4 my-2">
                                 <label for="trip_date">@lang('lang.date')</label>
-                                <input required type="date" name="trip_date" id="trip_date" value="{{ ($duplicate_trip ?? '' == 1) ? date('Y-m-d') : ((isset($data['id'])) ? $data['trip_date'] : date('Y-m-d') ) }}" min="{{ ($duplicate_trip ?? '' == 1) ? date('Y-m-d') : ((isset($data['id'])) ? $data['trip_date'] : date('Y-m-d') ) }}" class="form-control">
+                                <input required type="date" name="trip_date" id="trip_date" value="{{ ($duplicate_trip ?? '' == 1) ? date('Y-m-d') : ((isset($data['id'])) ? $data['trip_date'] : date('Y-m-d') ) }}" min="{{ date('Y-m-d') }}" class="form-control">
                                 <span id="trip_date_error" class="error-message text-danger"></span>
                             </div>
                                 @if(isset($client_list) && $client_list != '')
@@ -308,15 +308,15 @@
                         <div class="form-group">
                             <div class="form-check">
                                 <input class="form-check-input" id="addressPicture" type="checkbox" />
-                                <label class="form-check-label" for="pictureCheckbox">@lang('lang.picture')</label>
+                                <label class="form-check-label" for="addressPicture">@lang('lang.picture')</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" id="addressSignature" type="checkbox">
-                                <label class="form-check-label" for="signatureCheckbox">@lang('lang.signature')</label>
+                                <label class="form-check-label" for="addressSignature">@lang('lang.signature')</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" id="addressNote" type="checkbox">
-                                <label class="form-check-label" for="noteCheckbox">@lang('lang.note')</label>
+                                <label class="form-check-label" for="addressNote">@lang('lang.note')</label>
                             </div>
                         </div>
                     </form>
@@ -383,7 +383,13 @@
 <!-- viewlocation Modal End -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3YWssMkDiW3F1noE6AVbiJEL40MR0IFU&libraries=places"></script>
 <script>
+window.addEventListener("beforeunload", function (e) {
+    var confirmationMessage = 'It looks like you have been editing something. '
+                            + 'If you leave before saving, your changes will be lost.';
 
+    (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+    return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+});
 $(document).ready(function() {
 
 

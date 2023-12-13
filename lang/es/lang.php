@@ -256,5 +256,5 @@ return [
 
   "rftd" => "Sürücü için gereksinimler",
   "optional" => "isteğe bağlı",
-
+  "user_pic_validation_error" => "Resim 1024 KB'tan küçük veya ona eşit olmalıdır",
 ];

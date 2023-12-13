@@ -257,5 +257,6 @@ return [
 
   "rftd" => "Requirements for the driver",
   "optional" => "optional",
+  "user_pic_validation_error" => "Image must be less than or equal to 1024 KB",
 
 ];

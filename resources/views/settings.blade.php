@@ -95,7 +95,11 @@
                 </div>
                 <p class="error-image text-danger d-none">* The user pic should be less than or equal to 1024KB.</P>
 
-                <p>{{ $user->email }}</p>
+                <p>{{ $user->email }} 
+                @if( $user->role == user_roles('2'))  
+                <sub style=" color:#452C88;"> {{ $user->package->title ?? '' }} </sub>
+                @endif
+              </p>
               </div>
             </div>
             <!-- </form> -->
@@ -181,7 +185,7 @@ if (file.type.startsWith('image/')) {
       form.action = "userStore?id={{$user->id}}&role={{$user->role}}&email={{$user->email}}";
     };
   } else {
-    $('.error-image').removeClass('d-none').text('The user pic should be less than or equal to 1024KB');
+    $('.error-image').removeClass('d-none').text(`@lang('lang.user_pic_validation_error')`);
     console.log("Image size exceeds the limit of 1 MB.");
     fileInput.value = "";
   }

@@ -1491,12 +1491,25 @@ function convertToYesNo(value) {
                                         </svg>` : "";
 }
 
+function addressStatus(value) {
+    if (value === 1) {
+        return `<i class="fa-solid fa-hourglass-start"></i>`;
+    }else if(value === 2){
+        return `<i class="fa-solid fa-spinner"></i>`;
+    }else if(value === 3){
+        return `<i class="fa-solid fa-check"></i>`;
+    }else{
+        return `<i class="fa-solid fa-forward"></i>`;
+    }
+}
+
 // Loop through each address and create a <tr> element
 translatedData.forEach(function(address) {
   var $tr = $("<tr>");
 
   // Add columns (td) with address information
 
+  $tr.append($("<td>").html(addressStatus(address.address_status)));
   $tr.append($("<td class='text-wrap'>").text(address.title));
   $tr.append($("<td class='text-wrap'>").text(address.desc));
 
@@ -1551,7 +1564,7 @@ translatedData.forEach(function(address) {
 
         $('#filter_by_sts_client').on('change', function() {
             var selectedStatus = $(this).val();
-            users_table.column(8).search(selectedStatus).draw();
+            users_table.column(9).search(selectedStatus).draw();
         });
 
         $('#filter_by_sts_users').on('change', function() {

@@ -183,8 +183,8 @@ $(function() {
         eventColor = '#6c757d'; // Bootstrap "secondary" color
     }
 
-    var draggable = true; // By default, all events are draggable
-    var droppable = true; // By default, all events are droppable
+    var draggable = false; // By default, all events are draggable
+    var droppable = false; // By default, all events are droppable
 
     // If trip status is 2, set draggable to true and droppable to true
     if (trip.status === 2) {
@@ -192,12 +192,12 @@ $(function() {
       droppable = true;
     } else {
       // For other statuses (1, 3, or 4), set draggable to true but droppable to false
-      draggable = true;
+      draggable = false;
       droppable = false;
     }
 
     var event = {
-      title: trip.id + ': ' + trip.title + ' (' + trip.driver_name + ')',
+      title: trip.id + ': ' + trip.title,
       start: trip.trip_date,
       backgroundColor: eventColor,
       borderColor: eventColor,
@@ -214,13 +214,17 @@ $(function() {
   var calendar = new FullCalendar.Calendar(calendarEl, {
     headerToolbar: {
       left: 'prev,next today',
-      right: 'title',
+      right: 'title', 
     },
     themeSystem: 'bootstrap',
     events: events, // Set the events data
-
-    editable: dragable !== 2, // Enable/disable editing based on dragable value
-    droppable: dragable !== 2, // Enable/disable dropping based on dragable value
+    eventDurationEditable: false,
+    eventStartEditable: function (info) {
+        // Determine if the event is editable based on its status
+        return info.event.extendedProps.draggable;
+    },
+    // editable: dragable !== 2, // Enable/disable editing based on dragable value
+    // droppable: dragable !== 2, // Enable/disable dropping based on dragable value
 
     eventDrop: function(info) {
       var event = info.event;

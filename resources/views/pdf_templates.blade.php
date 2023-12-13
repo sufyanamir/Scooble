@@ -54,7 +54,7 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
         }
 
         .th {
-            background-color: #CE5D04;
+            background-color: #E45F00;
             color: white;
         }
 
@@ -261,8 +261,8 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
                 <tr>
                     <th class="th">Address</th>
                     <th class="th">Description</th>
+                    <th class="th" style="width: 25% !important;">Note</th>
                     <th class="th">Signature</th>
-                    <th class="th">Note</th>
                     <th class="th">Picture</th>
                 </tr>
                 @isset($data['addresses'])
@@ -271,36 +271,27 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
                     <td class="td">{{ $address['title'] }}</td>
                     <td class="td">{{ $address['desc'] }}</td>
                     <td class="td">
-                        @if($address['driv_trip_signature'])
+                        @if($address['driv_trip_note'])
                         <!-- <i class="fa-solid fa-check"></i> -->
-                        @else
-                        @if($address['trip_signature'] == 1)
-                        <i class="fa-solid fa-check"></i>
+                        {{$address['driv_trip_note']}}
                         @else
                         <i class="fa-solid fa-xmark"></i>
-                        @endif
                         @endif
                     </td>
                     <td class="td">
-                        @if($address['driv_trip_note'])
+                        @if($address['driv_trip_signature'])
                         <!-- <i class="fa-solid fa-check"></i> -->
-                        @else
-                        @if($address['trip_note'] == 1)
-                        <i class="fa-solid fa-check"></i>
+                        <img style="width: 50px; height: 50px; object-fit:cover;" src="{{ $address['driv_trip_signature'] }}" alt="Image">
                         @else
                         <i class="fa-solid fa-xmark"></i>
-                        @endif
                         @endif
                     </td>
                     <td class="td">
                         @if($address['driv_trip_pic'])
                         <!-- <i class="fa-solid fa-check"></i> -->
-                        @else
-                        @if($address['trip_pic'] == 1)
-                        <i class="fa-solid fa-check"></i>
+                        <img style="width: 50px; height: 50px; object-fit: cover;" src="{{ asset('storage/' . $address['driv_trip_pic']) }}" alt="">
                         @else
                         <i class="fa-solid fa-xmark"></i>
-                        @endif
                         @endif
                     </td>
                 </tr>

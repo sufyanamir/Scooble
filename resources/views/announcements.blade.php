@@ -63,19 +63,19 @@
                               });
                     </script> -->
                 <div class="col-lg-2 col-sm-2 mt-4 text-center" style="font-size: 12px;">
-                    <input type="radio" name="type" class="type" required value="Mandatory" {{ ($announcmnent['type'] ?? '') === 'Mandatory' ? 'checked' : '' }}> @lang('lang.mandatory')
+                    <input type="radio" name="type" id="mandatory" class="type" required value="Mandatory" {{ ($announcmnent['type'] ?? '') === 'Mandatory' ? 'checked' : '' }}> <label for="mandatory">@lang('lang.mandatory')</label>
                 </div>
                 <div class="col-lg-2 col-sm-2 mt-4 text-center" style="font-size: 12px;">
-                    <input type="radio" name="type" class="type" required value="Warning" {{ ($announcmnent['type'] ?? '') === 'Warning' ? 'checked' : '' }}> @lang('lang.warning')
+                    <input type="radio" name="type" id="warning" class="type" required value="Warning" {{ ($announcmnent['type'] ?? '') === 'Warning' ? 'checked' : '' }}> <label for="warning">@lang('lang.warning')</label>
                 </div>
                 <div class="col-lg-2 col-sm-2 mt-4 text-center" style="font-size: 12px;">
-                    <input type="radio" name="type" class="type" required value="Promotion" {{ ($announcmnent['type'] ?? '') === 'Promotion' ? 'checked' : '' }}> @lang('lang.promotion')
+                    <input type="radio" name="type" id="promotion" class="type" required value="Promotion" {{ ($announcmnent['type'] ?? '') === 'Promotion' ? 'checked' : '' }}> <label for="promotion">@lang('lang.promotion')</label>
                 </div>
                 <div class="col-lg-2 col-sm-2 mt-4 text-center" style="font-size: 12px;">
-                    <input type="radio" name="type" class="type" required value="Maintenance" {{ ($announcmnent['type'] ?? '') === 'Maintenance' ? 'checked' : '' }}> @lang('lang.maintenance')
+                    <input type="radio" name="type" id="maintenance" class="type" required value="Maintenance" {{ ($announcmnent['type'] ?? '') === 'Maintenance' ? 'checked' : '' }}> <label for="maintenance">@lang('lang.maintenance')</label>
                 </div>
                 <div class="col-lg-2 col-sm-2 mt-4 text-center" style="font-size: 12px;">
-                    <input type="radio" name="type" class="type" required value="News" {{ ($announcmnent['type'] ?? '') === 'News' ? 'checked' : '' }}> @lang('lang.news')
+                    <input type="radio" name="type" id="news" class="type" required value="News" {{ ($announcmnent['type'] ?? '') === 'News' ? 'checked' : '' }}> <label for="news">@lang('lang.news')</label>
                 </div>
                 <div class="col-lg-2 col-sm-2 mt-3 text-center p-0">
                     <button class="btn btn-sm px-4 text-white" name="submit" id="submitBtn" style="background-color: #E45F00;"><span>{{($announcmnent['id']  ?? '') !== '' ? __('lang.update') : __('lang.add')}}</span></button>

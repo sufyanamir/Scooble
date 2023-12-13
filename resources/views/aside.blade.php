@@ -121,18 +121,6 @@
                                     </div>
                                 </div>
                                 <div class="col-4 col-sm-4 col-lg-4 col-xl-6 text-right">
-                                    <!-- <form method="POST" action="/create_trip" class="mb-0">
-                                        @csrf
-                                        <input type="hidden" name="id" value="{{$value['id']}}">
-                                        <input type="hidden" name="dashboard_data" value="1">
-                                        <button id="btn_edit_announcement" class="btn p-0">
-                                            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <circle opacity="0.1" cx="15" cy="15" r="15" fill="#ACADAE"/>
-                                                <path d="M14.7167 10C10.5 10 8 15 8 15C8 15 10.5 20 14.7167 20C18.8333 20 21.3333 15 21.3333 15C21.3333 15 18.8333 10 14.7167 10ZM14.6667 11.6667C16.5167 11.6667 18 13.1667 18 15C18 16.85 16.5167 18.3333 14.6667 18.3333C12.8333 18.3333 11.3333 16.85 11.3333 15C11.3333 13.1667 12.8333 11.6667 14.6667 11.6667ZM14.6667 13.3333C13.75 13.3333 13 14.0833 13 15C13 15.9167 13.75 16.6667 14.6667 16.6667C15.5833 16.6667 16.3333 15.9167 16.3333 15C16.3333 14.8333 16.2667 14.6833 16.2333 14.5333C16.1 14.8 15.8333 15 15.5 15C15.0333 15 14.6667 14.6333 14.6667 14.1667C14.6667 13.8333 14.8667 13.5667 15.1333 13.4333C14.9833 13.3833 14.8333 13.3333 14.6667 13.3333Z" fill="#323C47"/>
-                                            </svg>
-                                        </button>
-                                    </form> -->
-                                    
                                                 <div class="d-flex justify-content-end">
                                                     @if($user->role == user_roles('3') && $value['status'] != $tripStatus['Deleted'])
                                                     <form method="POST" action="/driver_map" class="mb-0">
@@ -212,10 +200,17 @@
 $(document).ready(function() {
     $('.noTripCard').hide();
 
+    // Function to toggle the collapse state when the arrow button is clicked
+    $('.trip-card .card-header a').click(function(event) {
+        event.preventDefault(); // Prevent the default link behavior
+        var targetCollapse = $(this).attr('href');
+        $(targetCollapse).collapse('toggle');
+    });
+
     // Function to filter trips based on selected driver name
     function filterTripsByDriver(driverName) {
         var matchingTripFound = false;
-        var no_trip =  $('.trip-card:first .user-name').text().trim();
+        var no_trip = $('.trip-card:first .user-name').text().trim();
         $('.trip-card').show();
 
         if (driverName != '' && no_trip != '') {
@@ -227,7 +222,7 @@ $(document).ready(function() {
                     matchingTripFound = true;
                 }
             });
-        }else{
+        } else {
             matchingTripFound = true;
         }
 
@@ -244,4 +239,5 @@ $(document).ready(function() {
     });
 });
 </script>
+
 @include('tripdetail_modal')
