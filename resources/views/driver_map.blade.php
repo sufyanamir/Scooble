@@ -181,8 +181,24 @@
             color: white;
         }
 
-        .gmnoprint {
+        .gmnoprint[role="menubar"] {
             top: 88% !important;
+        }
+
+        .gmnoprint[data-control-width="40"] {
+            top: 195px !important;
+        }
+
+        .w-point-btn {
+            position: absolute;
+            right:32px;
+            bottom: 25px;
+            background: #233A85;
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            border: none;
+            color: white
         }
     </style>
     @php
@@ -262,9 +278,9 @@
                                 <span>{{ $data['title'] ?? '' }}</span>
                             </div>
 
-                            <div style="overflow-y: auto; height: 200px; position: relative">
-                                <div class="px-1 text-center" style="font-size: small; position: relative;"
-                                    id="address-container">
+                            <div style="overflow-y: auto; min-height:200px max-height: 60vh; position: relative ">
+                                <div class="px-1 text-center draggable-container"
+                                    style="font-size: small; position: relative;" id="address-container">
                                     @isset($data['addresses'])
                                         @foreach ($data['addresses'] as $address)
                                             <div id="address_card_{{ $address['id'] }}"
@@ -275,7 +291,7 @@
                                                     data-trip-pic="{{ $address['trip_pic'] }}"
                                                     data-trip-signature="{{ $address['trip_signature'] }}"
                                                     data-trip-note="{{ $address['trip_note'] }}">
-                                                <div class="card bg-white"
+                                                <div class="card bg-white "
                                                     style="  position: relative;border-radius: 10px; border: none; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);-webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);-moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);"
                                                     draggable="true">
                                                     <div class="card-body py-1 px-1">
@@ -336,8 +352,21 @@
                                         style="background-color: #233A85;"><span>@lang('lang.optimize')</span></button>
                                 </div>
                             @endif
-                            <hr class="my-1">
+                        </div>
+                    </div>
+                    {{-- =======side-card-start========== --}}
 
+                    {{-- ======================== --}}
+
+                    <div class="position-relative">
+                        <div style="">
+                            <button id="wpshow_btn" class="w-point-btn"><i class="fa-solid fa-location-dot"></i></button>
+                        </div>
+                        <div style="width:380px; position:absolute; bottom: 18px;right:25px;">
+                            <div class="position-absolute" style="left: 12px; top:14px;z-index:5">
+                                <button id="wpc_btn" class="text-white bg-transparent fs-4" style="border: none"><i
+                                        class="fa-solid fa-x"></i></button>
+                            </div>
                             <div class="card" id="card_way_point" style="border-radius: 20px;">
                                 <div class="card-header text-center text-white"
                                     style="border-radius: 12px 12px 0px 0px; background: linear-gradient(180deg, #452C88 0%, #6A53A4 100%);">
@@ -424,7 +453,7 @@
                             </div>
                         </div>
                     </div>
-                    {{-- =======side-card-start========== --}}
+                    {{-- ======================== --}}
                 </div>
             </div>
         </div>
@@ -820,14 +849,14 @@
                                             id="clear-btn">
                                             @lang('lang.clear')
                                             <!-- <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                    <rect width="24" height="24" rx="12" fill="#E5E5E5"/>
-                                                                                    <path d="M12 10.8891L15.8891 7L17 8.11094L13.1109 12L17 15.8891L15.8891 17L12 13.1109L8.11094 17L7 15.8891L10.8891 12L7 8.11094L8.11094 7L12 10.8891Z" fill="#4F4F4F"/>
-                                                                                </svg> -->
+                                                                                        <rect width="24" height="24" rx="12" fill="#E5E5E5"/>
+                                                                                        <path d="M12 10.8891L15.8891 7L17 8.11094L13.1109 12L17 15.8891L15.8891 17L12 13.1109L8.11094 17L7 15.8891L10.8891 12L7 8.11094L8.11094 7L12 10.8891Z" fill="#4F4F4F"/>
+                                                                                    </svg> -->
                                         </button>
                                         <br>
                                         <!-- <button type="button" class="btn p-1" id="save-btn">
-                                                                                <i class="fa fa-download text-secondary"></i>
-                                                                            </button> -->
+                                                                                    <i class="fa fa-download text-secondary"></i>
+                                                                                </button> -->
                                     </div>
                                 </div>
                                 <div class="d-none" id="error_message_sigature" style=" color: red;">* @lang('lang.signature_is_requried')
@@ -1511,6 +1540,16 @@
                 closebtn.style.right = "-70px";
                 close = 1
             }
+        })
+        let closebtnwp = document.getElementById('wpc_btn');
+        let showbtnwp = document.getElementById('wpshow_btn');
+        let wpcard = document.getElementById('card_way_point');
+
+        closebtnwp.addEventListener('click', () => {
+            wpcard.style.display = 'none';
+        })
+        showbtnwp.addEventListener('click', () => {
+            wpcard.style.display = 'block';
         })
     </script>
 
