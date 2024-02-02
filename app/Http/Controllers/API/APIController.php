@@ -26,7 +26,7 @@ use App\Models\Event;
 
 class APIController extends Controller
 {
-    
+
     protected $tripStatus;
     protected $userStatus;
 
@@ -38,37 +38,37 @@ class APIController extends Controller
     public function index(){
 
     }
-    
+
     public function clients(): JsonResponse
     {
         try {
-        
+
             $clients = User::where('role', 'Client')->orderBy('id', 'desc')->get();
-    
+
             if ($clients->isEmpty()) {
                 return response()->json(['status' => 'empty', 'message' => 'No clients found'], 404);
             }
-    
+
             return response()->json(['status' => 'success', 'message' => 'All clients for Admin', 'data' => $clients]);
-        
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving clients', 'error' => $e->getMessage()], 500);
         }
     }
-    
+
     public function drivers(): JsonResponse
     {
-        
+
         try {
 
             $drivers = User::where(['role'=>'Driver'])->orderBy('id', 'desc')->get();
-            
+
             if ($drivers->isEmpty()) {
                 return response()->json(['status' => 'empty', 'message' => 'No drivers found'], 404);
             }
-    
+
             return response()->json(['status' => 'success', 'message' => 'All drivers for Admin', 'data' => $drivers]);
-        
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving drivers', 'error' => $e->getMessage()], 500);
         }
@@ -81,17 +81,17 @@ class APIController extends Controller
             $userAddedId = $request->input('added_user_id');
             $clientId = $request->input('client_id');
             $id = $request->input('id');
-    
+
             $query = User::orderBy('id', 'desc');
-    
+
             if ($role) {
                 $query->where('role', $role);
             }
-    
+
             if ($userAddedId) {
                 $query->where('added_user_id', $userAddedId);
             }
-    
+
             if ($clientId) {
                 $query->where('client_id', $clientId);
             }
@@ -99,20 +99,20 @@ class APIController extends Controller
             if ($id) {
                 $query->where('id', $id);
             }
-            
+
             $users = $query->get();
-    
+
             if ($users->isEmpty()) {
                 return response()->json(['status' => 'empty', 'message' => 'No users found'], 404);
             }
-    
+
             return response()->json(['status' => 'success', 'message' => 'Users retrieved successfully', 'data' => $users]);
-    
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving users', 'error' => $e->getMessage()], 500);
         }
     }
-    
+
 
     public function user_login(Request $request): JsonResponse
     {
@@ -120,7 +120,7 @@ class APIController extends Controller
             'password' => 'required',
             'email' => 'required',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()]);
         }
@@ -137,9 +137,9 @@ class APIController extends Controller
                     if(isset($user->role) && $user->role == user_roles('3')){
 
                         $client = User::where(['role' => 'Client', 'id' => $user->client_id])->first();
-                        
+
                         if($client){
-                            
+
                             if(!in_array($client->status, auth_users())){
                                 return response()->json(['status' => 'Deactive', 'message' => 'You are Unauthorized to Login, Contact to the Owner']);
                             }
@@ -148,19 +148,19 @@ class APIController extends Controller
                             return response()->json(['status' => 'Deactive', 'message' => 'You are assigned  to any client']);
                         }
                     }
-                    
+
                     if (Auth::attempt($credentials)) {
 
                         $token = $user->createToken('MyApp')->plainTextToken;
                         session(['user_details' => $user]);
                         return response()->json(['status' => 'success', 'message' => 'User successfully logged in', 'token' => $token]);
                     }else{
-                        return response()->json(['status' => 'invalid', 'message' => 'Invalid Credentails or Contact to Admin']); 
+                        return response()->json(['status' => 'invalid', 'message' => 'Invalid Credentails or Contact to Admin']);
                     }
-                } 
+                }
                 else if ($user->status == 4) {
                     return response()->json(['status' => 'Unverfied', 'message' => 'User is unverified, Please Check Your Email']);
-                } 
+                }
                 else {
                     return response()->json(['status' => 'Deactive', 'message' => 'You are Unauthorized to Login']);
                 }
@@ -168,7 +168,7 @@ class APIController extends Controller
 
                  return response()->json(['status' => 'invalid', 'message' => 'User does not exist'], 401);
             }
-            
+
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -177,8 +177,8 @@ class APIController extends Controller
             ], 500);
         }
     }
-    
-    
+
+
     public function user_store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -191,15 +191,15 @@ class APIController extends Controller
                 Rule::unique('users')->ignore($request->id),
             ],
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()]);
 
         }
-    
+
         try {
-            $user = ($request->id) ? User::find($request->id) : new User(); 
-             
+            $user = ($request->id) ? User::find($request->id) : new User();
+
             $isExistingUser = $user->exists;
 
             $user->name               = $request->name;
@@ -220,7 +220,7 @@ class APIController extends Controller
                 $user->added_user_id      = Auth::id();
             }
             $user->client_id          = $request->client_id;
-            
+
             if ($request->password) {
                 $user->password = Hash::make($request->password);
             } else {
@@ -229,33 +229,33 @@ class APIController extends Controller
                 $user->password = Hash::make($randomPassword);
                 }
             }
-            
+
 
             $oldComPicPath = $user->com_pic;
             $oldUserPicPath = $user->user_pic;
-    
+
             if ($request->hasFile('com_pic')) {
                 if ($request->id && $oldComPicPath) {
                     Storage::disk('public')->delete($oldComPicPath);
                 }
-    
+
                 $comPic = $request->file('com_pic');
                 $comPicPath = $comPic->store('com_pics', 'public');
                 $user->com_pic = $comPicPath;
             }
-            
+
             if ($request->hasFile('user_pic')) {
                 if ($request->id && $oldUserPicPath) {
                     Storage::disk('public')->delete($oldUserPicPath);
                 }
-    
+
                 $userPic = $request->file('user_pic');
                 $userPicPath = $userPic->store('user_pics', 'public');
                 $user->user_pic = $userPicPath;
             }
 
             $save = $user->save();
-    
+
             if($save){
                 if ($request->password) {
 
@@ -268,14 +268,14 @@ class APIController extends Controller
                             'email' => $request->email,
                             'body' => "Congratulations! You profile has been created successfully on this Email.",
                         ];
-    
+
                         UserProfileEmail::dispatch($emailData)->onQueue('emails');
                     }
                 }
             }
             $message = $isExistingUser ? 'User updated successfully' : 'User added successfully';
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
-    
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error storing user', 'error' => $e->getMessage()], 500);
         }
@@ -293,14 +293,14 @@ class APIController extends Controller
                 Rule::unique('users')->ignore($request->id),
             ],
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()], 400);
         }
-    
+
         try {
-            $user = ($request->id) ? User::find($request->id) : new User(); 
-             
+            $user = ($request->id) ? User::find($request->id) : new User();
+
             $isExistingUser = $user->exists;
 
             $user->name = $request->name;
@@ -309,40 +309,40 @@ class APIController extends Controller
             $user->com_name = $request->com_name;
             $user->address = $request->address;
             $user->role = 'Client';
-            
+
             if ($request->password) {
                 $user->password = Hash::make($request->password);
             }
-    
+
 
             $oldComPicPath = $user->com_pic;
             $oldUserPicPath = $user->user_pic;
-    
+
             if ($request->hasFile('com_pic')) {
                 if ($request->id && $oldComPicPath) {
                     Storage::disk('public')->delete($oldComPicPath);
                 }
-    
+
                 $comPic = $request->file('com_pic');
                 $comPicPath = $comPic->store('com_pics', 'public');
                 $user->com_pic = $comPicPath;
             }
-            
+
             if ($request->hasFile('user_pic')) {
                 if ($request->id && $oldUserPicPath) {
                     Storage::disk('public')->delete($oldUserPicPath);
                 }
-    
+
                 $userPic = $request->file('user_pic');
                 $userPicPath = $userPic->store('user_pics', 'public');
                 $user->user_pic = $userPicPath;
             }
 
             $save = $user->save();
-    
+
             $message = $isExistingUser ? 'User updated successfully' : 'User Register successfully';
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
-    
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error storing user', 'error' => $e->getMessage()], 500);
         }
@@ -356,17 +356,17 @@ class APIController extends Controller
             $end_date = $request->input('end_date');
             $id = $request->input('id');
             $current_date  = $request->input('current_date');
-    
+
             $query = Announcement::orderBy('id', 'desc');
-    
+
             if ($type) {
                 $query->where('type', $type);
             }
-    
+
             if ($start_date) {
                 $query->where('start_date', $start_date);
             }
-    
+
             if ($end_date) {
                 $query->where('end_date', $end_date);
             }
@@ -377,20 +377,20 @@ class APIController extends Controller
             if($current_date){
                 $query->where('status','on')->where('start_date', '<=', $current_date)->where('end_date', '>=', $current_date);
             }
-            
+
             $announcement = $query->get();
-    
+
             if ($announcement->isEmpty()) {
                 return response()->json(['status' => 'empty', 'message' => 'No Announcement found']);
             }
-    
+
             return response()->json(['status' => 'success', 'message' => 'Announcement retrieved successfully', 'data' => $announcement]);
-    
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving announcement', 'error' => $e->getMessage()], 500);
         }
     }
-    
+
     public function announcement_store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -400,14 +400,14 @@ class APIController extends Controller
             'start_date' => 'required',
             'end_date' => 'required'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()], 400);
         }
-    
+
         try {
-            $announcement = ($request->id) ? Announcement::find($request->id) : new Announcement(); 
-             
+            $announcement = ($request->id) ? Announcement::find($request->id) : new Announcement();
+
             $isExistAnnouncement = $announcement->exists;
 
             $announcement->title        = $request->title;
@@ -417,10 +417,10 @@ class APIController extends Controller
             $announcement->end_date     = $request->end_date;
             $announcement->created_by   = Auth::id();
             $save = $announcement->save();
-    
+
             $message = $isExistAnnouncement ? 'Announcement updated successfully' : 'Announcement saved successfully';
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
-    
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error storing Announcement', 'error' => $e->getMessage()], 500);
         }
@@ -433,17 +433,17 @@ class APIController extends Controller
             $user_id = $request->input('user_id');
             $status  = $request->input('status');
             $id      = $request->input('id');
-    
+
             $query = Notification::orderBy('id', 'desc');
-    
+
             if ($status) {
                 $query->where('status', $status);
             }
-    
+
             if ($user_id) {
                 $query->where('user_id', $user_id);
             }
-    
+
             if ($title) {
                 $query->where('title', $title);
             }
@@ -451,34 +451,34 @@ class APIController extends Controller
             if ($id) {
                 $query->where('id', $id);
             }
-            
+
             $notification = $query->get();
-    
+
             if ($notification->isEmpty()) {
                 return response()->json(['status' => 'empty', 'message' => 'No Notification found'], 404);
             }
-    
+
             return response()->json(['status' => 'success', 'message' => 'Notification retrieved successfully', 'data' => $notification]);
-    
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving notification', 'error' => $e->getMessage()], 500);
         }
     }
-    
+
     public function notification_store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'user_id' => 'required'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()], 400);
         }
-    
+
         try {
-            $notification = ($request->id) ? Notification::find($request->id) : new Notification(); 
-             
+            $notification = ($request->id) ? Notification::find($request->id) : new Notification();
+
             $isExistNotification = $notification->exists;
 
             $notification->title      = $request->title;
@@ -487,10 +487,10 @@ class APIController extends Controller
             $notification->status     = $request->status ? $request->status : 'nseen' ;
             $notification->created_by = Auth::id();
             $save = $notification->save();
-    
+
             $message = $isExistNotification ? 'Notification updated successfully' : 'Notification saved successfully';
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
-    
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error storing Notification', 'error' => $e->getMessage()], 500);
         }
@@ -510,17 +510,17 @@ class APIController extends Controller
         //     'addresses.*.title' => 'required',
         //     'addresses.*.desc' => 'required',
         // ]);
-    
+
         // if ($validator->fails()) {
         //     return response()->json(['status' => 'error', 'message' => $validator->errors()], 400);
         // }
-    
+
         try {
 
             $trip = ($request->trip_detail['id']) ? Trip::find($request->trip_detail['id']) : new Trip();
-    
+
             $isExistingTrip = $trip->exists;
-    
+
             $trip->title = $request->trip_detail['title'];
             $trip->desc = $request->trip_detail['desc'];
             $trip->start_point = $request->trip_detail['start_point'];
@@ -537,7 +537,7 @@ class APIController extends Controller
             }
 
             $trip->created_by = Auth::id();
-    
+
             $save = $trip->save();
 
             // Save associated addresses
@@ -547,11 +547,11 @@ class APIController extends Controller
                 $existingAddressIds = [];
 
                 foreach ($addresses as $index => $addressData) {
-                    
+
                     if (isset($addressData['id']) && !empty($addressData['id'])) {
 
                         $address = Address::find($addressData['id']);
-                        
+
                         if ($address) {
 
                             $address->title = $addressData['title'];
@@ -569,8 +569,8 @@ class APIController extends Controller
 
                         }
 
-                    } 
-                  
+                    }
+
                     else {
 
                         $address = new Address();
@@ -584,49 +584,49 @@ class APIController extends Controller
                         $address->order_no = $index +1;
                         $address->created_by = Auth::id();
                         $address->save();
-        
+
                         $existingAddressIds[] = $address->id;
 
                         // if ($noftify_client_id) {
                         //     $notification_ids = [Auth::id(), $noftify_client_id, $trip->driver_id];
                         //     $notification_desc = ["Trip created successfully", "New Trip created against you", "New Trip created against Your Client and you"];
-                        
+
                         //     foreach ($notification_ids as $key => $value) {
                         //         $request = [
                         //             'title' => 'Trip Created',
                         //             'user_id' => $value,
                         //             'desc' => $notification_desc[$key],
                         //         ];
-                        
+
                         //         $test = $this->notification_store($request);
                         //     }
                         // }
-                        
+
                     }
                 }
 
                 Address::where('trip_id', $trip->id)
                     ->whereNotIn('id', $existingAddressIds)
                     ->delete();
-                
-                $message = ($request->trip_detail['duplicate_trip'] ?? 0 == 1) ? 'Trip Duplicate successfully': ($isExistingTrip ? 'Trip updated successfully' : 'Trip added successfully'); 
+
+                $message = ($request->trip_detail['duplicate_trip'] ?? 0 == 1) ? 'Trip Duplicate successfully': ($isExistingTrip ? 'Trip updated successfully' : 'Trip added successfully');
                 if($request->trip_detail['duplicate_trip'] ?? 0 == 1){
                     return response()->json(['status' => 'success', 'message' => $message, 'data' =>'duplicate']);
                 }else{
                     return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
                 }
-            
+
             }
 
             else{
                 return response()->json(['status' => 'error', 'message' => 'trip is not save no address']);
             }
-    
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error storing trip', 'error' => $e->getMessage()], 500);
         }
     }
-    
+
     public function packages(Request $request): JsonResponse
     {
         try {
@@ -634,17 +634,17 @@ class APIController extends Controller
             $title = $request->input('title');
             $price = $request->input('price');
             $id = $request->input('id');
-    
+
             $query = Package::orderBy('id', 'ASC');
-    
+
             if ($type) {
                 $query->where('type', $type);
             }
-    
+
             if ($title) {
                 $query->where('title', 'LIKE', '%' . $title . '%');
             }
-    
+
             if ($price) {
                 $query->where('price', $price);
             }
@@ -652,15 +652,15 @@ class APIController extends Controller
             if ($id) {
                 $query->where('id', $id);
             }
-            
+
             $announcement = $query->get();
-    
+
             if ($announcement->isEmpty()) {
                 return response()->json(['status' => 'empty', 'message' => 'No Package found'], 404);
             }
-    
+
             return response()->json(['status' => 'success', 'message' => 'Package retrieved successfully', 'data' => $announcement]);
-    
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving package', 'error' => $e->getMessage()], 500);
         }
@@ -677,14 +677,14 @@ class APIController extends Controller
             'drivers' => 'required',
             'map_api_call' => 'required'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()]);
         }
-    
+
         try {
-            $package = ($request->id) ? Package::find($request->id) : new Package(); 
-             
+            $package = ($request->id) ? Package::find($request->id) : new Package();
+
             $isExistPackage = $package->exists;
 
             $package->title        = $request->title;
@@ -696,10 +696,10 @@ class APIController extends Controller
             $package->drivers      = $request->drivers;
             $package->created_by   = Auth::id();
             $save = $package->save();
-    
+
             $message = $isExistPackage ? 'Package updated successfully' : 'Package saved successfully';
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
-    
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error storing Package', 'error' => $e->getMessage()], 500);
         }
@@ -711,11 +711,11 @@ class APIController extends Controller
             'id' => 'required',
             'status' => 'required',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()]);
         }
-    
+
         try {
 
             $addressToUpdate = NULL;
@@ -725,10 +725,10 @@ class APIController extends Controller
 
             if ($request->has('address_id')) {
 
-                $address = Address::find($request->address_id);     
+                $address = Address::find($request->address_id);
                 $isExistingAddress= $address->exists;
-                $activeAddress = $address->address_status == 1 ? 'yes' : 'no'; 
-                        
+                $activeAddress = $address->address_status == 1 ? 'yes' : 'no';
+
                 if ($address) {
                     $address->skiped_address_desc = $request->skiped_address_desc;
                     $address->address_status = $request->status;
@@ -748,16 +748,16 @@ class APIController extends Controller
                 //                 $addressToUpdateModel->address_status = 1;
                 //                 $addressToUpdateModel->save();
                 //                 $addressToUpdate = $addressToUpdateModel;
-    
+
                 //             break;
                 //         }
-                //     }   
-                // } 
+                //     }
+                // }
 
 
                 $message = $isExistingAddress ? 'Address status updated successfully' : 'Address status saved successfully';
                 return response()->json(['status' => 'success', 'message' => $message, 'data' => ['waypoint'=>$address , 'ongoing'=> $addressToUpdate,'activeAddress'=>$activeAddress ]]);
-            
+
             }
             elseif ($request->has('next_waypoint')){
 
@@ -785,8 +785,8 @@ class APIController extends Controller
                             }
                         }
 
-                    }   
-                } 
+                    }
+                }
 
                 if(empty($addressToUpdate)){
                     $endTrip = 'yes';
@@ -794,13 +794,13 @@ class APIController extends Controller
 
                 $message = 'Trip status updated successfully' ;
                 return response()->json(['status' => 'success', 'message' => $message, 'data' => ['waypoint'=>$addressToUpdate ,'ongoing'=> $addressToUpdate , 'endTrip'=>$endTrip]]);
-            
+
             }
             else {
-                
+
                 $trip = Trip::find($request->id);
                 $isExistingTrip = $trip->exists;
-        
+
                 $trip->status = $request->status;
                 $trip->updated_by = Auth::id();
                 $save = $trip->save();
@@ -817,7 +817,7 @@ class APIController extends Controller
                     $addressToUpdate= NULL;
 
                     foreach($tripData['addresses'] as $value){
-                        
+
                         if($addressToUpdate){
                             if($value['address_status'] == 1){
                                 $addressToUpdateModel = Address::find($value['id']);
@@ -835,8 +835,8 @@ class APIController extends Controller
                             }
                         }
 
-                    }   
-                } 
+                    }
+                }
 
 
                 $message = $isExistingTrip ? 'Trip status updated successfully' : 'Trip status saved successfully';
@@ -853,7 +853,7 @@ class APIController extends Controller
 
             if ($request->has('address_id')) {
 
-                $address = Address::find($request->address_id);     
+                $address = Address::find($request->address_id);
                 $isExistingAddress= $address->exists;
                 $addressToUpdate = NULL;
 
@@ -864,15 +864,15 @@ class APIController extends Controller
                         $addresPicPath = $address_pic->store('addres_pics', 'public');
                         $address->driv_trip_pic = $addresPicPath;
                     }
-                    
-                    if ($request->driv_signature) {     
+
+                    if ($request->driv_signature) {
                         $address->driv_trip_signature = $request->driv_signature;
                     }
 
                     if($request->address_note){
                         $address->driv_trip_note = $request->address_note;
                     }
-                    
+
                     $address->updated_by = Auth::id();
                     $save = $address->save();
                 }
@@ -885,25 +885,25 @@ class APIController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Error updating status ', 'error' => $e->getMessage()], 500);
         }
     }
-    
+
     public function complete_address(Request $request): JsonResponse
     {
         // $validator = Validator::make($request->all(), [
         //     'id' => 'required',
         //     'status' => 'required',
         // ]);
-    
+
         // if ($validator->fails()) {
         //     return response()->json(['status' => 'error', 'message' => $validator->errors()]);
         // }
-    
+
         try {
 
             if ($request->has('address_id')) {
 
-                $address = Address::find($request->address_id);     
+                $address = Address::find($request->address_id);
                 $isExistingAddress= $address->exists;
-                        
+
                 if ($address) {
 
                     if ($request->hasFile('address_pic')) {
@@ -911,8 +911,8 @@ class APIController extends Controller
                         $addresPicPath = $address_pic->store('addres_pics', 'public');
                         $address->driv_trip_pic = $addresPicPath;
                     }
-                    
-                    if ($request->driv_signature) {     
+
+                    if ($request->driv_signature) {
                         $address->driv_trip_signature = $request->driv_signature;
                     }
 
@@ -926,13 +926,13 @@ class APIController extends Controller
                     $trip = Trip::with(['addresses' => function ($query) {
                         $query->orderBy('order_no', 'ASC');
                     }])->find($address->trip_id);
-                    
+
                     $tripaddress = $trip->addresses;
-    
+
                     $addressToUpdate = NULL;
-    
+
                     foreach($tripaddress as $val){
-                                                
+
                         if($addressToUpdate){
                             if($value['address_status'] == 1){
                                 $addressToUpdateModel = Address::find($value['id']);
@@ -962,12 +962,12 @@ class APIController extends Controller
 
     public function update_address_order(Request $request): JsonResponse
     {
-    
-        try {     
+
+        try {
                 $tripaddress =   $request->all();
                 $updatedAddresses = [];
                 foreach($tripaddress as $val){
-                    $address = Address::find($val['id']);     
+                    $address = Address::find($val['id']);
                     if ($address) {
                         $address->order_no = $val['order_no'];
                         $address->save();
@@ -975,11 +975,11 @@ class APIController extends Controller
                             $updatedAddresses[] = $address->title;
                         }
                     }
-                } 
+                }
 
             $message = 'Addresses Order updated successfully' ;
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $updatedAddresses]);
-        } 
+        }
         catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error updating status ', 'error' => $e->getMessage()], 500);
         }
@@ -997,18 +997,18 @@ class APIController extends Controller
         }
 
         try {
-            
+
             $trip = Trip::find($request->id);
-    
+
             $isExistingTrip = $trip->exists;
-    
+
             $trip->trip_date = $request->trip_date;
             $trip->updated_by = Auth::id();
             $save = $trip->save();
-    
+
             $message = $isExistingTrip ? 'Trip date updated successfully' : 'Trip date saved successfully';
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
-    
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error updating date ', 'error' => $e->getMessage()], 500);
         }
@@ -1017,8 +1017,8 @@ class APIController extends Controller
     public function tripCharts(Request $request): JsonResponse
     {
         try {
-            
-            $id = $request->input('id');    
+
+            $id = $request->input('id');
             $user = User::where('id', $id)->first();
             $selected_date  = $request->input('selected_date');
 
@@ -1030,12 +1030,12 @@ class APIController extends Controller
                     $data['completedTrips'] = Trip::where('status', $this->tripStatus['Completed'])->whereDate('trip_date', $selected_date)->count();
                     $data['activeTrips']    = Trip::where('status', $this->tripStatus['In Progress'])->whereDate('trip_date', $selected_date)->count();
                     $data['PendingTrips']   = Trip::where('status', $this->tripStatus['Pending'])->whereDate('trip_date', $selected_date)->count();
-                    
+
                     $data['compTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['completedTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
                     $data['actvTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['activeTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
                     $data['pendTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['PendingTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
                 }
-                else if(isset($user->role) && $user->role == user_roles('2')){   
+                else if(isset($user->role) && $user->role == user_roles('2')){
                     $data['totalRoutes']     = Trip::where('client_id', $user->id)->count();
                     $data['totalAct_Routes'] = Trip::whereIn('status', [$this->tripStatus['Pending'], $this->tripStatus['In Progress']])->where('client_id', $user->id)->count();
                     $data['totalTodayRout']  = Trip::whereDate('trip_date', $selected_date)->where('client_id', $user->id)->count();
@@ -1045,17 +1045,17 @@ class APIController extends Controller
 
                     $data['compTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['completedTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
                     $data['actvTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['activeTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
-                    $data['pendTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['PendingTrips'] / $data['totalTodayRout']) * 100, 1) : 0;       
-                }   
-              
+                    $data['pendTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['PendingTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
+                }
+
             }
-            
+
             if (empty($data)) {
                 return response()->json(['status' => 'empty', 'message' => 'No data found'], 404);
             }
-    
+
             return response()->json(['status' => 'success', 'message' => 'Data retrieved successfully', 'data' => $data]);
-    
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving data', 'error' => $e->getMessage()], 500);
         }
@@ -1066,18 +1066,18 @@ class APIController extends Controller
         $validator = Validator::make($request->all(), [
             'id' => 'required',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()], 400);
         }
-    
+
         try {
 
-            $user = ($request->id) ? User::find($request->id) : ''; 
+            $user = ($request->id) ? User::find($request->id) : '';
             $isExistingUser = $user->exists;
 
             if($isExistingUser){
-                
+
                 $status = $this->userStatus;
                 $tripStatus = $this->tripStatus ;
                 $admin =  user_roles(1);
@@ -1091,7 +1091,7 @@ class APIController extends Controller
                 $message  = 'Some thing went wrong';
                 $deleted_role = NULL;
 
-                if($request->trip_id){  
+                if($request->trip_id){
                     $deleted = Trip::where(['id' => $request->trip_id])->update(['status' => $tripStatus['Deleted']]);
                     $message = "Trip deleted successfully";
                     $tripDeleted = 'yes';
@@ -1099,7 +1099,7 @@ class APIController extends Controller
 
                 }
 
-                else if($request->annoucement_id){  
+                else if($request->annoucement_id){
                     $deleted = Announcement::where(['id' => $request->annoucement_id])->update(['status' => 'off']);
                     $message = "Announcement deleted successfully";
                     $announcementDeleted = 'yes';
@@ -1107,7 +1107,7 @@ class APIController extends Controller
 
                 }
 
-                else if($request->package_id){  
+                else if($request->package_id){
                     $deleted = Package::where(['id' => $request->package_id])->update(['status' => 'off']);
                     $message = "Package deleted successfully";
                     ($deleted ) ? $packageDeleted = 'yes' : $packageDeleted = 'no';
@@ -1127,7 +1127,7 @@ class APIController extends Controller
                             return response()->json(['status' => 'success', 'message' => 'Your Account has been deleted!', 'role'=> $deleted_role, 'logout'=>'yes']);
                         }
                     }
-                    
+
                 }
 
                 else if($user->role == $client){
@@ -1135,7 +1135,7 @@ class APIController extends Controller
                     $user->updated_by = $request->deleted_by;
                     $save = $user->save();
                     $message = $save ? 'Client Deleted successfully' : 'Client can not deleted';
-                    
+
                     if($request->delete_all_drivers){
                         User::where(['role' => user_roles('3'), 'client_id' => $request->id])->update(['status' => $status['Deleted'], 'updated_by' => $request->deleted_by]);
                         $message .= "\nAll Drivers deleted successfully";
@@ -1198,10 +1198,10 @@ class APIController extends Controller
                 }
             }
 
-            
+
             return response()->json(['status' => 'success', 'message' => $message,'role'=> $deleted_role, 'data' => $save]);
-    
-        } catch (\Exception $e) {
+
+    } catch (\Exception $e) {
             return response()->json(['status' => 'warning', 'message' => 'Error storing user', 'error' => $e->getMessage()], 500);
         }
     }
@@ -1218,9 +1218,9 @@ class APIController extends Controller
         }
 
         try {
-            
+
             $user = User::where('id', $id)->get();
-            
+
             if(isset($user->role) && $user->role == user_roles('1')){
 
                 $trips = Trip::join('users as drivers', 'drivers.id', '=', 'trips.driver_id')
@@ -1229,7 +1229,7 @@ class APIController extends Controller
                 ->orderBy('trips.trip_date', 'ASC')
                 ->get()
                 ->toArray();
-            } 
+            }
 
             else if(isset($user->role) && $user->role == user_roles('2')){
                 $trips = Trip::join('users', 'users.id', '=', 'trips.driver_id')
@@ -1240,7 +1240,7 @@ class APIController extends Controller
                 ->toArray();
                 return view('routes', ['data' => $trips,'user'=>$user]);
             }
-            
+
             else {
                 $trips = Trip::join('users', 'users.id', '=', 'trips.client_id')
                 ->where('trips.driver_id', $user->id)
@@ -1249,14 +1249,14 @@ class APIController extends Controller
                 ->get()
                 ->toArray();
                 return view('routes', ['data' => $trips,'user'=>$user]);
-            } 
-        
+            }
+
             if ($trips->isEmpty()) {
                 return response()->json(['status' => 'empty', 'message' => 'No Trip found'], 404);
             }
-    
+
             return response()->json(['status' => 'success', 'message' => 'Trips retrieved successfully', 'data' => $trips]);
-        
+
             } catch (\Exception $e) {
                 return response()->json(['status' => 'error', 'message' => 'Error retrieving Trip', 'error' => $e->getMessage()], 500);
             }
@@ -1267,13 +1267,13 @@ class APIController extends Controller
         $validator = Validator::make($request->all(), [
             'id' => 'required',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()], 400);
         }
-    
+
         try {
-                
+
                 $status = $this->userStatus;
                 $tripStatus = $this->tripStatus ;
 
@@ -1286,13 +1286,13 @@ class APIController extends Controller
                 $data = $trip->toArray();
                 $data['addresses'] = $trip->addresses->toArray();
 
-            
+
             return response()->json(['status' => 'success', 'message' => 'trip details are fetched', 'data' => $data]);
-    
+
         } catch (\Exception $e) {
             return response()->json(['status' => 'warning', 'message' => 'Error storing user', 'error' => $e->getMessage()], 500);
         }
     }
 
-    
+
 }

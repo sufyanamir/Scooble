@@ -20,6 +20,8 @@ use App\Http\Middleware\CheckSubscription;
 
 Route::middleware('check.userAuthCheck','check.subscription')->group(function () {
 
+    Route::match(['post', 'get'], '/getDriversInModal{id}', [UserController::class, 'getDriversInModal']);
+
 Route::match(['post','get'],'/client', [UserController::class, 'clients']);
 Route::match(['post','get'],'/drivers', [UserController::class, 'drivers']);
 Route::match(['post','get'],'/routes', [UserController::class, 'routes']);

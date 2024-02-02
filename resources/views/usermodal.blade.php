@@ -275,12 +275,12 @@
             <div id="driver_list">
               <p>please select a driver that you want to assign the other trips!</p>
               <select name="driver_list" id="driverSelect" class="form-select">
-                <option value="">Select Driver</option>
-                @foreach($activeData as $key => $value)
-                @if($value['id'] != old('delDriverId')) <!-- Use old('del_driver_id') to retrieve the stored driver ID -->
-                <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
-                @endif
-                @endforeach
+                {{-- @foreach($activeData as $key => $value)
+                @if($value['id'] != old('delDriverId')) --}}
+                 <!-- Use old('del_driver_id') to retrieve the stored driver ID -->
+                {{-- <option value="{{ $value['id'] }}">{{ $value['name'] }}  -  {{ $value['id'] }}  </option> --}}
+                {{-- @endif
+                @endforeach --}}
               </select>
             </div>
             <div class="row mt-3 text-center">

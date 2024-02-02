@@ -194,8 +194,8 @@
             right:32px;
             bottom: 25px;
             background: #233A85;
-            height: 50px;
-            width: 50px;
+            height: 70px;
+            width: 70px;
             border-radius: 50%;
             border: none;
             color: white
@@ -360,7 +360,7 @@
 
                     <div class="position-relative">
                         <div style="">
-                            <button id="wpshow_btn" class="w-point-btn"><i class="fa-solid fa-location-dot"></i></button>
+                            <button id="wpshow_btn fs-3" class="w-point-btn"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></button>
                         </div>
                         <div style="width:380px; position:absolute; bottom: 18px;right:25px;">
                             <div class="position-absolute" style="left: 12px; top:14px;z-index:5">
