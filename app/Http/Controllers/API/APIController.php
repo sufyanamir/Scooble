@@ -1143,10 +1143,10 @@ class APIController extends Controller
 
                     if($request->choose_options){
                         if($request->choose_options == 'assigned'){
-                            Trip::where(['client_id' => $request->id, 'status' => $tripStatus['In Progress']])->update(['status' => $tripStatus['Deleted']]);
+                            Trip::where(['client_id' => $request->id])->update(['status' => $tripStatus['Deleted']]);
                             $message .= "\nAll Assigned Trips deleted successfully";
                         }
-                        else{
+                        elseif($request->choose_options == 'completed'){
                             Trip::where(['client_id' => $request->id, 'status' => $tripStatus['Completed']])->update(['status' => $tripStatus['Deleted']]);
                             $message .= "\nAll Completed Trips deleted successfully";
                         }

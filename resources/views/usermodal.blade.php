@@ -223,7 +223,6 @@
                 <option value="">@lang('lang.choose_additional_options')</option>
                 <option value="assigned">@lang('lang.delete_all_assigned_trips')</option>
                 <option value="completed">@lang('lang.delete_completed_trips')</option>
-                <option value="">@lang('lang.Dont_delete_any_trips')</option>
               </select>
             </div>
             <div class="row mt-3 text-center">

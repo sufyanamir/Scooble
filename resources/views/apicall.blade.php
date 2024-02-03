@@ -993,6 +993,7 @@
 
             }else{
                 $('#userDeleteModal #user_id').val(user_id);
+                console.log(user_id);
                 $('#userDeleteModal').modal('show');
             }
         });
