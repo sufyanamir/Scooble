@@ -283,8 +283,8 @@
                                     style="font-size: small; position: relative;" id="address-container">
                                     @isset($data['addresses'])
                                         @foreach ($data['addresses'] as $address)
-                                            <div id="address_card_{{ $address['id'] }}"
-                                                class="draggable  draggablecard {{ $data['trip_date'] && $data['status'] == $tripStatus['Pending'] ? 'draggablecards' : '' }} {{ $address['address_status'] == 4 ? 'opacity-50' : '' }}">
+                                            <div id="address_card_{{ $address['id'] }}" address_id="{{ $address['id'] }}"
+                                                class="draggable Address_cards  draggablecard {{ $data['trip_date'] && $data['status'] == $tripStatus['Pending'] ? 'draggablecards' : '' }} {{ $address['address_status'] == 4 ? 'opacity-50' : '' }}">
                                                 <input type="hidden" data-address-status="{{ $address['address_status'] }}"
                                                     data-address-desc ="{{ $address['desc'] ?? '' }}"
                                                     data-address-title="{{ $address['title'] }}"
@@ -850,14 +850,14 @@
                                             id="clear-btn">
                                             @lang('lang.clear')
                                             <!-- <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                                            <rect width="24" height="24" rx="12" fill="#E5E5E5"/>
-                                                                                                            <path d="M12 10.8891L15.8891 7L17 8.11094L13.1109 12L17 15.8891L15.8891 17L12 13.1109L8.11094 17L7 15.8891L10.8891 12L7 8.11094L8.11094 7L12 10.8891Z" fill="#4F4F4F"/>
-                                                                                                        </svg> -->
+                                                                                                                                <rect width="24" height="24" rx="12" fill="#E5E5E5"/>
+                                                                                                                                <path d="M12 10.8891L15.8891 7L17 8.11094L13.1109 12L17 15.8891L15.8891 17L12 13.1109L8.11094 17L7 15.8891L10.8891 12L7 8.11094L8.11094 7L12 10.8891Z" fill="#4F4F4F"/>
+                                                                                                                            </svg> -->
                                         </button>
                                         <br>
                                         <!-- <button type="button" class="btn p-1" id="save-btn">
-                                                                                                        <i class="fa fa-download text-secondary"></i>
-                                                                                                    </button> -->
+                                                                                                                            <i class="fa fa-download text-secondary"></i>
+                                                                                                                        </button> -->
                                     </div>
                                 </div>
                                 <div class="d-none" id="error_message_sigature" style=" color: red;">* @lang('lang.signature_is_requried')
@@ -1106,15 +1106,95 @@
 
 
             function optimizeAndDisplayRoutetrue(addressArray) {
+
                 // console.log("true funcation");
 
+                let addresscards = document.querySelectorAll('.Address_cards');
+                var adress_id = [];
+                addresscards.forEach(card => {
+                    let addressid = card.getAttribute('address_id');
+                    console.log(addressid);
+                    adress_id.push(addressid); // Pushing the attribute value instead of card text content
+                });
+
+                console.log(adress_id);
+
                 var addressElements = document.querySelectorAll('#address-container .card-body span');
+
                 var addresses = [];
                 addressElements.forEach(function(element) {
                     addresses.push(element.textContent);
                 });
 
                 addressArray = addresses;
+                console.log(addressArray);
+
+                var addressesWithIndexStartingFromOne = addresses.map((address, index) => index + 1);
+                var order_noe = addressesWithIndexStartingFromOne.join('\n');
+                console.log(order_noe)
+                // var apiname = 'addressesUpdate';
+
+                var update_address = [];
+var adress_id = adress_id;
+var order_noe = 0;
+
+for (var i = 0; i < adress_id.length; i++) {
+    var address_id = adress_id[i]; // Extract the address_id
+    order_noe++;
+
+    var item = {
+        id: address_id,
+        order_no: order_noe
+    };
+
+    console.log(item); // Optional: Log the item
+    console.log("abcd------");
+
+    update_address.push(item); // Push the item into the array
+}
+
+var json_data = JSON.stringify(update_address); // Convert array to JSON string
+console.log(json_data); // Log the JSON string
+
+
+
+                var apiname = 'addressesUpdate';
+                    var apiurl = "{{ end_url('') }}" + apiname;
+                var bearerToken = "{{ session('user') }}";
+                $.ajax({
+                    url: apiurl,
+                    type: 'POST',
+                    data: json_data,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + bearerToken
+                    },
+                    beforeSend: function() {
+                        $('.btn_addressUpdate #spinner').removeClass('d-none');
+                        $('.btn_addressUpdate').prop('disabled', true);
+                        console.log(JSON.stringify(update_address));
+                    },
+                    success: function(response) {
+                        $('.btn_addressUpdate').prop('disabled', false);
+                        $('.btn_addressUpdate #spinner').addClass('d-none');
+                        $('.close').trigger('click');
+
+                        $("#snackbar").text('Trip Adresses Successfully Updated  ....');
+                        var x = document.getElementById("snackbar");
+                        x.className = "show";
+                        setTimeout(function() {
+                            x.className = x.className.replace("show", "");
+                        }, 3000);
+
+                        // showAlert("Success", response.message, response.status);
+                        addresses = response.data;
+                        var checkoptimize = "close";
+                        generateRoute(addresses, checkoptimize);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(status);
+                    }
+                });
 
 
                 if (addressArray && addressArray.length >= 2) {
@@ -1133,9 +1213,6 @@
 
                         };
                     });
-
-                    //console.log(optimizeWaypoints);
-
 
                     var request = {
                         origin: origin,
@@ -1346,6 +1423,7 @@
                         id: this.id.replace("address_card_", ""),
                         order_no: ++index
                     };
+                    console.log(item);
 
                     update_address.push(item);
                 });
@@ -1365,6 +1443,7 @@
                             'Authorization': 'Bearer ' + bearerToken
                         },
                         beforeSend: function() {
+                            console.log(JSON.stringify(update_address));
                             $('.btn_addressUpdate #spinner').removeClass('d-none');
                             $('.btn_addressUpdate').prop('disabled', true);
                         },
@@ -1372,6 +1451,7 @@
                             $('.btn_addressUpdate').prop('disabled', false);
                             $('.btn_addressUpdate #spinner').addClass('d-none');
                             $('.close').trigger('click');
+
 
                             $("#snackbar").text('Trip Adresses Successfully Updated  ....');
                             var x = document.getElementById("snackbar");
