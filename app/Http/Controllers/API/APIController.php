@@ -30,13 +30,14 @@ class APIController extends Controller
     protected $tripStatus;
     protected $userStatus;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->tripStatus = config('constants.TRIP_STATUS');
         $this->userStatus = config('constants.USER_STATUS');
     }
 
-    public function index(){
-
+    public function index()
+    {
     }
 
     public function clients(): JsonResponse
@@ -50,7 +51,6 @@ class APIController extends Controller
             }
 
             return response()->json(['status' => 'success', 'message' => 'All clients for Admin', 'data' => $clients]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving clients', 'error' => $e->getMessage()], 500);
         }
@@ -61,14 +61,13 @@ class APIController extends Controller
 
         try {
 
-            $drivers = User::where(['role'=>'Driver'])->orderBy('id', 'desc')->get();
+            $drivers = User::where(['role' => 'Driver'])->orderBy('id', 'desc')->get();
 
             if ($drivers->isEmpty()) {
                 return response()->json(['status' => 'empty', 'message' => 'No drivers found'], 404);
             }
 
             return response()->json(['status' => 'success', 'message' => 'All drivers for Admin', 'data' => $drivers]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving drivers', 'error' => $e->getMessage()], 500);
         }
@@ -107,7 +106,6 @@ class APIController extends Controller
             }
 
             return response()->json(['status' => 'success', 'message' => 'Users retrieved successfully', 'data' => $users]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving users', 'error' => $e->getMessage()], 500);
         }
@@ -134,17 +132,16 @@ class APIController extends Controller
 
                 if (in_array($user->status, auth_users())) {
 
-                    if(isset($user->role) && $user->role == user_roles('3')){
+                    if (isset($user->role) && $user->role == user_roles('3')) {
 
                         $client = User::where(['role' => 'Client', 'id' => $user->client_id])->first();
 
-                        if($client){
+                        if ($client) {
 
-                            if(!in_array($client->status, auth_users())){
+                            if (!in_array($client->status, auth_users())) {
                                 return response()->json(['status' => 'Deactive', 'message' => 'You are Unauthorized to Login, Contact to the Owner']);
                             }
-                        }
-                        else{
+                        } else {
                             return response()->json(['status' => 'Deactive', 'message' => 'You are assigned  to any client']);
                         }
                     }
@@ -154,21 +151,18 @@ class APIController extends Controller
                         $token = $user->createToken('MyApp')->plainTextToken;
                         session(['user_details' => $user]);
                         return response()->json(['status' => 'success', 'message' => 'User successfully logged in', 'token' => $token]);
-                    }else{
+                    } else {
                         return response()->json(['status' => 'invalid', 'message' => 'Invalid Credentails or Contact to Admin']);
                     }
-                }
-                else if ($user->status == 4) {
+                } else if ($user->status == 4) {
                     return response()->json(['status' => 'Unverfied', 'message' => 'User is unverified, Please Check Your Email']);
-                }
-                else {
+                } else {
                     return response()->json(['status' => 'Deactive', 'message' => 'You are Unauthorized to Login']);
                 }
-            }else{
+            } else {
 
-                 return response()->json(['status' => 'invalid', 'message' => 'User does not exist'], 401);
+                return response()->json(['status' => 'invalid', 'message' => 'User does not exist'], 401);
             }
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -194,7 +188,6 @@ class APIController extends Controller
 
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()]);
-
         }
 
         try {
@@ -214,9 +207,9 @@ class APIController extends Controller
             $user->state              = $request->state;
             $user->reset_pswd_attempt = $request->reset_pswd_attempt;
             $user->reset_pswd_time    = $request->reset_pswd_time;
-            if($user->added_user_id ){
+            if ($user->added_user_id) {
                 $user->added_user_id      = $user->added_user_id;
-            }else{
+            } else {
                 $user->added_user_id      = Auth::id();
             }
             $user->client_id          = $request->client_id;
@@ -224,9 +217,9 @@ class APIController extends Controller
             if ($request->password) {
                 $user->password = Hash::make($request->password);
             } else {
-                if(!$isExistingUser){
-                $randomPassword = Str::random(8);
-                $user->password = Hash::make($randomPassword);
+                if (!$isExistingUser) {
+                    $randomPassword = Str::random(8);
+                    $user->password = Hash::make($randomPassword);
                 }
             }
 
@@ -256,12 +249,11 @@ class APIController extends Controller
 
             $save = $user->save();
 
-            if($save){
+            if ($save) {
                 if ($request->password) {
+                } else {
 
-                }else{
-
-                    if(!$isExistingUser){
+                    if (!$isExistingUser) {
                         $emailData = [
                             'password' => $randomPassword,
                             'name' => $request->name,
@@ -275,7 +267,6 @@ class APIController extends Controller
             }
             $message = $isExistingUser ? 'User updated successfully' : 'User added successfully';
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error storing user', 'error' => $e->getMessage()], 500);
         }
@@ -342,7 +333,6 @@ class APIController extends Controller
 
             $message = $isExistingUser ? 'User updated successfully' : 'User Register successfully';
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error storing user', 'error' => $e->getMessage()], 500);
         }
@@ -374,8 +364,8 @@ class APIController extends Controller
             if ($id) {
                 $query->where('id', $id);
             }
-            if($current_date){
-                $query->where('status','on')->where('start_date', '<=', $current_date)->where('end_date', '>=', $current_date);
+            if ($current_date) {
+                $query->where('status', 'on')->where('start_date', '<=', $current_date)->where('end_date', '>=', $current_date);
             }
 
             $announcement = $query->get();
@@ -385,7 +375,6 @@ class APIController extends Controller
             }
 
             return response()->json(['status' => 'success', 'message' => 'Announcement retrieved successfully', 'data' => $announcement]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving announcement', 'error' => $e->getMessage()], 500);
         }
@@ -420,7 +409,6 @@ class APIController extends Controller
 
             $message = $isExistAnnouncement ? 'Announcement updated successfully' : 'Announcement saved successfully';
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error storing Announcement', 'error' => $e->getMessage()], 500);
         }
@@ -459,7 +447,6 @@ class APIController extends Controller
             }
 
             return response()->json(['status' => 'success', 'message' => 'Notification retrieved successfully', 'data' => $notification]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving notification', 'error' => $e->getMessage()], 500);
         }
@@ -484,13 +471,12 @@ class APIController extends Controller
             $notification->title      = $request->title;
             $notification->user_id    = $request->user_id;
             $notification->desc       = $request->desc;
-            $notification->status     = $request->status ? $request->status : 'nseen' ;
+            $notification->status     = $request->status ? $request->status : 'nseen';
             $notification->created_by = Auth::id();
             $save = $notification->save();
 
             $message = $isExistNotification ? 'Notification updated successfully' : 'Notification saved successfully';
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error storing Notification', 'error' => $e->getMessage()], 500);
         }
@@ -528,11 +514,10 @@ class APIController extends Controller
             $trip->trip_date = $request->trip_detail['trip_date'];
             $trip->driver_id = $request->trip_detail['driver_id'];
 
-            if(isset($request->trip_detail['client_id']) && !empty($request->trip_detail['client_id'])){
+            if (isset($request->trip_detail['client_id']) && !empty($request->trip_detail['client_id'])) {
                 $trip->client_id = $request->trip_detail['client_id'];
                 $noftify_client_id = $trip->client_id;
-            }
-            else{
+            } else {
                 $trip->client_id =  Auth::id();
             }
 
@@ -561,17 +546,13 @@ class APIController extends Controller
                             $address->trip_signature = $addressData['trip_signature'];
                             $address->trip_note = $addressData['trip_note'];
                             $address->trip_id = $trip->id;
-                            $address->order_no = $index +1 ;
+                            $address->order_no = $index + 1;
                             $address->created_by = Auth::id();
                             $address->save();
 
                             $existingAddressIds[] = $address->id;
-
                         }
-
-                    }
-
-                    else {
+                    } else {
 
                         $address = new Address();
                         $address->title = $addressData['title'];
@@ -581,7 +562,7 @@ class APIController extends Controller
                         $address->trip_signature = $addressData['trip_signature'];
                         $address->trip_note = $addressData['trip_note'];
                         $address->trip_id = $trip->id;
-                        $address->order_no = $index +1;
+                        $address->order_no = $index + 1;
                         $address->created_by = Auth::id();
                         $address->save();
 
@@ -609,19 +590,15 @@ class APIController extends Controller
                     ->whereNotIn('id', $existingAddressIds)
                     ->delete();
 
-                $message = ($request->trip_detail['duplicate_trip'] ?? 0 == 1) ? 'Trip Duplicate successfully': ($isExistingTrip ? 'Trip updated successfully' : 'Trip added successfully');
-                if($request->trip_detail['duplicate_trip'] ?? 0 == 1){
-                    return response()->json(['status' => 'success', 'message' => $message, 'data' =>'duplicate']);
-                }else{
+                $message = ($request->trip_detail['duplicate_trip'] ?? 0 == 1) ? 'Trip Duplicate successfully' : ($isExistingTrip ? 'Trip updated successfully' : 'Trip added successfully');
+                if ($request->trip_detail['duplicate_trip'] ?? 0 == 1) {
+                    return response()->json(['status' => 'success', 'message' => $message, 'data' => 'duplicate']);
+                } else {
                     return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
                 }
-
-            }
-
-            else{
+            } else {
                 return response()->json(['status' => 'error', 'message' => 'trip is not save no address']);
             }
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error storing trip', 'error' => $e->getMessage()], 500);
         }
@@ -660,7 +637,6 @@ class APIController extends Controller
             }
 
             return response()->json(['status' => 'success', 'message' => 'Package retrieved successfully', 'data' => $announcement]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving package', 'error' => $e->getMessage()], 500);
         }
@@ -699,7 +675,6 @@ class APIController extends Controller
 
             $message = $isExistPackage ? 'Package updated successfully' : 'Package saved successfully';
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error storing Package', 'error' => $e->getMessage()], 500);
         }
@@ -726,7 +701,7 @@ class APIController extends Controller
             if ($request->has('address_id')) {
 
                 $address = Address::find($request->address_id);
-                $isExistingAddress= $address->exists;
+                $isExistingAddress = $address->exists;
                 $activeAddress = $address->address_status == 1 ? 'yes' : 'no';
 
                 if ($address) {
@@ -756,47 +731,40 @@ class APIController extends Controller
 
 
                 $message = $isExistingAddress ? 'Address status updated successfully' : 'Address status saved successfully';
-                return response()->json(['status' => 'success', 'message' => $message, 'data' => ['waypoint'=>$address , 'ongoing'=> $addressToUpdate,'activeAddress'=>$activeAddress ]]);
-
-            }
-            elseif ($request->has('next_waypoint')){
+                return response()->json(['status' => 'success', 'message' => $message, 'data' => ['waypoint' => $address, 'ongoing' => $addressToUpdate, 'activeAddress' => $activeAddress]]);
+            } elseif ($request->has('next_waypoint')) {
 
                 $trip = Trip::with(['addresses' => function ($query) {
                     $query->orderBy('order_no', 'ASC');
                 }])->find($request->id);
                 $tripData = $trip->toArray();
 
-                if($tripData['status'] == 1){
-                    foreach($tripData['addresses'] as $value){
-                        if($addressToUpdate){
-                            if($value['address_status'] == 1){
+                if ($tripData['status'] == 1) {
+                    foreach ($tripData['addresses'] as $value) {
+                        if ($addressToUpdate) {
+                            if ($value['address_status'] == 1) {
                                 $addressToUpdateModel = Address::find($value['id']);
                                 $addressToUpdateModel->address_status = 2;
                                 $addressToUpdateModel->save();
                             }
-
-                        }
-                        else{
-                            if($value['address_status'] == 2){
+                        } else {
+                            if ($value['address_status'] == 2) {
                                 $addressToUpdateModel = Address::find($value['id']);
                                 $addressToUpdateModel->address_status = 1;
                                 $addressToUpdateModel->save();
                                 $addressToUpdate = $addressToUpdateModel;
                             }
                         }
-
                     }
                 }
 
-                if(empty($addressToUpdate)){
+                if (empty($addressToUpdate)) {
                     $endTrip = 'yes';
                 }
 
-                $message = 'Trip status updated successfully' ;
-                return response()->json(['status' => 'success', 'message' => $message, 'data' => ['waypoint'=>$addressToUpdate ,'ongoing'=> $addressToUpdate , 'endTrip'=>$endTrip]]);
-
-            }
-            else {
+                $message = 'Trip status updated successfully';
+                return response()->json(['status' => 'success', 'message' => $message, 'data' => ['waypoint' => $addressToUpdate, 'ongoing' => $addressToUpdate, 'endTrip' => $endTrip]]);
+            } else {
 
                 $trip = Trip::find($request->id);
                 $isExistingTrip = $trip->exists;
@@ -804,7 +772,7 @@ class APIController extends Controller
                 $trip->status = $request->status;
                 $trip->updated_by = Auth::id();
                 $save = $trip->save();
-                if($save){
+                if ($save) {
                     $tripStarted = 'yes';
                 }
 
@@ -813,34 +781,31 @@ class APIController extends Controller
                 }])->find($request->id);
                 $tripData = $trip->toArray();
 
-                if($tripData['status'] == 1){
-                    $addressToUpdate= NULL;
+                if ($tripData['status'] == 1) {
+                    $addressToUpdate = NULL;
 
-                    foreach($tripData['addresses'] as $value){
+                    foreach ($tripData['addresses'] as $value) {
 
-                        if($addressToUpdate){
-                            if($value['address_status'] == 1){
+                        if ($addressToUpdate) {
+                            if ($value['address_status'] == 1) {
                                 $addressToUpdateModel = Address::find($value['id']);
                                 $addressToUpdateModel->address_status = 2;
                                 $addressToUpdateModel->save();
                             }
-
-                        }
-                        else{
-                            if($value['address_status'] == 2){
+                        } else {
+                            if ($value['address_status'] == 2) {
                                 $addressToUpdateModel = Address::find($value['id']);
                                 $addressToUpdateModel->address_status = 1;
                                 $addressToUpdateModel->save();
                                 $addressToUpdate = $addressToUpdateModel;
                             }
                         }
-
                     }
                 }
 
 
                 $message = $isExistingTrip ? 'Trip status updated successfully' : 'Trip status saved successfully';
-                return response()->json(['status' => 'success', 'message' => $message, 'data' => ['waypoint'=>$addressToUpdate ,'ongoing'=> $addressToUpdate,'tripStarted' => $tripStarted  ]]);
+                return response()->json(['status' => 'success', 'message' => $message, 'data' => ['waypoint' => $addressToUpdate, 'ongoing' => $addressToUpdate, 'tripStarted' => $tripStarted]]);
             }
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error updating status ', 'error' => $e->getMessage()], 500);
@@ -854,7 +819,7 @@ class APIController extends Controller
             if ($request->has('address_id')) {
 
                 $address = Address::find($request->address_id);
-                $isExistingAddress= $address->exists;
+                $isExistingAddress = $address->exists;
                 $addressToUpdate = NULL;
 
                 if ($address) {
@@ -869,7 +834,7 @@ class APIController extends Controller
                         $address->driv_trip_signature = $request->driv_signature;
                     }
 
-                    if($request->address_note){
+                    if ($request->address_note) {
                         $address->driv_trip_note = $request->address_note;
                     }
 
@@ -878,9 +843,8 @@ class APIController extends Controller
                 }
 
                 $message = $isExistingAddress ? 'Address status updated successfully' : 'Address status saved successfully';
-                return response()->json(['status' => 'success', 'message' => $message, 'data' => ['waypoint'=>$address, 'ongoing'=>$addressToUpdate]]);
+                return response()->json(['status' => 'success', 'message' => $message, 'data' => ['waypoint' => $address, 'ongoing' => $addressToUpdate]]);
             }
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error updating status ', 'error' => $e->getMessage()], 500);
         }
@@ -902,7 +866,7 @@ class APIController extends Controller
             if ($request->has('address_id')) {
 
                 $address = Address::find($request->address_id);
-                $isExistingAddress= $address->exists;
+                $isExistingAddress = $address->exists;
 
                 if ($address) {
 
@@ -916,7 +880,7 @@ class APIController extends Controller
                         $address->driv_trip_signature = $request->driv_signature;
                     }
 
-                    if($request->address_note){
+                    if ($request->address_note) {
                         $address->driv_trip_note = $request->address_note;
                     }
                     $address->address_status = $request->status;
@@ -931,18 +895,16 @@ class APIController extends Controller
 
                     $addressToUpdate = NULL;
 
-                    foreach($tripaddress as $val){
+                    foreach ($tripaddress as $val) {
 
-                        if($addressToUpdate){
-                            if($value['address_status'] == 1){
+                        if ($addressToUpdate) {
+                            if ($value['address_status'] == 1) {
                                 $addressToUpdateModel = Address::find($value['id']);
                                 $addressToUpdateModel->address_status = 2;
                                 $addressToUpdateModel->save();
                             }
-
-                        }
-                        else{
-                            if($value['address_status'] == 2){
+                        } else {
+                            if ($value['address_status'] == 2) {
                                 $addressToUpdateModel = Address::find($value['id']);
                                 $addressToUpdateModel->address_status = 1;
                                 $addressToUpdateModel->save();
@@ -953,7 +915,7 @@ class APIController extends Controller
                 }
 
                 $message = $isExistingAddress ? 'Address status updated successfully' : 'Address status saved successfully';
-                return response()->json(['status' => 'success', 'message' => $message, 'data' => ['complete'=>$address, 'ongoing'=>$addressToUpdate]]);
+                return response()->json(['status' => 'success', 'message' => $message, 'data' => ['complete' => $address, 'ongoing' => $addressToUpdate]]);
             }
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error updating status ', 'error' => $e->getMessage()], 500);
@@ -964,23 +926,22 @@ class APIController extends Controller
     {
 
         try {
-                $tripaddress =   $request->all();
-                $updatedAddresses = [];
-                foreach($tripaddress as $val){
-                    $address = Address::find($val['id']);
-                    if ($address) {
-                        $address->order_no = $val['order_no'];
-                        $address->save();
-                        if($address->address_status == 1 || $address->address_status == 2){
-                            $updatedAddresses[] = $address->title;
-                        }
+            $tripaddress =   $request->all();
+            $updatedAddresses = [];
+            foreach ($tripaddress as $val) {
+                $address = Address::find($val['id']);
+                if ($address) {
+                    $address->order_no = $val['order_no'];
+                    $address->save();
+                    if ($address->address_status == 1 || $address->address_status == 2) {
+                        $updatedAddresses[] = $address->title;
                     }
                 }
+            }
 
-            $message = 'Addresses Order updated successfully' ;
+            $message = 'Addresses Order updated successfully';
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $updatedAddresses]);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error updating status ', 'error' => $e->getMessage()], 500);
         }
     }
@@ -1008,7 +969,6 @@ class APIController extends Controller
 
             $message = $isExistingTrip ? 'Trip date updated successfully' : 'Trip date saved successfully';
             return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error updating date ', 'error' => $e->getMessage()], 500);
         }
@@ -1022,9 +982,9 @@ class APIController extends Controller
             $user = User::where('id', $id)->first();
             $selected_date  = $request->input('selected_date');
 
-            if($user){
+            if ($user) {
                 // User roles: 1 for admin, 2 for client, 3 for driver
-                if(isset($user->role) && $user->role == user_roles('1')){
+                if (isset($user->role) && $user->role == user_roles('1')) {
                     $data['totalRoutes']    = Trip::count();
                     $data['totalTodayRout'] = Trip::whereDate('trip_date', $selected_date)->count();
                     $data['completedTrips'] = Trip::where('status', $this->tripStatus['Completed'])->whereDate('trip_date', $selected_date)->count();
@@ -1034,8 +994,7 @@ class APIController extends Controller
                     $data['compTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['completedTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
                     $data['actvTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['activeTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
                     $data['pendTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['PendingTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
-                }
-                else if(isset($user->role) && $user->role == user_roles('2')){
+                } else if (isset($user->role) && $user->role == user_roles('2')) {
                     $data['totalRoutes']     = Trip::where('client_id', $user->id)->count();
                     $data['totalAct_Routes'] = Trip::whereIn('status', [$this->tripStatus['Pending'], $this->tripStatus['In Progress']])->where('client_id', $user->id)->count();
                     $data['totalTodayRout']  = Trip::whereDate('trip_date', $selected_date)->where('client_id', $user->id)->count();
@@ -1047,7 +1006,6 @@ class APIController extends Controller
                     $data['actvTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['activeTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
                     $data['pendTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['PendingTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
                 }
-
             }
 
             if (empty($data)) {
@@ -1055,7 +1013,6 @@ class APIController extends Controller
             }
 
             return response()->json(['status' => 'success', 'message' => 'Data retrieved successfully', 'data' => $data]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Error retrieving data', 'error' => $e->getMessage()], 500);
         }
@@ -1076,10 +1033,10 @@ class APIController extends Controller
             $user = ($request->id) ? User::find($request->id) : '';
             $isExistingUser = $user->exists;
 
-            if($isExistingUser){
+            if ($isExistingUser) {
 
                 $status = $this->userStatus;
-                $tripStatus = $this->tripStatus ;
+                $tripStatus = $this->tripStatus;
                 $admin =  user_roles(1);
                 $client =  user_roles(2);
                 $driver =  user_roles(3);
@@ -1091,83 +1048,71 @@ class APIController extends Controller
                 $message  = 'Some thing went wrong';
                 $deleted_role = NULL;
 
-                if($request->trip_id){
+                if ($request->trip_id) {
                     $deleted = Trip::where(['id' => $request->trip_id])->update(['status' => $tripStatus['Deleted']]);
                     $message = "Trip deleted successfully";
                     $tripDeleted = 'yes';
-                    return response()->json(['status' => 'success', 'message' => $message,'tripDleted'=> $tripDeleted, 'data' => $deleted]);
-
-                }
-
-                else if($request->annoucement_id){
+                    return response()->json(['status' => 'success', 'message' => $message, 'tripDleted' => $tripDeleted, 'data' => $deleted]);
+                } else if ($request->annoucement_id) {
                     $deleted = Announcement::where(['id' => $request->annoucement_id])->update(['status' => 'off']);
                     $message = "Announcement deleted successfully";
                     $announcementDeleted = 'yes';
-                    return response()->json(['status' => 'success', 'message' => $message,'announcementDeleted'=> $announcementDeleted, 'data' => $deleted]);
-
-                }
-
-                else if($request->package_id){
+                    return response()->json(['status' => 'success', 'message' => $message, 'announcementDeleted' => $announcementDeleted, 'data' => $deleted]);
+                } else if ($request->package_id) {
                     $deleted = Package::where(['id' => $request->package_id])->update(['status' => 'off']);
                     $message = "Package deleted successfully";
-                    ($deleted ) ? $packageDeleted = 'yes' : $packageDeleted = 'no';
-                    return response()->json(['status' => 'success', 'message' => $message,'packageDeleted'=> $packageDeleted, 'data' => $deleted]);
-
-                }
-
-               else if($user->role == $admin){
+                    ($deleted) ? $packageDeleted = 'yes' : $packageDeleted = 'no';
+                    return response()->json(['status' => 'success', 'message' => $message, 'packageDeleted' => $packageDeleted, 'data' => $deleted]);
+                } else if ($user->role == $admin) {
                     $user->status = $status['Deleted'];
                     $user->updated_by = $request->deleted_by;
                     $save = $user->save();
                     $message = $save ? 'User Deleted successfully' : 'User can not deleted';
-                    if($save){
+                    if ($save) {
                         $deleted_role = 1;
-                        if($request->deleted_by == $user->id){
+                        if ($request->deleted_by == $user->id) {
                             session()->flush();
-                            return response()->json(['status' => 'success', 'message' => 'Your Account has been deleted!', 'role'=> $deleted_role, 'logout'=>'yes']);
+                            return response()->json(['status' => 'success', 'message' => 'Your Account has been deleted!', 'role' => $deleted_role, 'logout' => 'yes']);
                         }
                     }
-
-                }
-
-                else if($user->role == $client){
+                } else if ($user->role == $client) {
                     $user->status = $status['Deleted'];
                     $user->updated_by = $request->deleted_by;
                     $save = $user->save();
                     $message = $save ? 'Client Deleted successfully' : 'Client can not deleted';
+                    User::where(['role' => user_roles('3'), 'client_id' => $request->id])->update(['status' => $status['Deleted'], 'updated_by' => $request->deleted_by]);
+                    $message .= "\nAll Drivers deleted successfully";
+                    Trip::where(['client_id' => $request->id])->update(['status' => $tripStatus['Deleted']]);
+                    $message .= "\nAll Assigned Trips deleted successfully";
+                    // if($request->delete_all_drivers){
 
-                    if($request->delete_all_drivers){
-                        User::where(['role' => user_roles('3'), 'client_id' => $request->id])->update(['status' => $status['Deleted'], 'updated_by' => $request->deleted_by]);
-                        $message .= "\nAll Drivers deleted successfully";
-                    }
+                    // }
 
-                    if($request->choose_options){
-                        if($request->choose_options == 'assigned'){
-                            Trip::where(['client_id' => $request->id])->update(['status' => $tripStatus['Deleted']]);
-                            $message .= "\nAll Assigned Trips deleted successfully";
-                        }
-                        elseif($request->choose_options == 'completed'){
-                            Trip::where(['client_id' => $request->id, 'status' => $tripStatus['Completed']])->update(['status' => $tripStatus['Deleted']]);
-                            $message .= "\nAll Completed Trips deleted successfully";
-                        }
-                    }
+                    // if($request->choose_options){
+                    //     if($request->choose_options == 'assigned'){
+                    //         Trip::where(['client_id' => $request->id])->update(['status' => $tripStatus['Deleted']]);
+                    //         $message .= "\nAll Assigned Trips deleted successfully";
+                    //     }
+                    // elseif($request->choose_options == 'completed'){
+                    //     Trip::where(['client_id' => $request->id, 'status' => $tripStatus['Completed']])->update(['status' => $tripStatus['Deleted']]);
+                    //     $message .= "\nAll Completed Trips deleted successfully";
+                    // }
+                    // }
 
-                    if($save){
+                    if ($save) {
                         $deleted_role = 2;
-                        if($request->deleted_by == $user->id){
+                        if ($request->deleted_by == $user->id) {
                             session()->flush();
-                            return response()->json(['status' => 'success', 'message' => 'Your Account has been deleted!','role'=> $deleted_role, 'logout' =>'yes']);
+                            return response()->json(['status' => 'success', 'message' => 'Your Account has been deleted!', 'role' => $deleted_role, 'logout' => 'yes']);
                         }
                     }
-                }
-
-                else if($user->role == $driver){
+                } else if ($user->role == $driver) {
                     $user->status = $status['Deleted'];
                     $user->updated_by = $request->deleted_by;
                     $save = $user->save();
                     $message = $save ? 'Driver Deleted successfully' : 'Driver can not deleted';
 
-                    if($request->assigned){
+                    if ($request->assigned) {
                         Trip::where(['driver_id' => $request->id, 'status' => $tripStatus['Pending']])->update(['status' => $tripStatus['Deleted']]);
 
                         Trip::where(['driver_id' => $request->id, 'status' => $tripStatus['In Progress']])->update(['status' => $tripStatus['Deleted']]);
@@ -1175,7 +1120,7 @@ class APIController extends Controller
                         Trip::where(['driver_id' => $request->id, 'status' => $tripStatus['Completed']])->update(['status' => $tripStatus['Deleted']]);
                         $message .= "\nAll Assigned Trips of Driver deleted successfully";
                     }
-                    if($request->completed){
+                    if ($request->completed) {
                         Trip::where(['driver_id' => $request->id, 'status' => $tripStatus['Pending']])->update(['driver_id' => $request->driver_list]);
 
                         Trip::where(['driver_id' => $request->id, 'status' => $tripStatus['In Progress']])->update(['status' => $tripStatus['Deleted']]);
@@ -1188,25 +1133,24 @@ class APIController extends Controller
                         $message .= "\nThe Pending trips are assigned to the selected driver";
                     }
 
-                    if($save){
+                    if ($save) {
                         $deleted_role = 3;
-                        if($request->deleted_by == $user->id){
+                        if ($request->deleted_by == $user->id) {
                             session()->flush();
-                            return response()->json(['status' => 'success', 'message' => 'Your Account has been deleted!','role'=>'driver','role'=> $deleted_role,'logout' =>'yes']);
+                            return response()->json(['status' => 'success', 'message' => 'Your Account has been deleted!', 'role' => 'driver', 'role' => $deleted_role, 'logout' => 'yes']);
                         }
                     }
                 }
             }
 
 
-            return response()->json(['status' => 'success', 'message' => $message,'role'=> $deleted_role, 'data' => $save]);
-
-    } catch (\Exception $e) {
+            return response()->json(['status' => 'success', 'message' => $message, 'role' => $deleted_role, 'data' => $save]);
+        } catch (\Exception $e) {
             return response()->json(['status' => 'warning', 'message' => 'Error storing user', 'error' => $e->getMessage()], 500);
         }
     }
 
-// working pending till ... and stated....
+    // working pending till ... and stated....
     public function events(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -1221,34 +1165,30 @@ class APIController extends Controller
 
             $user = User::where('id', $id)->get();
 
-            if(isset($user->role) && $user->role == user_roles('1')){
+            if (isset($user->role) && $user->role == user_roles('1')) {
 
                 $trips = Trip::join('users as drivers', 'drivers.id', '=', 'trips.driver_id')
-                ->join('users as clients', 'clients.id', '=', 'trips.client_id')
-                ->select('trips.id', 'trips.trip_date', 'trips.status', 'drivers.id as driver_id', 'drivers.name as driver_name','clients.name as client_name')
-                ->orderBy('trips.trip_date', 'ASC')
-                ->get()
-                ->toArray();
-            }
-
-            else if(isset($user->role) && $user->role == user_roles('2')){
+                    ->join('users as clients', 'clients.id', '=', 'trips.client_id')
+                    ->select('trips.id', 'trips.trip_date', 'trips.status', 'drivers.id as driver_id', 'drivers.name as driver_name', 'clients.name as client_name')
+                    ->orderBy('trips.trip_date', 'ASC')
+                    ->get()
+                    ->toArray();
+            } else if (isset($user->role) && $user->role == user_roles('2')) {
                 $trips = Trip::join('users', 'users.id', '=', 'trips.driver_id')
-                ->where('trips.client_id', $user->id)
-                ->select('trips.*', 'users.id as driver_id', 'users.name as driver_name', 'users.user_pic  as driver_pic')
-                ->orderBy('trips.id', 'desc')
-                ->get()
-                ->toArray();
-                return view('routes', ['data' => $trips,'user'=>$user]);
-            }
-
-            else {
+                    ->where('trips.client_id', $user->id)
+                    ->select('trips.*', 'users.id as driver_id', 'users.name as driver_name', 'users.user_pic  as driver_pic')
+                    ->orderBy('trips.id', 'desc')
+                    ->get()
+                    ->toArray();
+                return view('routes', ['data' => $trips, 'user' => $user]);
+            } else {
                 $trips = Trip::join('users', 'users.id', '=', 'trips.client_id')
-                ->where('trips.driver_id', $user->id)
-                ->select('trips.*', 'users.id as client_id', 'users.name as client_name', 'users.user_pic  as client_pic')
-                ->orderBy('trips.id', 'desc')
-                ->get()
-                ->toArray();
-                return view('routes', ['data' => $trips,'user'=>$user]);
+                    ->where('trips.driver_id', $user->id)
+                    ->select('trips.*', 'users.id as client_id', 'users.name as client_name', 'users.user_pic  as client_pic')
+                    ->orderBy('trips.id', 'desc')
+                    ->get()
+                    ->toArray();
+                return view('routes', ['data' => $trips, 'user' => $user]);
             }
 
             if ($trips->isEmpty()) {
@@ -1256,10 +1196,9 @@ class APIController extends Controller
             }
 
             return response()->json(['status' => 'success', 'message' => 'Trips retrieved successfully', 'data' => $trips]);
-
-            } catch (\Exception $e) {
-                return response()->json(['status' => 'error', 'message' => 'Error retrieving Trip', 'error' => $e->getMessage()], 500);
-            }
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Error retrieving Trip', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function tripDetail(Request $request): JsonResponse
@@ -1274,25 +1213,22 @@ class APIController extends Controller
 
         try {
 
-                $status = $this->userStatus;
-                $tripStatus = $this->tripStatus ;
+            $status = $this->userStatus;
+            $tripStatus = $this->tripStatus;
 
-                $trip = Trip::with(['addresses' => function ($query) {
-                    $query->orderBy('order_no', 'ASC');
-                }])->find($request->id);
+            $trip = Trip::with(['addresses' => function ($query) {
+                $query->orderBy('order_no', 'ASC');
+            }])->find($request->id);
 
-                $data['client'] = $trip->user->name;
-                $data['driver'] = $trip->driver->name;
-                $data = $trip->toArray();
-                $data['addresses'] = $trip->addresses->toArray();
+            $data['client'] = $trip->user->name;
+            $data['driver'] = $trip->driver->name;
+            $data = $trip->toArray();
+            $data['addresses'] = $trip->addresses->toArray();
 
 
             return response()->json(['status' => 'success', 'message' => 'trip details are fetched', 'data' => $data]);
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'warning', 'message' => 'Error storing user', 'error' => $e->getMessage()], 500);
         }
     }
-
-
 }
