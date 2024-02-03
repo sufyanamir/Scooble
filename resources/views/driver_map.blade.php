@@ -191,7 +191,7 @@
 
         .w-point-btn {
             position: absolute;
-            right:32px;
+            right: 32px;
             bottom: 25px;
             background: #233A85;
             height: 70px;
@@ -284,7 +284,7 @@
                                     @isset($data['addresses'])
                                         @foreach ($data['addresses'] as $address)
                                             <div id="address_card_{{ $address['id'] }}"
-                                                class="draggable {{ $data['trip_date'] && $data['status'] == $tripStatus['Pending'] ? 'draggablecards' : '' }} {{ $address['address_status'] == 4 ? 'opacity-50' : '' }}">
+                                                class="draggable  draggablecard {{ $data['trip_date'] && $data['status'] == $tripStatus['Pending'] ? 'draggablecards' : '' }} {{ $address['address_status'] == 4 ? 'opacity-50' : '' }}">
                                                 <input type="hidden" data-address-status="{{ $address['address_status'] }}"
                                                     data-address-desc ="{{ $address['desc'] ?? '' }}"
                                                     data-address-title="{{ $address['title'] }}"
@@ -360,7 +360,8 @@
 
                     <div class="position-relative">
                         <div style="">
-                            <button id="wpshow_btn fs-3" class="w-point-btn"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></button>
+                            <button id="wpshow_btn fs-3" class="w-point-btn"><i
+                                    class="fa-solid fa-up-right-and-down-left-from-center"></i></button>
                         </div>
                         <div style="width:380px; position:absolute; bottom: 18px;right:25px;">
                             <div class="position-absolute" style="left: 12px; top:14px;z-index:5">
@@ -849,14 +850,14 @@
                                             id="clear-btn">
                                             @lang('lang.clear')
                                             <!-- <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                        <rect width="24" height="24" rx="12" fill="#E5E5E5"/>
-                                                                                        <path d="M12 10.8891L15.8891 7L17 8.11094L13.1109 12L17 15.8891L15.8891 17L12 13.1109L8.11094 17L7 15.8891L10.8891 12L7 8.11094L8.11094 7L12 10.8891Z" fill="#4F4F4F"/>
-                                                                                    </svg> -->
+                                                                                                        <rect width="24" height="24" rx="12" fill="#E5E5E5"/>
+                                                                                                        <path d="M12 10.8891L15.8891 7L17 8.11094L13.1109 12L17 15.8891L15.8891 17L12 13.1109L8.11094 17L7 15.8891L10.8891 12L7 8.11094L8.11094 7L12 10.8891Z" fill="#4F4F4F"/>
+                                                                                                    </svg> -->
                                         </button>
                                         <br>
                                         <!-- <button type="button" class="btn p-1" id="save-btn">
-                                                                                    <i class="fa fa-download text-secondary"></i>
-                                                                                </button> -->
+                                                                                                    <i class="fa fa-download text-secondary"></i>
+                                                                                                </button> -->
                                     </div>
                                 </div>
                                 <div class="d-none" id="error_message_sigature" style=" color: red;">* @lang('lang.signature_is_requried')
@@ -891,6 +892,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
+            // Initialize a global variable
+            //var OptimizeRouteSts = false;
             const maxLength = 150;
             const textarea = $('#skiped_address_desc');
             const charCountElement = $('#charCount');
@@ -967,58 +970,65 @@
         });
     </script>
     <script>
-        // map and routes creating start here...
-        var dragItem = null;
         var map;
+        $(function() {
+            $("#address-container").sortable();
+        });
+        // map and routes creating start here...
+        // var dragItem = null;
 
-        function handleDragStart(e) {
-            dragItem = this;
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/html', this.innerHTML);
-            this.classList.add('dragging');
-        }
+        // function handleDragStart(e) {
+        //     // dragItem = this;
+        //     // e.dataTransfer.effectAllowed = 'move';
+        //     // e.dataTransfer.setData('text/html', this.innerHTML);
+        //     // this.classList.add('dragging');
+        // }
 
-        function handleDragOver(e) {
-            if (e.preventDefault) {
-                e.preventDefault();
-            }
-            e.dataTransfer.dropEffect = 'move';
-            this.classList.add('droppable');
-            return false;
-        }
+        // function handleDragOver(e) {
+        //     if (e.preventDefault) {
+        //         e.preventDefault();
+        //     }
+        //     e.dataTransfer.dropEffect = 'move';
+        //     this.classList.add('droppable');
+        //     return false;
+        // }
 
-        function handleDragLeave() {
-            this.classList.remove('droppable');
-        }
+        // function handleDragLeave() {
+        //     this.classList.remove('droppable');
+        // }
 
-        function handleDrop(e) {
-            if (e.stopPropagation) {
-                e.stopPropagation();
-            }
-            if (dragItem !== this && dragItem.parentNode === this.parentNode) {
-                var dragIndex = Array.from(dragItem.parentNode.children).indexOf(dragItem);
-                var dropIndex = Array.from(this.parentNode.children).indexOf(this);
+        // function handleDrop(e) {
+        //     if (e.stopPropagation) {
+        //         e.stopPropagation();
+        //     }
+        //     if (dragItem !== this && dragItem.parentNode === this.parentNode) {
+        //         var dragIndex = Array.from(dragItem.parentNode.children).indexOf(dragItem);
+        //         var dropIndex = Array.from(this.parentNode.children).indexOf(this);
 
-                if (dragIndex < dropIndex) {
-                    this.parentNode.insertBefore(dragItem, this.nextSibling);
-                } else {
-                    this.parentNode.insertBefore(dragItem, this);
-                }
+        //         if (dragIndex < dropIndex) {
+        //             this.parentNode.insertBefore(dragItem, this.nextSibling);
+        //         } else {
+        //             this.parentNode.insertBefore(dragItem, this);
+        //         }
 
-                var addressElements = document.querySelectorAll('#address-container .card-body span');
-                var addresses = [];
-                addressElements.forEach(function(element) {
-                    addresses.push(element.textContent);
-                });
+        //         var addressElements = document.querySelectorAll('#address-container .card-body span');
+        //         var addresses = [];
+        //         addressElements.forEach(function(element) {
+        //             addresses.push(element.textContent);
+        //         });
 
-                // generateRoute(addresses);
-            }
-            this.classList.remove('droppable');
-            dragItem.classList.remove('dragging');
-            return false;
-        }
+        //         // generateRoute(addresses);
+        //     }
+        //     this.classList.remove('droppable');
+        //     dragItem.classList.remove('dragging');
+        //     return false;
+        // }
 
-        function generateRoute(addresses, optimizeWaypoints) {
+
+        function generateRoute(addresses, checkoptimize) {
+
+            console.log(checkoptimize);
+
             // Initialize the map
             var map = new google.maps.Map(document.getElementById('map'), {
                 center: {
@@ -1036,16 +1046,16 @@
                 map: map
             });
 
-            // Function to optimize and display the route
-            function optimizeAndDisplayRoute(addressArray) {
+
+
+            function optimizeAndDisplayRoutefasle(addressArray) {
+                    console.log("afasle funcation");
 
                 var addressElements = document.querySelectorAll('#address-container .card-body span');
                 var addresses = [];
                 addressElements.forEach(function(element) {
                     addresses.push(element.textContent);
                 });
-
-                console.log(addresses);
 
                 addressArray = addresses;
 
@@ -1057,19 +1067,24 @@
                     console.log(addressArray[addressArray.length - 1]);
                     var destination = addressArray[addressArray.length - 1];
 
-                    var waypoints = addressArray.slice(1, -1).map(function(waypoint) {
+                    var waypoints = addressArray.slice(1, -1).map(function(waypoint, index) {
+                        //alert(index);
                         return {
                             location: waypoint,
-                            stopover: true
+                            stopover: true,
+
+
                         };
                     });
-                    console.log(waypoints);
+
+                    //console.log(optimizeWaypoints);
+
 
                     var request = {
                         origin: origin,
                         destination: destination,
                         waypoints: waypoints,
-                        optimizeWaypoints: true,
+                        optimizeWaypoints: false,
                         travelMode: google.maps.TravelMode.DRIVING
                     };
 
@@ -1087,6 +1102,63 @@
                     console.log("Invalid start or end points.");
                 }
             }
+
+
+
+            function optimizeAndDisplayRoutetrue(addressArray) {
+                console.log("true funcation");
+
+var addressElements = document.querySelectorAll('#address-container .card-body span');
+var addresses = [];
+addressElements.forEach(function(element) {
+    addresses.push(element.textContent);
+});
+
+addressArray = addresses;
+
+
+if (addressArray && addressArray.length >= 2) {
+    console.log(addressArray.length);
+    var directionsService = new google.maps.DirectionsService();
+    var origin = addressArray[0];
+    console.log(addressArray[addressArray.length - 1]);
+    var destination = addressArray[addressArray.length - 1];
+
+    var waypoints = addressArray.slice(1, -1).map(function(waypoint, index) {
+        //alert(index);
+        return {
+            location: waypoint,
+            stopover: true,
+
+
+        };
+    });
+
+    //console.log(optimizeWaypoints);
+
+
+    var request = {
+        origin: origin,
+        destination: destination,
+        waypoints: waypoints,
+        optimizeWaypoints: true,
+        travelMode: google.maps.TravelMode.DRIVING
+    };
+
+    directionsService.route(request, function(result, status) {
+        if (status === google.maps.DirectionsStatus.OK) {
+            console.log("Directions OK:", result);
+
+            // Display the optimized route on the map
+            directionsDisplay.setDirections(result);
+        } else {
+            console.log('Directions request failed: ' + status);
+        }
+    });
+} else {
+    console.log("Invalid start or end points.");
+}
+}
 
 
 
@@ -1115,7 +1187,12 @@
                     });
                 } else {
                     // All addresses have been geocoded, optimize and display the route
-                    optimizeAndDisplayRoute(waypoints);
+
+                    if(checkoptimize == 'close'){
+                    optimizeAndDisplayRoutefasle(waypoints, false);
+                }else{
+                    optimizeAndDisplayRoutetrue(waypoints, false);
+                }
                 }
             }
 
@@ -1140,10 +1217,10 @@
 
             var draggableItems = document.querySelectorAll('.draggablecards');
             draggableItems.forEach(function(item) {
-                item.addEventListener('dragstart', handleDragStart, false);
-                item.addEventListener('dragover', handleDragOver, false);
-                item.addEventListener('dragleave', handleDragLeave, false);
-                item.addEventListener('drop', handleDrop, false);
+                // item.addEventListener('drag\\start', handleDragStart, false);
+                // item.addEventListener('dragover', handleDragOver, false);
+                // item.addEventListener('dragleave', handleDragLeave, false);
+                // item.addEventListener('drop', handleDrop, false);
             });
 
             var addressElements = document.querySelectorAll('#address-container .card-body span');
@@ -1151,8 +1228,8 @@
             addressElements.forEach(function(element) {
                 addresses.push(element.textContent);
             });
-
-            generateRoute(addresses, true);
+            var checkoptimize = "close";
+            generateRoute(addresses, checkoptimize);
         }
 
         // Load the Google Maps API asynchronously
@@ -1254,6 +1331,7 @@
                 if (buttonId === 'btn_addressUpdate') {
                     update_address_order();
                 } else if (buttonId === 'btn_optimize_addresses') {
+
                     optimize_addresses();
                 }
             });
@@ -1304,7 +1382,8 @@
 
                             // showAlert("Success", response.message, response.status);
                             addresses = response.data;
-                            generateRoute(addresses, true)
+                            var checkoptimize = "close";
+                            generateRoute(addresses, checkoptimize);
                         },
                         error: function(xhr, status, error) {
                             console.log(status);
@@ -1320,7 +1399,7 @@
                     addresses.push(element.textContent);
                 });
 
-                generateRoute(addresses, true);
+                generateRoute(addresses, checkoptimize = "open");
 
                 $('.close').trigger('click');
                 $("#snackbar").text('Trip Adresses Optimized Successfully  ....');

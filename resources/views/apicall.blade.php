@@ -940,7 +940,7 @@
         });
 
         // deleting users ... calling modals
-        $(document).on('click', '#btn_dell_user', function() {
+        $(document).on('click', '#btn_dellu_ser', function() {
 
             let user_id = $(this).attr('data-id');
             let driver_id = $(this).attr('driver-id');
