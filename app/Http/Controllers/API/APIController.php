@@ -23,6 +23,9 @@ use Illuminate\Foundation\Auth\Authenticatable;
 use App\Jobs\UserProfileEmail;
 use Illuminate\Support\Str;
 use App\Models\Event;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+
 
 class APIController extends Controller
 {
@@ -924,7 +927,7 @@ class APIController extends Controller
 
     public function update_address_order(Request $request): JsonResponse
     {
-
+       // dd($request);
         try {
             $tripaddress =   $request->all();
             $updatedAddresses = [];
@@ -945,6 +948,156 @@ class APIController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Error updating status ', 'error' => $e->getMessage()], 500);
         }
     }
+
+
+    //optimze addresss
+
+    public function optimze_address_order(Request $request, $id): JsonResponse
+{
+    // Validate the request data
+    $validator = Validator::make($request->all(), [
+        'addresses' => 'required|array',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['error' => $validator->errors()], 400);
+    }
+
+    // Define a function to standardize addresses
+    function standardizeAddress($address) {
+        // Implement your standardization logic here (e.g., removing punctuation, converting to lowercase)
+        return strtolower(trim($address));
+    }
+
+    // Initialize arrays to store validated Google Maps addresses and database addresses
+    $validatedGoogleAddresses = [];
+    $databaseAddresses = [];
+
+    // Validate Google Maps addresses from the request and store them in an array
+    foreach ($request->input('addresses') as $requestedAddress) {
+        // Google Maps API key
+        $apiKey = 'AIzaSyA3YWssMkDiW3F1noE6AVbiJEL40MR0IFU';
+
+        // Construct the URL for geocoding
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($requestedAddress) . "&key={$apiKey}";
+
+        // Perform the geocoding request
+        $response = Http::get($url);
+
+        if ($response->ok()) {
+            $data = $response->json();
+
+            if ($data['status'] === 'OK' && !empty($data['results'])) {
+                // Extract the formatted Google Maps address string
+                $googleMapAddress = $data['results'][0]['formatted_address'];
+
+                // Standardize the address
+                $standardizedGoogleMapAddress = standardizeAddress($googleMapAddress);
+
+                $arraywithID = [
+                    'id'=>rand(1,100),
+                    'address' =>  $standardizedGoogleMapAddress
+                    ];
+
+                // Add the standardized address to the array
+                $validatedGoogleAddresses[] = $arraywithID;
+            } else {
+                // Handle invalid address
+                return response()->json(['error' => 'Invalid address provided'], 400);
+            }
+        } else {
+            // Handle failed request
+            return response()->json(['error' => 'Failed to validate address'], 500);
+        }
+    }
+
+    // Get addresses from the database
+    $tripAddresses = Address::where('trip_id', $id)->get();
+
+    // Store database addresses in an array
+    foreach ($tripAddresses as $tripAddress) {
+        // Google Maps API key
+        $apiKey = 'AIzaSyA3YWssMkDiW3F1noE6AVbiJEL40MR0IFU';
+
+        // Construct the URL for geocoding
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($tripAddress->title) . "&key={$apiKey}";
+
+        // Perform the geocoding request
+        $response = Http::get($url);
+
+        if ($response->ok()) {
+            $data = $response->json();
+
+            if ($data['status'] === 'OK' && !empty($data['results'])) {
+                // Extract the formatted Google Maps address string
+                $googleMapAddress = $data['results'][0]['formatted_address'];
+
+                // Standardize the address
+                $standardizedGoogleMapAddress = standardizeAddress($googleMapAddress);
+
+                // Add the standardized address to the array
+                $arraywithID = [
+                'id'=> $tripAddress->id,
+                'address' =>  $standardizedGoogleMapAddress
+                ];
+                $validatedDatabaseAddresses[] = $arraywithID;
+            } else {
+                // Handle invalid address
+                return response()->json(['error' => 'Invalid database address'], 500);
+            }
+        } else {
+            // Handle failed request
+            return response()->json(['error' => 'Failed to validate database address'], 500);
+        }
+    }
+
+
+//     return response()->json([
+//         'error Google  address' => $validatedGoogleAddresses ,
+//     'error  database address' =>  $validatedDatabaseAddresses
+// ]);
+    // Update status based on comparison of request addresses with database addresses
+    $xyz = 1;
+    foreach ($validatedGoogleAddresses as $googleAddress) {
+        // Find the corresponding database address based on the id
+        //dd($googleAddress);
+        $databaseAddress = null;
+        foreach ($validatedDatabaseAddresses as $dbAddress) {
+            if ($dbAddress['address'] == $googleAddress['address']) {
+                $databaseAddress = $dbAddress['address'];
+                break;
+            }
+        }
+        if ($databaseAddress !== null) {
+            // Update status for matched address
+            DB::table('trip_addresses')
+                ->where('id', $dbAddress['id'])
+                ->where('trip_id', $id)
+                ->update(['order_no_optimize' => $xyz++]);
+        } else {
+            return response()->json(['error' => $xyz], 500);
+        }
+    }
+
+    $trip = Trip::where('id', $id)->first();
+    $trip->trip_optimized = 1;
+
+    $trip->save();
+
+
+    // Store details for reports
+    DB::table('apihit_details')->insert([
+        'user_id' => auth()->user()->id,
+        'trip_id' => $id,
+        'details' => 'Added From Web Panel',
+    ]);
+
+    return response()->json(['status' => 'success', 'message' => 'trip optimized  successfully']);
+}
+
+
+
+
 
     public function storeEvent(Request $request): JsonResponse
     {

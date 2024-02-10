@@ -202,6 +202,7 @@
         }
     </style>
     @php
+    $tripId = $data['id'];
         $tripStatus = config('constants.TRIP_STATUS');
         $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
 
@@ -259,7 +260,7 @@
 
                     {{-- =======side-card-start========== --}}
 
-                    <div class="map-card position-absolute bg-white">
+                    <div class="map-card position-absolute bg-white" id="map-div">
                         <div class="position-relative">
                             <button class="map-card-close  position-absolute" id="card_close"><i
                                     class="fa-solid fa-x"></i></button>
@@ -282,7 +283,8 @@
                                 <div class="px-1 text-center draggable-container"
                                     style="font-size: small; position: relative;" id="address-container">
                                     @isset($data['addresses'])
-                                        @foreach ($data['addresses'] as $address)
+                                    @if ($data['trip_optimized'] == 1)
+                                    @foreach ($optimizedData as $address)
                                             <div id="address_card_{{ $address['id'] }}"
                                                 class="draggable  draggablecard {{ $data['trip_date'] && $data['status'] == $tripStatus['Pending'] ? 'draggablecards' : '' }} {{ $address['address_status'] == 4 ? 'opacity-50' : '' }}">
                                                 <input type="hidden" data-address-status="{{ $address['address_status'] }}"
@@ -339,17 +341,80 @@
                                                 <p class="mb-0" style="font-size: larger; color: #452C88;">|</p>
                                             </div>
                                         @endforeach
+                                    @else
+                                    @foreach ($data['addresses'] as $address)
+                                            <div id="address_card_{{ $address['id'] }}"
+                                                class="draggable  draggablecard {{ $data['trip_date'] && $data['status'] == $tripStatus['Pending'] ? 'draggablecards' : '' }} {{ $address['address_status'] == 4 ? 'opacity-50' : '' }}">
+                                                <input type="hidden" data-address-status="{{ $address['address_status'] }}"
+                                                    data-address-desc ="{{ $address['desc'] ?? '' }}"
+                                                    data-address-title="{{ $address['title'] }}"
+                                                    data-trip-pic="{{ $address['trip_pic'] }}"
+                                                    data-trip-signature="{{ $address['trip_signature'] }}"
+                                                    data-trip-note="{{ $address['trip_note'] }}">
+                                                <div class="card bg-white "
+                                                    style="  position: relative;border-radius: 10px; border: none; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);-webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);-moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);"
+                                                    draggable="true">
+                                                    <div class="card-body py-1 px-1">
+                                                        <div class="d-flex justify-content-between border-bottom">
+                                                            <p style="color: #ACADAE; font-size: smaller;">
+                                                                {{ date('d F, Y', strtotime($data['trip_date'])) }}</p>
+                                                            <div
+                                                                style="position: absolute; display:flex; justify-content:center; width:100%; left:-0% ">
+                                                                <svg width="10" height="10" viewBox="0 0 8 8"
+                                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <circle cx="4" cy="4" r="4"
+                                                                        fill="#233A85" />
+                                                                </svg>
+                                                            </div>
+                                                            <div style="margin-left: 40%;">
+                                                                <p id="span_address_status"
+                                                                    style="color: #233A85; font-size: smaller; font-weight: 600;">
+                                                                    {{ $adrsStatus_trans[$address['address_status']] }}</p>
+                                                            </div>
+                                                            <svg id="svg_skip_address"
+                                                                class="{{ $address['address_status'] == 1 || $address['address_status'] == 2 ? 'skip_address' : '' }}"
+                                                                data-address_id="{{ $address['id'] }}"
+                                                                style="cursor: pointer !important;" class="pt-1"
+                                                                width="17" height="20" viewBox="0 0 12 14" fill="none"
+                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                <path
+                                                                    d="M1.14076 4.76329C2.28309 -0.258295 9.72273 -0.252496 10.8593 4.76909C11.5261 7.71478 9.69373 10.2082 8.08752 11.7506C6.922 12.8755 5.07805 12.8755 3.9067 11.7506C2.30628 10.2082 0.473925 7.70898 1.14076 4.76329Z"
+                                                                    stroke="#5D626B" stroke-width="1" stroke-opacity="0.3" />
+                                                                <path d="M7.16002 7.35533L4.86377 5.05908" stroke="#5D626B"
+                                                                    stroke-width="1" stroke-opacity="0.3"
+                                                                    stroke-miterlimit="10" stroke-linecap="round"
+                                                                    stroke-linejoin="round" />
+                                                                <path d="M7.13658 5.08228L4.84033 7.3785" stroke="#5D626B"
+                                                                    stroke-width="1" stroke-opacity="0.3"
+                                                                    stroke-miterlimit="10" stroke-linecap="round"
+                                                                    stroke-linejoin="round" />
+                                                            </svg>
+                                                        </div>
+                                                        <div>
+                                                            <span id="span_address_title"
+                                                                style="font-size: small;">{{ $address['title'] }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p class="mb-0" style="font-size: larger; color: #452C88;">|</p>
+                                            </div>
+                                        @endforeach
+                                    @endif
                                     @endisset
                                 </div>
                             </div>
                             @if ($data['trip_date'] && $data['status'] == $tripStatus['Pending'])
                                 <div class="mt-1 text-right">
-                                    <button id="btn-update_address" class="btn btn-sm text-white" data-toggle="modal"
+                                    @if ($data['trip_optimized'] == 1)
+                                        <p>The  trip has been Optimized. You can't update or optimize routes.</p>
+                                        @else
+                                        <button id="btn-update_address" class="btn btn-sm text-white" data-toggle="modal"
                                         data-target="#updatemodal"
                                         style="background-color: #233A85;"><span>@lang('lang.update')</span></button>
                                     <button id="btn-optimize_address" class="btn btn-sm text-white" data-toggle="modal"
                                         data-target="#optimizemodal"
                                         style="background-color: #233A85;"><span>@lang('lang.optimize')</span></button>
+                                    @endif
                                 </div>
                             @endif
                         </div>
@@ -1146,15 +1211,47 @@
                     };
 
                     directionsService.route(request, function(result, status) {
-                        if (status === google.maps.DirectionsStatus.OK) {
-                            // console.log("Directions OK:", result);
+    if (status === google.maps.DirectionsStatus.OK) {
+        // Extracting addresses from the optimized result
+        var addresses = [];
+        addresses.push(result.routes[0].legs[0].start_address); // Origin address
+        for (var i = 0; i < result.routes[0].legs.length - 1; i++) {
+            addresses.push(result.routes[0].legs[i].end_address); // Intermediate addresses
+        }
+        addresses.push(result.routes[0].legs[result.routes[0].legs.length - 1].end_address); // Destination address
 
-                            // Display the optimized route on the map
-                            directionsDisplay.setDirections(result);
-                        } else {
-                            // console.log('Directions request failed: ' + status);
-                        }
-                    });
+        // Now addresses array contains all addresses
+        console.log("Addresses:", addresses);
+
+    // Make the AJAX request
+     var bearerToken = "{{ session('user') }}";
+    $.ajax({
+      type: 'POST',
+      url: 'api/addressesOptimize/' + {{$tripId}},
+      data: JSON.stringify({ addresses: addresses }),
+      processData: false, // Important: Don't process the data
+      contentType: false, // Important: Don't set content type (jQuery will automatically set it based on FormData)
+      headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + bearerToken
+                        },
+      success:function (response) {
+        if (response.status) {
+            // console.log('sadbhjdb');
+            $("#map-div").load(location.href + " #map-div > *");
+
+        }
+      }
+    });
+        // Display the optimized route on the map
+        directionsDisplay.setDirections(result);
+        console.log(request);
+
+    } else {
+        // console.log('Directions request failed: ' + status);
+    }
+});
+
                 } else {
                     console.log("Invalid start or end points.");
                 }

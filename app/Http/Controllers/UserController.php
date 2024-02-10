@@ -406,7 +406,9 @@ class UserController extends Controller
                 $tripData = $trip->toArray();
                 $tripData['addresses'] = $trip->addresses->toArray();
 
-                return view('driver_map',['data'=>$tripData, 'user'=>$user]);
+                $optimizedTrips = Address::where('trip_id', $request->id)->orderBy('order_no_optimize', 'ASC')->get();
+
+                return view('driver_map',['data'=>$tripData, 'optimizedData' => $optimizedTrips, 'user'=>$user]);
             }
         }
         else{
