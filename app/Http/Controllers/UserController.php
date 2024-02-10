@@ -34,6 +34,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use App;
+use App\Models\apiHitDetails;
 
 class UserController extends Controller
 {
@@ -69,6 +70,13 @@ class UserController extends Controller
 
     }
 
+    public function viewOnReports()
+    {
+        $data = apiHitDetails::with('drivers', 'trips')->get();
+
+        // return response()->json(['data' => $data]);
+        return view('reports', ['data' => $data]);
+    }
     public function getDriversInModal($id)
     {
         $user = auth()->user();
