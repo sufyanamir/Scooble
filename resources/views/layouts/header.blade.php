@@ -65,7 +65,7 @@ if(isset($user->role) && $user->role == user_roles('1')){
       }
     }
 
-    /* 
+    /*
    .preloader {
       position: fixed;
       top: 0;
@@ -351,7 +351,7 @@ if(isset($user->role) && $user->role == user_roles('1')){
           </i>
           <span class="link_name">@lang('lang.pdf_templates')</span>
         </a>
-         <span class="tooltip">@lang('lang.pdf_templates')</span> 
+         <span class="tooltip">@lang('lang.pdf_templates')</span>
       </li> -->
       @endif
 
@@ -554,7 +554,7 @@ if(isset($user->role) && $user->role == user_roles('1')){
 
                 <script>
                   $('#all-read').on('click', function(e) {
-                    e.preventDefault(); 
+                    e.preventDefault();
                     $('#form-notification').submit();
                   });
                 </script>

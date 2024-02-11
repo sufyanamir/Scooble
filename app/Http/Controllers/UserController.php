@@ -32,8 +32,9 @@ use App\Jobs\SendEmailVerificationJob;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\DB;
 use App;
+use App\Models\apiHitDetails;
 
 class UserController extends Controller
 {
@@ -61,12 +62,27 @@ class UserController extends Controller
 
     public function lang_change(Request $request)
     {
-       
+
         App::setLocale($request->lang);
         session()->put('locale', $request->lang);
 
         return redirect()->back();
-       
+
+    }
+
+    public function viewOnReports()
+    {
+        $data = apiHitDetails::with('drivers', 'trips')->get();
+
+        // return response()->json(['data' => $data]);
+        return view('reports', ['data' => $data]);
+    }
+    public function getDriversInModal($id)
+    {
+        $user = auth()->user();
+        $drivers = User::where('role', 'Driver')->where('id', '<>', $id)->where('client_id', $user->id)->where('status', '1')->get();
+
+        return response()->json(['status' => 'success', 'data' => $drivers]);
     }
 
     public function index(Request $request)
@@ -82,9 +98,9 @@ class UserController extends Controller
             if(isset($user->role) && $user->role == user_roles('2')){
 
                 if( $user->sub_exp_date){
-                    
+
                     $expirationDate = Carbon::createFromFormat('Y-m-d', $user->sub_exp_date);
-                    if ($currentDate->gt($expirationDate)) { 
+                    if ($currentDate->gt($expirationDate)) {
 
                         return view('subscription_expired', ['user' => $user]);
                     }
@@ -96,22 +112,22 @@ class UserController extends Controller
                         $data['drivers'] = User::where(['role' => user_roles('3'), 'client_id' => $user->id, 'status' => $this->userStatus['Active']])
                         ->select('id', 'name', 'user_pic')
                         ->addSelect(DB::raw('ROUND(((
-                            SELECT COUNT(*) 
-                            FROM trips 
-                            WHERE trips.driver_id = users.id 
-                            AND DATE(trip_date) = CURDATE() 
+                            SELECT COUNT(*)
+                            FROM trips
+                            WHERE trips.driver_id = users.id
+                            AND DATE(trip_date) = CURDATE()
                             AND status = 1
                         ) / (
-                            SELECT COUNT(*) 
-                            FROM trips 
-                            WHERE trips.driver_id = users.id 
-                            AND DATE(trip_date) = CURDATE() 
+                            SELECT COUNT(*)
+                            FROM trips
+                            WHERE trips.driver_id = users.id
+                            AND DATE(trip_date) = CURDATE()
                             AND status IN (1, 2)
                         )) * 100, 2) as driv_active_percentage'))
                         ->get()
                         ->toArray();
 
-                        $data['driversCount'] = count($data['drivers'] ?? []); 
+                        $data['driversCount'] = count($data['drivers'] ?? []);
 
                         $data['activeRoutes'] = Trip::with(['user:id,name', 'driver:id,name'])
                         ->whereHas('user', function ($query) use ($user) {
@@ -119,7 +135,7 @@ class UserController extends Controller
                         })->whereDate('trip_date', $this->curFormatDate)->where('status', $this->tripStatus['In Progress'])
                         ->get(['id', 'title', 'desc', 'trip_date', 'driver_id', 'client_id', 'status'])
                         ->toArray();
-                    
+
 
                         $data['totalRoutes']     = Trip::where('client_id', $user->id)->count();
                         $data['totalAct_Routes'] = Trip::whereIn('status', [$this->tripStatus['Pending'], $this->tripStatus['In Progress']])->where('client_id', $user->id)->count();
@@ -141,13 +157,13 @@ class UserController extends Controller
             }
 
             else if(isset($user->role) && $user->role == user_roles('3')){
-                
+
                 $client = User::where(['role' => 'Client', 'id' => $user->client_id])->first();
 
                 if ($client) {
                     if( $client->sub_exp_date){
                         $expirationDate = Carbon::createFromFormat('Y-m-d', $client->sub_exp_date);
-                    
+
                         if ($currentDate->gt($expirationDate)) {
                             return redirect('/subscription-expired_driver');
                         }
@@ -164,7 +180,7 @@ class UserController extends Controller
                             $data['activeTrips']     = Trip::where([['status', $this->tripStatus['In Progress']], ['driver_id', $user->id]])->count();
                             $data['PendingTrips']    = Trip::where([['status', $this->tripStatus['Pending']], ['driver_id', $user->id]])->count();
                             $data['completedTrips_detail']  = Trip::where([['status', $this->tripStatus['Completed']], ['driver_id', $user->id]])->get()->toArray();
-                        
+
                             $data['completedTrips'] = count($data['completedTrips_detail'] ?? []);
                             return view('driver_dashboard', $data);
                         }
@@ -185,7 +201,7 @@ class UserController extends Controller
                 $data['clientsCount']   = User::where('role', user_roles('2'))->count();
                 $data['driversCount']   = User::where('role', user_roles('3'))->count();
                 $data['revenue']        = Payment::where('payment_status', 'approved')->where('transaction_status', 'approved')->sum('amount');
-               
+
                 $data['activeRoutes']   = Trip::with('user:id,name')->whereDate('trip_date', $this->curFormatDate)->where('status', $this->tripStatus['In Progress'])->get(['id', 'title', 'desc', 'trip_date', 'driver_id', 'client_id', 'status'])->toArray();
 
                 $data['totalRoutes']    = Trip::count();
@@ -193,7 +209,7 @@ class UserController extends Controller
                 $data['completedTrips'] = Trip::where('status', $this->tripStatus['Completed'])->whereDate('trip_date', $this->curFormatDate)->count();
                 $data['activeTrips']    = Trip::where('status', $this->tripStatus['In Progress'])->whereDate('trip_date', $this->curFormatDate)->count();
                 $data['PendingTrips']   = Trip::where('status', $this->tripStatus['Pending'])->whereDate('trip_date', $this->curFormatDate)->count();
-                
+
                 $data['compTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['completedTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
                 $data['actvTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['activeTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
                 $data['pendTrp_percentage'] = $data['totalTodayRout'] > 0 ? round(($data['PendingTrips'] / $data['totalTodayRout']) * 100, 1) : 0;
@@ -206,7 +222,7 @@ class UserController extends Controller
             return view('home', ['data' => $package]);
         }
     }
-    
+
     public function clients()
 {
     $user = auth()->user();
@@ -231,7 +247,7 @@ class UserController extends Controller
         $page_name = 'drivers';
 
         if(!view_permission($page_name)){
-            return redirect()->back();  
+            return redirect()->back();
         }
 
         if(isset($user->role) && $user->role == user_roles('1')){
@@ -242,10 +258,10 @@ class UserController extends Controller
             ->orderBy('users.id', 'desc')
             ->get()
             ->toArray();
-            $client_list = User::where(['role' => 'Client'])->orderBy('id', 'desc')->select('id','name')->get()->toArray();   
+            $client_list = User::where(['role' => 'Client'])->orderBy('id', 'desc')->select('id','name')->get()->toArray();
             $activeDrivers = User::where(['role' => 'Driver'])->get()->toArray();;
             return view('drivers', ['data' => $drivers, 'activeData' => $activeDrivers, 'user'=>$user,'add_as_user'=> user_roles('3'), 'client_list'=>$client_list]);
-        } 
+        }
         else{
 
             $derivers = User::where(['role' => user_roles('3'),'client_id' => $user->id])->orderBy('id', 'desc')->get()->toArray();
@@ -261,7 +277,7 @@ class UserController extends Controller
         $page_name = 'routes';
 
         if(!view_permission($page_name)){
-            return redirect()->back();  
+            return redirect()->back();
         }
 
         if(isset($user->role) && $user->role == user_roles('1')){
@@ -274,7 +290,7 @@ class UserController extends Controller
             ->toArray();
 
             return view('routes', ['data' => $trips,'user'=>$user]);
-        } 
+        }
 
         else if(isset($user->role) && $user->role == user_roles('2')){
             $trips = Trip::join('users', 'users.id', '=', 'trips.driver_id')
@@ -285,7 +301,7 @@ class UserController extends Controller
             ->toArray();
             return view('routes', ['data' => $trips,'user'=>$user]);
         }
-        
+
         else {
             $trips = Trip::join('users', 'users.id', '=', 'trips.client_id')
             ->where('trips.driver_id', $user->id)
@@ -294,7 +310,7 @@ class UserController extends Controller
             ->get()
             ->toArray();
             return view('routes', ['data' => $trips,'user'=>$user]);
-        } 
+        }
 
     }
 
@@ -320,11 +336,11 @@ class UserController extends Controller
 
             $data['data'] = $trip->toArray();
             $data['data']['addresses'] = $trip->addresses->toArray();
-            
+
             if ($request->dashboard_data == 1) {
                 $data['client_list'] = User::where('id', $trip->client_id)->first();
                 $data['driver_list'] = User::where('id', $trip->driver_id)->first();;
-                
+
                 return view('pdf_templates', $data);
             } else {
                 $data['client_list'] = User::where(['role' => user_roles('2'), 'status' => auth_users()])
@@ -374,10 +390,10 @@ class UserController extends Controller
             ->orderBy('id', 'desc')
             ->get()
             ->toArray();
-    
+
         return response()->json($driver_list);
     }
-    
+
 
     public function driver_map(Request $request)
     {
@@ -389,25 +405,27 @@ class UserController extends Controller
         }
 
         if ($request->has('id')) {
-            
-            if(isset($user->role) && $user->role == user_roles('3')){   
+
+            if(isset($user->role) && $user->role == user_roles('3')){
                 $trip = Trip::with(['addresses' => function ($query) {
                     $query->orderBy('order_no', 'ASC');
                 }])->find($request->id);
-                
+
                 $tripData = $trip->toArray();
                 $tripData['addresses'] = $trip->addresses->toArray();
-                
-                return view('driver_map',['data'=>$tripData, 'user'=>$user]);
+
+                $optimizedTrips = Address::where('trip_id', $request->id)->orderBy('order_no_optimize', 'ASC')->get();
+
+                return view('driver_map',['data'=>$tripData, 'optimizedData' => $optimizedTrips, 'user'=>$user]);
             }
-        }    
+        }
         else{
             return redirect('/routes');
          }
-        
+
     }
-    
-    
+
+
 
     public function announcements_alerts()
     {
@@ -428,16 +446,16 @@ class UserController extends Controller
         $page_name = 'home';
 
         if(!view_permission($page_name)){
-            return redirect()->back();  
+            return redirect()->back();
         }
     }
-        
+
 
         if ($request->has('id')) {
-            
+
             $package  = Package::where('id',$request->id)->first();
             return view('subscription', ['data' => $package]);
-        } 
+        }
         else {
 
         $package = Package::orderBy('id', 'ASC')->where('status', 'on')->get()->toArray();
@@ -457,7 +475,7 @@ class UserController extends Controller
         $page_name = 'calender';
 
         if(!view_permission($page_name)){
-            return redirect()->back();  
+            return redirect()->back();
         }
 
         if(isset($user->role) && $user->role == user_roles('1')){
@@ -465,10 +483,10 @@ class UserController extends Controller
             ->join('users as clients', 'clients.id', '=', 'trips.client_id')
             ->select('trips.id', 'trips.trip_date','trips.title', 'trips.status', 'drivers.id as driver_id', 'drivers.name as driver_name')
             ->orderBy('trips.trip_date', 'ASC')
-            ->get();   
-            
+            ->get();
+
             $data['dragable'] = 1;
-        } 
+        }
 
         else if(isset($user->role) && $user->role == user_roles('2')){
             $data['trips'] = Trip::join('users', 'users.id', '=', 'trips.driver_id')
@@ -480,7 +498,7 @@ class UserController extends Controller
             $data['dragable'] = 1;
 
         }
-        
+
         else {
             $data['trips'] = Trip::join('users', 'users.id', '=', 'trips.client_id')
             ->where('trips.driver_id', $user->id)
@@ -490,10 +508,10 @@ class UserController extends Controller
 
             $data['dragable'] = 2;
 
-        } 
+        }
 
         $data['user'] = $user;
-    
+
         return view('calender',$data);
     }
 
@@ -503,7 +521,7 @@ class UserController extends Controller
         $page_name = 'calendar_maintable';
 
         if(!view_permission($page_name)){
-            return redirect()->back();  
+            return redirect()->back();
         }
 
         if(isset($user->role) && $user->role == user_roles('1')){
@@ -516,7 +534,7 @@ class UserController extends Controller
             ->toArray();
 
             return view('calendar_maintable', ['data' => $trips,'user'=>$user]);
-        } 
+        }
 
         else if(isset($user->role) && $user->role == user_roles('2')){
             $trips = Trip::join('users', 'users.id', '=', 'trips.driver_id')
@@ -527,7 +545,7 @@ class UserController extends Controller
             ->toArray();
             return view('calendar_maintable', ['data' => $trips,'user'=>$user]);
         }
-        
+
         else {
             $trips = Trip::join('users', 'users.id', '=', 'trips.client_id')
             ->where('trips.driver_id', $user->id)
@@ -545,7 +563,7 @@ class UserController extends Controller
         $page_name = 'users';
 
         if(!view_permission($page_name)){
-            return redirect()->back();  
+            return redirect()->back();
         }
 
         $users = User::where(['role' => 'Admin'])->orderBy('id', 'desc')->get()->toArray();
@@ -556,7 +574,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $page_name = 'notifications';
-    
+
         if (!view_permission($page_name)) {
             return redirect()->back();
         }
@@ -566,10 +584,10 @@ class UserController extends Controller
         if ($request->has('all_read')) {
             Notification::where('status', '!=', 'seen') // Add any other condition if needed
                         ->update(['status' => 'seen']);
-        
+
             return redirect()->back();
         }
-         
+
             $notifications  = Notification::orderBy('id', 'desc')->get()->toArray();
         }
         return view('notifications', ['data'=>$notifications , 'user' => $user]);
@@ -579,53 +597,53 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $page_name = 'announcements';
-    
+
         if (!view_permission($page_name)) {
             return redirect()->back();
         }
-    
+
         if ($request->has('id')) {
-            
+
             $announcmnent  = Announcement::where('id',$request->id)->get()->toArray();
             $announcmnents = Announcement::where('status','on')->orderBy('id', 'desc')->get()->toArray();
             return view('announcements', ['data' => $announcmnents, 'user' => $user, 'announcmnent'=>$announcmnent[0]]);
-        } 
+        }
         else {
 
             $announcmnents = Announcement::where('status','on')->orderBy('id', 'desc')->get()->toArray();
             return view('announcements', ['data' => $announcmnents, 'user' => $user]);
         }
-    
+
     }
 
     public function packages(Request $request)
     {
         $user = auth()->user();
         $page_name = 'packages';
-        
+
         if (!view_permission($page_name)) {
             return redirect()->back();
         }
-    
+
         if ($request->has('id')) {
-            
+
             $package  = Package::where('id',$request->id)->get()->toArray();
             $packages = Package::where('status','on')->orderBy('id', 'DESC')->get()->toArray();
             return view('packages', ['data' => $packages, 'user' => $user, 'package'=>$package[0]]);
-        } 
+        }
         else {
             $packages = Package::where('status','on')->orderBy('id', 'DESC')->get()->toArray();
             return view('packages', ['data' => $packages, 'user' => $user]);
         }
-    
+
     }
-    
+
 
     public function settings()
     {
         $user = auth()->user();
         $page_name = 'settings';
-    
+
         if (!view_permission($page_name)) {
             return redirect()->back();
         }
@@ -671,7 +689,7 @@ class UserController extends Controller
                     'email',
                     Rule::unique('users')->ignore($request->id),
                 ],
-            ]);            
+            ]);
 
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
@@ -692,8 +710,8 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
             $save = $user->save();
             if($save){
-                $notification =  new Notification(); 
-    
+                $notification =  new Notification();
+
                 $notification->title      = 'New User Regisration';
                 $notification->user_id    = $user->id;
                 $notification->desc       = 'New User Mr/Mis. '.$user->name.' Regisration is created Now. With Email: '.$user->email;
@@ -709,15 +727,15 @@ class UserController extends Controller
                 ];
 
                 SendEmailVerificationJob::dispatch($emailData)->onQueue('emails');
-                
+
                 return redirect('/register')->with('success', 'Please Check your Email for Verification');
             }
-            
+
         } else {
             return view('register');
         }
     }
-  
+
     public function user_login(Request $request)
     {
         $user = auth()->user();
@@ -725,12 +743,12 @@ class UserController extends Controller
             if ($request->all()) {
                 $login = $this->api->user_login($request);
                 $responseData = json_decode($login->getContent(), true);
-    
+
                 if ($responseData['status'] == "success") {
                     session(['user' => $responseData['token']]);
                     session(['lang' => 'en']);
                 }
-    
+
                 echo $login->getContent();
             } else {
                 return view('login');
@@ -739,7 +757,7 @@ class UserController extends Controller
             return redirect('/');
         }
     }
-    
+
     public function logout(REQUEST $request)
     {
         session()->forget('lang');
@@ -751,7 +769,7 @@ class UserController extends Controller
     {
 
         $req = $request->all();
-        if (isset($req['no1']) || isset($req['no2']) || isset($req['no3']) || isset($req['no4']) || isset($req['no5'])) 
+        if (isset($req['no1']) || isset($req['no2']) || isset($req['no3']) || isset($req['no4']) || isset($req['no5']))
         {
             $array = [$req["no1"], $req["no2"], $req["no3"], $req["no4"], $req["no5"]];
             $otp = implode('', $array);
@@ -760,14 +778,14 @@ class UserController extends Controller
             if ($user) {
                 Session::flash('email_temp', $user->email);
                 return redirect('/set_password');
-            } else {             
-        
+            } else {
+
                 Session::flash('invalid', "OTP is not Correct");
                 Session::flash('email', $req['email']);
 
                 return view('forgotPassword', ['email' => $req['email'] , 'no'=>$array]);
             }
-        } 
+        }
 
         else {
 
@@ -783,8 +801,8 @@ class UserController extends Controller
                     ];
                     $mail = new otpVerifcation($emailData);
 
-                                    
-                
+
+
                     try {
                         $user->reset_pswd_attempt = $user->reset_pswd_attempt ? ++$user->reset_pswd_attempt : 1;
 
@@ -821,7 +839,7 @@ class UserController extends Controller
                     Session::flash('status', 'invalid');
                     Session::flash('message', 'this email is invalid');
                     Session::flash('email', $req['email']);
-                    
+
 
                     return view('forgotPassword', ['email' => $req['email']]);
                 }
@@ -841,15 +859,15 @@ class UserController extends Controller
                     'confirm_password' => 'required|same:password',
                     'email' => 'required'
                 ]);
-    
+
                 if ($validator->fails()) {
                     return redirect()->back()->withErrors($validator)->withInput();
                 }
-    
+
                 $user = User::where('email', $req['email'])->first();
                 $user->password = Hash::make($request->password);
                 $save = $user->save();
-    
+
                 if ($save) {
                     return redirect('/login')->with('password_changed', "Password is successfully changed");;
                 }
@@ -886,10 +904,10 @@ class UserController extends Controller
         }
         else{
             $user->status     = $request->status;
-            $save = $user->save(); 
+            $save = $user->save();
             echo $save;
         }
-        
+
     }
 
     public function pay(Request $request)
@@ -905,42 +923,42 @@ class UserController extends Controller
                 $payment->exp_date = Carbon::now()->addDays(30);
                 $payment->created_by = Auth::id();
                 $payment->save();
-    
+
                 $payment = Payment::where('created_by', Auth::id())->latest()->first();
-    
+
                 $response = $this->gateway->purchase(array(
                     'amount'    => $request->amount,
                     'currency'  => config('constants.PAYPAL.CURRENCY'),
                     'returnUrl' => url('/payment_success'),
                     'cancelUrl' => url('/payment_cancel')
                 ))->send();
-        
+
                 if ($response->isRedirect()) {
                         $response->redirect();
-                } 
-    
+                }
+
                 else {
-    
+
                     if ($payment) {
                         $this->fail_trans($response->getMessage(), null, null, 'error');
                     }
-    
+
                     return redirect()->back()->with('error', 'Payment could not proceed futher contact to Admin!!.');
                 }
-    
+
             } catch (\Throwable $th) {
-    
+
                 if ($payment) {
                     $this->fail_trans(null, $th->getMessage(), null, 'server_error');
                 }
-    
+
                 return redirect()->back()->with('error', 'PayPal is declined to Connet. Check Your Network or Contact to Admin.');
             }
         }else{
             return redirect('/login');
         }
     }
-    
+
     public function payment_success(Request $request)
     {
         $payment = Payment::where('created_by', Auth::id())->latest()->first();
@@ -984,7 +1002,7 @@ class UserController extends Controller
                         ];
 
                         SendSubscriptionPurchasedEmail::dispatch($user, $payment)->onQueue('emails');
-    
+
                     }
 
 
@@ -1011,18 +1029,18 @@ class UserController extends Controller
     }
 
     public function payment_cancel(Request $request)
-    {  
+    {
         $this->fail_trans(null, null, $request->input('token'), 'cancel');
         $url = url('/home');
         return redirect($url)->with('error', 'Your Decliened Payment and Cancel Subscription.');
     }
-    
+
     public function fail_trans($transaction_error=null, $server_error=null, $token=null, $status=null){
-        
+
         $payment = Payment::where('created_by', Auth::id())->latest()->first();
         if ($payment) {
             $payment->transaction_error = $transaction_error;
-            $payment->server_error      = $server_error;    
+            $payment->server_error      = $server_error;
             $payment->payment_token     = $token;
             $payment->payment_status    = $status;
             $payment->save();
@@ -1032,13 +1050,13 @@ class UserController extends Controller
     public function verify(Request $request, $hash)
     {
         $user = User::where('remember_token', $hash)->first();
-    
+
         if ($user) {
             if (!$user->hasVerifiedEmail()) {
                 $user->markEmailAsVerified();
                 $user->status = 1;
                 $user->save();
-    
+
                 return redirect('/login')->with('success', 'Email verified successfully. Please log in.');
             } else {
                 return redirect('/login')->with('success', 'Email already verified.');
@@ -1047,5 +1065,5 @@ class UserController extends Controller
             return redirect('/login')->with('error', 'Invalid verification link.');
         }
     }
-    
+
 }

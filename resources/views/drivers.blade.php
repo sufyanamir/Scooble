@@ -91,14 +91,14 @@
                 </thead>
                 <tbody id="tableData">
                   @foreach($data as $key => $value)
-                 
+
                   <tr style="font-size: small;">
                     <td>{{++$key}}</td>
                     <td>{{table_date($value['created_at'])}}</td>
                     <td><img src="{{ (isset($value['user_pic'])) ? asset('storage/' . $value['user_pic']) : 'assets/images/user.png'}}" style="width: 45px; height: 45px; border-radius: 38px; object-fit: cover;" alt="text"></td>
                     <td> {{ $value['name'] }} </td>
                     <td>{{ $value['email'] }}</td>
-                   
+
                     @if($user->role != 'Client')
                     <td><img src="{{(isset($value['client_pic'])) ? asset('storage/' . $value['client_pic']) : 'assets/images/user.png'}}" style="width: 45px; height: 45px; border-radius: 38px; object-fit: cover;" alt="text"></td>
                     <td> {{(isset($value['client_name'])) ? $value['client_name'] : $user->name}}</td>
@@ -108,7 +108,7 @@
                     @if($value['status'] == 1)
                     <td>
                       <button class="btn btn_status">
-                        <span data-client_id="{{$value['id']}}"> 
+                        <span data-client_id="{{$value['id']}}">
                           <div style="width: 100%; height: 100%; padding-top: 5px; padding-bottom: 5px; padding-left: 19px; padding-right: 20px; background: rgba(48.62, 165.75, 19.34, 0.18); border-radius: 3px; justify-content: center; align-items: center; display: inline-flex">
                             <div style="color: #31A613; font-size: 14px; font-weight: 500; word-wrap: break-word">Active</div>
                           </div>
@@ -118,7 +118,7 @@
                     @elseif($value['status'] == 2)
                     <td>
                       <button class="btn btn_status">
-                        <span data-client_id="{{$value['id']}}"> 
+                        <span data-client_id="{{$value['id']}}">
                         <div style="width: 100%; height: 100%; padding-top: 6px; padding-bottom: 4px; padding-left: 15px; padding-right: 13px; background: rgba(77, 77, 77, 0.12); border-radius: 3px; justify-content: center; align-items: center; display: inline-flex">
                           <div style="text-align: center; color: #8F9090; font-size: 14px; font-weight: 500; word-wrap: break-word">@lang('lang.pending')</div>
                         </div>
@@ -131,7 +131,7 @@
                         <span data-client_id="{{$value['id']}}">
                         <div style="width: 100%; height: 100%; padding-top: 6px; padding-bottom: 7px; padding-left: 14px; padding-right: 12px;    background: rgba(245, 34, 45, 0.19); border-radius: 3px; justify-content: center; align-items: center; display: inline-flex">
                           <div style="text-align: center; color: #F5222D; font-size: 14px; font-weight: 500; word-wrap: break-word">@lang('lang.deleted')</div>
-                      </div> 
+                      </div>
                       </span>
                       </button>
                     </td>
@@ -142,7 +142,7 @@
                         <span data-client_id="{{$value['id']}}">
                         <div style="width: 100%; height: 100%; padding-top: 6px; padding-bottom: 7px; padding-left: 14px; padding-right: 12px;    background: rgba(245, 34, 45, 0.19); border-radius: 3px; justify-content: center; align-items: center; display: inline-flex">
                           <div style="text-align: center; color: #F5222D; font-size: 14px; font-weight: 500; word-wrap: break-word">@lang('lang.suspend')</div>
-                      </div> 
+                      </div>
                       </span>
                       </button>
                     </td>
@@ -163,7 +163,7 @@
                         </svg>
                       </button>
                       @else
-                      <button id="btn_dell_user" class="btn p-0" data-id=" {{$value['id']}} " driver-id="{{ $value['id'] }}">
+                      <button id="btn_dell_user" class="btn p-0" driver-id="{{ $value['id'] }}">
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <circle opacity="0.1" cx="18" cy="18" r="18" fill="#DF6F79" />
                           <path fill-rule="evenodd" clip-rule="evenodd" d="M23.4909 13.743C23.7359 13.743 23.94 13.9465 23.94 14.2054V14.4448C23.94 14.6975 23.7359 14.9072 23.4909 14.9072H13.0497C12.804 14.9072 12.6 14.6975 12.6 14.4448V14.2054C12.6 13.9465 12.804 13.743 13.0497 13.743H14.8866C15.2597 13.743 15.5845 13.4778 15.6684 13.1036L15.7646 12.6739C15.9141 12.0887 16.4061 11.7 16.9692 11.7H19.5708C20.1277 11.7 20.6252 12.0887 20.7692 12.6431L20.8721 13.1029C20.9555 13.4778 21.2802 13.743 21.654 13.743H23.4909ZM22.5577 22.4943C22.7495 20.707 23.0852 16.4609 23.0852 16.418C23.0975 16.2883 23.0552 16.1654 22.9713 16.0665C22.8812 15.9739 22.7672 15.9191 22.6416 15.9191H13.9032C13.777 15.9191 13.6569 15.9739 13.5735 16.0665C13.489 16.1654 13.4473 16.2883 13.4534 16.418C13.4546 16.4259 13.4666 16.5755 13.4868 16.8255C13.5762 17.9364 13.8255 21.0303 13.9865 22.4943C14.1005 23.5729 14.8081 24.2507 15.8332 24.2753C16.6242 24.2936 17.4391 24.2999 18.2724 24.2999C19.0573 24.2999 19.8544 24.2936 20.6699 24.2753C21.7305 24.257 22.4376 23.5911 22.5577 22.4943Z" fill="#D11A2A" />
@@ -272,7 +272,7 @@
     <div class="modal fade" id="deleteclient" tabindex="-1" aria-labelledby="deleteclientLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content bg-white">
-          
+
         <div class="modal-body">
             <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="4" y="4" width="48" height="48" rx="24" fill="#FEE4E2"/>
@@ -311,12 +311,12 @@
               </div>
             </form>
           </div>
-          
+
         </div>
       </div>
     </div>
     <!-- Delete Client Modal End -->
-    
+
   @if($user->role != 'Client')
   <script>
     var users_table = $('#drivers-table').DataTable();

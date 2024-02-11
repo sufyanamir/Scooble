@@ -83,7 +83,7 @@ return [
     "end_point" => "Bitiş Noktası",
     "in_progress" => "Devam etmekte",
     "really_want_to_delete_route" => "Gerçekten silmek istiyorum",
-    "really_want_to_delete_user" => "Gerçekten Kullanıcıyı silmek mi istiyorsunuz?", 
+    "really_want_to_delete_user" => "Gerçekten Kullanıcıyı silmek mi istiyorsunuz?",
   "really_want_to_duplicate_trip" => "Geziyi gerçekten çoğaltmak istiyor musunuz?",
   "all_the_trip_data_will_reset_when_you_click_continue" => "Devam'ı tıkladığınızda tüm gezi verileri sıfırlanır.",
   "continue" => "Devam etmek",
@@ -147,7 +147,7 @@ return [
   "mandatory_head_line" => "Zorunlu başlık satırı",
   "news_alert_head_line" => "Haber uyarısı başlık satırı",
   "add_address" => "Adres Ekle",
-  
+
   "login" => "Giriş yapmak",
   "If_you_dont_have_an_account" => "hesabınız yoksa",
   "you_can" => "Yapabilirsiniz",
@@ -257,4 +257,5 @@ return [
   "rftd" => "Sürücü için gereksinimler",
   "optional" => "isteğe bağlı",
   "user_pic_validation_error" => "Resim 1024 KB'tan küçük veya ona eşit olmalıdır",
+  "if_you_Delete_the_Client_all_the_Drivers_and_Trips_will_be_deleted" => "If you Delete the Client, all the Drivers and Trips will be deleted",
 ];

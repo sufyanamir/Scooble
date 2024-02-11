@@ -84,7 +84,7 @@ return [
     "end_point" => "End Point",
     "in_progress" => "In Progress",
     "really_want_to_delete_route" => "Really Want to delete",
-    "really_want_to_delete_user" => "Really Want to delete User?", 
+    "really_want_to_delete_user" => "Really Want to delete User?",
   "really_want_to_duplicate_trip" => "Really want to duplicate trip?",
   "all_the_trip_data_will_reset_when_you_click_continue" => "All the trip data will reset when you click continue.",
   "continue" => "Continue",
@@ -258,5 +258,6 @@ return [
   "rftd" => "Requirements for the driver",
   "optional" => "optional",
   "user_pic_validation_error" => "Image must be less than or equal to 1024 KB",
+  "if_you_Delete_the_Client_all_the_Drivers_and_Trips_will_be_deleted" => "If you Delete the Client, all the Drivers and Trips will be deleted",
 
 ];

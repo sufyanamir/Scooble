@@ -210,12 +210,12 @@
           </button>
           <div class="mt-3">
             <h6>@lang('lang.really_want_to_delete_client')</h6>
-            <p>@lang('lang.client_has_assigned_drivers_trips_what_to_do_with_them')</p>
+            <p>@lang('lang.if_you_Delete_the_Client_all_the_Drivers_and_Trips_will_be_deleted')</p>
           </div>
           <form method="post" id="DeleteData" action="deleteUsers">
             <input type="hidden" id="user_id" name="id">
             <input type="hidden" id="deleted_by" name="deleted_by" value="{{ $login_userId ?? ''}}">
-            <div class="mt-3">
+            {{-- <div class="mt-3">
               <input type="checkbox" name="delete_all_drivers" id="delete_all_drivers"> @lang('lang.delete_all_drivers')
             </div>
             <div class="mt-3">
@@ -223,9 +223,8 @@
                 <option value="">@lang('lang.choose_additional_options')</option>
                 <option value="assigned">@lang('lang.delete_all_assigned_trips')</option>
                 <option value="completed">@lang('lang.delete_completed_trips')</option>
-                <option value="">@lang('lang.Dont_delete_any_trips')</option>
               </select>
-            </div>
+            </div> --}}
             <div class="row mt-3 text-center">
               <div class="col-lg-6">
                 <button data-dismiss="modal" type="button" class="btn btn-sm btn-outline px-5 closeModalButton" style="background-color: #ffffff; border: 1px solid #D0D5DD; border-radius: 8px; width: 100%;">@lang('lang.cancel')</button>
@@ -275,12 +274,12 @@
             <div id="driver_list">
               <p>please select a driver that you want to assign the other trips!</p>
               <select name="driver_list" id="driverSelect" class="form-select">
-                <option value="">Select Driver</option>
-                @foreach($activeData as $key => $value)
-                @if($value['id'] != old('delDriverId')) <!-- Use old('del_driver_id') to retrieve the stored driver ID -->
-                <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
-                @endif
-                @endforeach
+                {{-- @foreach($activeData as $key => $value)
+                @if($value['id'] != old('delDriverId')) --}}
+                 <!-- Use old('del_driver_id') to retrieve the stored driver ID -->
+                {{-- <option value="{{ $value['id'] }}">{{ $value['name'] }}  -  {{ $value['id'] }}  </option> --}}
+                {{-- @endif
+                @endforeach --}}
               </select>
             </div>
             <div class="row mt-3 text-center">

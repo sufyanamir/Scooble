@@ -27,6 +27,7 @@ return new class extends Migration
             $table->text('skiped_address_desc')->nullable();
             $table->integer('trip_id');
             $table->integer('order_no');
+            $table->integer('order_no_optimize')->nullable();
             $table->string('status')->default('Invalid');
             $table->integer('address_status')->default(2);
             $table->integer('created_by');
