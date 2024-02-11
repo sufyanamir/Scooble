@@ -364,7 +364,16 @@ if(isset($user->role) && $user->role == user_roles('1')){
         </a>
         <!-- <span class="tooltip">@lang('lang.packages')</span> -->
       </li>
+      <li>
+        <a href="{{'/reports'}}">
+          <i class=" ml-3 fa fa-box-open">
+          </i>
+          <span class="link_name">Reports</span>
+        </a>
+        <!-- <span class="tooltip">@lang('lang.packages')</span> -->
+      </li>
       @endif
+      
 
       <!-- @if(view_permission('home'))
       <li>
