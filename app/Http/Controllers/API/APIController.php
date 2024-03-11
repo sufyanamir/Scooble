@@ -737,10 +737,19 @@ class APIController extends Controller
                 return response()->json(['status' => 'success', 'message' => $message, 'data' => ['waypoint' => $address, 'ongoing' => $addressToUpdate, 'activeAddress' => $activeAddress]]);
             } elseif ($request->has('next_waypoint')) {
 
-                $trip = Trip::with(['addresses' => function ($query) {
-                    $query->orderBy('order_no', 'ASC');
-                }])->find($request->id);
+                // $trip = Trip::with(['addresses' => function ($query) {
+                //     $query->orderBy('order_no_optimize', 'ASC');
+                // }])->find($request->id);
+                $trip = Trip::where('id', $request->id)->first();
+                if ($trip->trip_optimized == 1) {
+                    $addresses = Address::where('trip_id', $trip->id)->orderBy('order_no_optimize', 'ASC')->get();
+                }else{
+                    $addresses = Address::where('trip_id', $trip->id)->orderBy('order_no', 'ASC')->get();
+                }
+                $trip['addresses'] = $addresses;
                 $tripData = $trip->toArray();
+
+                // dd($tripData);
 
                 if ($tripData['status'] == 1) {
                     foreach ($tripData['addresses'] as $value) {

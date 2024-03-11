@@ -914,10 +914,10 @@
             // Remove event listeners
             var draggableItems = document.querySelectorAll('.draggablecards');
             draggableItems.forEach(function(item) {
-                item.removeEventListener('dragstart', handleDragStart, false);
-                item.removeEventListener('dragover', handleDragOver, false);
-                item.removeEventListener('dragleave', handleDragLeave, false);
-                item.removeEventListener('drop', handleDrop, false);
+                // item.removeEventListener('dragstart', handleDragStart, false);
+                // item.removeEventListener('dragover', handleDragOver, false);
+                // item.removeEventListener('dragleave', handleDragLeave, false);
+                // item.removeEventListener('drop', handleDrop, false);
             });
 
             // Remove 'dragging' class from any element that has it
