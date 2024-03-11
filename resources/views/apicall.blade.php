@@ -1677,8 +1677,20 @@
                                 return `<i class="fa-solid fa-spinner"></i>`;
                             } else if (value === 3) {
                                 return `<i class="fa-solid fa-check"></i>`;
-                            } else {
+                            } else if (value === 4) {
                                 return `<i class="fa-solid fa-forward"></i>`;
+                            }
+                        }
+
+                        function addressStatusText(value) {
+                            if (value === 1) {
+                                return `On Going`;
+                            } else if (value === 2) {
+                                return `Pending`;
+                            } else if (value === 3) {
+                                return `Completed`;
+                            } else if (value === 4) {
+                                return `Skipped`;
                             }
                         }
 
@@ -1694,6 +1706,8 @@
                                 .title));
                             $tr.append($("<td class='text-wrap'>").text(address
                                 .desc));
+                                $tr.append($("<td class='text-wrap'>").html(addressStatusText(address
+                                .address_status)));;
 
                             // Convert and add pic column
                             $tr.append($("<td>").html(convertToYesNo(address

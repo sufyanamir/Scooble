@@ -256,11 +256,12 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
         <div class="table-div">
             <table class="table">
                 <tr>
-                    <th colspan="5" class="th">Addresses Details</th>
+                    <th colspan="6" class="th">Addresses Details</th>
                 </tr>
                 <tr>
                     <th class="th">Address</th>
                     <th class="th">Description</th>
+                    <th class="th">Status</th>
                     <th class="th" style="width: 25% !important;">Note</th>
                     <th class="th">Signature</th>
                     <th class="th">Picture</th>
@@ -270,6 +271,15 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
                 <tr>
                     <td class="td">{{ $address['title'] }}</td>
                     <td class="td">{{ $address['desc'] }}</td>
+                    @if($address['address_status'] == 1)
+                    <td class="td">On Going</td>
+                    @elseif($address['address_status'] == 2)
+                    <td class="td">Pending</td>
+                    @elseif($address['address_status'] == 3)
+                    <td class="td">Completed</td>
+                    @elseif($address['address_status'] == 4)
+                    <td class="td">Skipped</td>
+                    @endif
                     <td class="td">
                         @if($address['driv_trip_note'])
                         <!-- <i class="fa-solid fa-check"></i> -->
