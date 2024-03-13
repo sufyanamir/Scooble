@@ -278,12 +278,20 @@
     });
   </script>
 
-  @else
+  @elseif($user->role == 'Client')
   <script>
     var users_table = $('#routes-table').DataTable();
     $('#filter_by_sts_routes').on('change', function() {
         var selectedStatus = $(this).val();
         users_table.column(7).search(selectedStatus).draw();
+    });
+  </script>
+  @elseif($user->role == 'Driver')
+  <script>
+    var users_table = $('#routes-table').DataTable();
+    $('#filter_by_sts_routes').on('change', function() {
+        var selectedStatus = $(this).val();
+        users_table.column(6).search(selectedStatus).draw();
     });
   </script>
   @endif

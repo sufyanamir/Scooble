@@ -79,6 +79,7 @@
                                       <th style="color: #452C88;"><span></span></th>
                                       <th style="color: #452C88;"><span>@lang('lang.address')</span></th>
                                       <th style="color: #452C88;"><span>@lang('lang.description')</span></th>
+                                      <th style="color: #452C88;"><span>@lang('lang.status')</span></th>
                                       <th style="color: #452C88;"><span>@lang('lang.picture')</span></th>
                                       <th style="color: #452C88;"><span>@lang('lang.signature')</span></th>
                                       <th style="color: #452C88;"><span>@lang('lang.note')</span></th>

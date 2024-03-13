@@ -316,19 +316,30 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
 <!-- duplicateroute Client Modal End -->
 @if($user->role == user_roles('1'))
   <script>
-    var users_table = $('#canlendar-table').DataTable();
+    var users_table = $('#canlendar-table').DataTable({
+        "order": [[0, 'desc']] // Sort by the first column in descending order (0 is the index of the first column)
+    });
+
     $('#filter_by_sts_routes').on('change', function() {
         var selectedStatus = $(this).val();
         users_table.column(7).search(selectedStatus).draw();
     });
   </script>
 
-  @else
+  @elseif($user->role == 'Client')
   <script>
     var users_table = $('#canlendar-table').DataTable();
     $('#filter_by_sts_routes').on('change', function() {
         var selectedStatus = $(this).val();
         users_table.column(7).search(selectedStatus).draw();
+    });
+  </script>
+  @elseif($user->role == 'Driver')
+  <script>
+    var users_table = $('#canlendar-table').DataTable();
+    $('#filter_by_sts_routes').on('change', function() {
+        var selectedStatus = $(this).val();
+        users_table.column(6).search(selectedStatus).draw();
     });
   </script>
   @endif
