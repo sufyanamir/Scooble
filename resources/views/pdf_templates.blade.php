@@ -291,7 +291,7 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
                     <td class="td">
                         @if($address['driv_trip_signature'])
                         <!-- <i class="fa-solid fa-check"></i> -->
-                        <img style="width: 50px; height: 50px; object-fit:cover;" src="{{ $address['driv_trip_signature'] }}" alt="Image">
+                        <img style="width: 100px; height: 100px; object-fit:contain;" src="{{ $address['driv_trip_signature'] }}" alt="Image">
                         @else
                         <i class="fa-solid fa-xmark"></i>
                         @endif

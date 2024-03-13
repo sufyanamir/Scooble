@@ -727,7 +727,7 @@ $remainingDays = ($tripDate - $currentDate) / (60 * 60 * 24);
                             </p>
                             <br>
                             <p class="upload-text" style="color: #D9D9D9;">@lang('lang.upload_image')</p>
-                            <p id="selected-file-name"></p>
+                            <!-- <p id="selected-file-name"></p> -->
                             <img id="image-preview" src="#" alt="Image Preview" style="max-width: 100%; max-height: 100px; display: none;">
                         </label>
                     </div>
