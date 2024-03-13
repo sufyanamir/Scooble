@@ -174,7 +174,7 @@
                                             <span>@lang('lang.import')</span>
                                         </label>
                                         <input type="file" id="importAddress" multiple size="50" style="display: none;">
-                                        <p class="float-right mr-3" style="font-size: smaller;"><a href="{{ asset('storage/excel_files/template_for_scooble.xlsx') }}" download="template_for_scooble.xlsx">@lang('lang.download_sample')!</a></p>
+                                        <p class="float-right mr-3" style="font-size: smaller;"><a href="{{ asset('storage/template_for_scooble.xlsx') }}" download="template_for_scooble.xlsx">@lang('lang.download_sample')!</a></p>
                                     </div>
                                 </div>
 
