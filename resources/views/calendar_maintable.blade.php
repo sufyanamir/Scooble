@@ -159,7 +159,7 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
 											@if($user->role != user_roles('3') && $value['status'] == $tripStatus['Pending'])
 											<form method="POST" action="/create_trip" class="mb-0">
 												@csrf
-												<input type="hidden" name="id" value="{{$value['id']}}">
+												<input type="hidden" name="edit_duplicate_trip_id" value="{{$value['id']}}">
 												<button id="btn_edit_announcement" class="btn p-0">
 													<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
 														<circle opacity="0.1" cx="18" cy="18" r="18" fill="#233A85" />
@@ -167,10 +167,10 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
 													</svg>
 												</button>
 											</form>
-											<button class="btn p-0" data-toggle="modal" data-target="#deleteroute">
+											<button class="btn p-0 delete_rotues" data-id="{{$value['id']}}" >
 												<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<circle opacity="0.1" cx="18" cy="18" r="18" fill="#DF6F79" />
-													<path fill-rule="evenodd" clip-rule="evenodd" d="M23.4909 13.743C23.7359 13.743 23.94 13.9465 23.94 14.2054V14.4448C23.94 14.6975 23.7359 14.9072 23.4909 14.9072H13.0497C12.804 14.9072 12.6 14.6975 12.6 14.4448V14.2054C12.6 13.9465 12.804 13.743 13.0497 13.743H14.8866C15.2597 13.743 15.5845 13.4778 15.6684 13.1036L15.7646 12.6739C15.9141 12.0887 16.4061 11.7 16.9692 11.7H19.5708C20.1277 11.7 20.6252 12.0887 20.7692 12.6431L20.8721 13.1029C20.9555 13.4778 21.2802 13.743 21.654 13.743H23.4909ZM22.5577 22.4943C22.7495 20.707 23.0852 16.4609 23.0852 16.418C23.0975 16.2883 23.0552 16.1654 22.9713 16.0665C22.8812 15.9739 22.7672 15.9191 22.6416 15.9191H13.9032C13.777 15.9191 13.6569 15.9739 13.5735 16.0665C13.489 16.1654 13.4473 16.2883 13.4534 16.418C13.4546 16.4259 13.4666 16.5755 13.4868 16.8255C13.5762 17.9364 13.8255 21.0303 13.9865 22.4943C14.1005 23.5729 14.8081 24.2507 15.8332 24.2753C16.6242 24.2936 17.4391 24.2999 18.2724 24.2999C19.0573 24.2999 19.8544 24.2936 20.6699 24.2753C21.7305 24.257 22.4376 23.5911 22.5577 22.4943Z" fill="#D11A2A" />
+												<circle opacity="0.1" cx="18" cy="18" r="18" fill="#DF6F79" />
+												<path fill-rule="evenodd" clip-rule="evenodd" d="M23.4909 13.743C23.7359 13.743 23.94 13.9465 23.94 14.2054V14.4448C23.94 14.6975 23.7359 14.9072 23.4909 14.9072H13.0497C12.804 14.9072 12.6 14.6975 12.6 14.4448V14.2054C12.6 13.9465 12.804 13.743 13.0497 13.743H14.8866C15.2597 13.743 15.5845 13.4778 15.6684 13.1036L15.7646 12.6739C15.9141 12.0887 16.4061 11.7 16.9692 11.7H19.5708C20.1277 11.7 20.6252 12.0887 20.7692 12.6431L20.8721 13.1029C20.9555 13.4778 21.2802 13.743 21.654 13.743H23.4909ZM22.5577 22.4943C22.7495 20.707 23.0852 16.4609 23.0852 16.418C23.0975 16.2883 23.0552 16.1654 22.9713 16.0665C22.8812 15.9739 22.7672 15.9191 22.6416 15.9191H13.9032C13.777 15.9191 13.6569 15.9739 13.5735 16.0665C13.489 16.1654 13.4473 16.2883 13.4534 16.418C13.4546 16.4259 13.4666 16.5755 13.4868 16.8255C13.5762 17.9364 13.8255 21.0303 13.9865 22.4943C14.1005 23.5729 14.8081 24.2507 15.8332 24.2753C16.6242 24.2936 17.4391 24.2999 18.2724 24.2999C19.0573 24.2999 19.8544 24.2936 20.6699 24.2753C21.7305 24.257 22.4376 23.5911 22.5577 22.4943Z" fill="#D11A2A" />
 												</svg>
 											</button>
 											@endif
@@ -178,7 +178,7 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
 											@if ($user->role != user_roles('3') &&$value['status'] == $tripStatus['Completed'])
 											<form method="POST" action="/create_trip" class="mb-0">
 												@csrf
-												<input type="hidden" name="id" value="{{$value['id']}}">
+												<input type="hidden" name="edit_duplicate_trip_id" value="{{$value['id']}}">
 												<input type="hidden" name="dashboard_data" value="1">
 												<button class="btn p-0">
 												<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -234,41 +234,49 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
 <!-- content-wrapper ends -->
 <!-- Delete Client Modal -->
 <div class="modal fade" id="deleteroute" tabindex="-1" aria-labelledby="deleterouteLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<!-- <div class="modal-header">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <!-- <div class="modal-header">
           <h5 class="modal-title" id="deleterouteLabel"></h5>
         </div> -->
-			<div class="modal-body">
-				<svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<rect x="4" y="4" width="48" height="48" rx="24" fill="#FEE4E2"/>
-					<path d="M32 22V21.2C32 20.0799 32 19.5198 31.782 19.092C31.5903 18.7157 31.2843 18.4097 30.908 18.218C30.4802 18 29.9201 18 28.8 18H27.2C26.0799 18 25.5198 18 25.092 18.218C24.7157 18.4097 24.4097 18.7157 24.218 19.092C24 19.5198 24 20.0799 24 21.2V22M26 27.5V32.5M30 27.5V32.5M19 22H37M35 22V33.2C35 34.8802 35 35.7202 34.673 36.362C34.3854 36.9265 33.9265 37.3854 33.362 37.673C32.7202 38 31.8802 38 30.2 38H25.8C24.1198 38 23.2798 38 22.638 37.673C22.0735 37.3854 21.6146 36.9265 21.327 36.362C21 35.7202 21 34.8802 21 33.2V22" stroke="#D92D20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-					<rect x="4" y="4" width="48" height="48" rx="24" stroke="#FEF3F2" stroke-width="8"/>
-				</svg>
-			<div class="float-right">
-				<button class="btn p-0" data-dismiss="modal">
-				<svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M28 16L16 28M16 16L28 28" stroke="#667085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-				</svg>
-				</button>
-			</div>
-				<div class="mt-3">
-					<h6>@lang('lang.really_want_to_delete_route')</h6>
-				</div>
-				<div class="row mt-3 text-center">
-					<div class="col-lg-6">
-						<button class="btn btn-sm btn-outline px-5" data-toggle="modal" data-target="#deleteroute" style="background-color: #ffffff; border: 1px solid #D0D5DD; border-radius: 8px; width: 100%;">Cancel</button>
-					</div>
-					<div class="col-lg-6">
-						<button class="btn btn-sm btn-outline text-white px-5" data-toggle="modal" data-target="#deleteroute" style="background-color: #D92D20; border-radius: 8px; width: 100%;">Delete</button>
-					</div>
-				</div>
-			</div>
-			<!-- <div class="modal-footer">
+        <div class="modal-body">
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="4" width="48" height="48" rx="24" fill="#FEE4E2"/>
+          <path d="M32 22V21.2C32 20.0799 32 19.5198 31.782 19.092C31.5903 18.7157 31.2843 18.4097 30.908 18.218C30.4802 18 29.9201 18 28.8 18H27.2C26.0799 18 25.5198 18 25.092 18.218C24.7157 18.4097 24.4097 18.7157 24.218 19.092C24 19.5198 24 20.0799 24 21.2V22M26 27.5V32.5M30 27.5V32.5M19 22H37M35 22V33.2C35 34.8802 35 35.7202 34.673 36.362C34.3854 36.9265 33.9265 37.3854 33.362 37.673C32.7202 38 31.8802 38 30.2 38H25.8C24.1198 38 23.2798 38 22.638 37.673C22.0735 37.3854 21.6146 36.9265 21.327 36.362C21 35.7202 21 34.8802 21 33.2V22" stroke="#D92D20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="4" y="4" width="48" height="48" rx="24" stroke="#FEF3F2" stroke-width="8"/>
+        </svg>
+        <div class="float-right">
+          <button class="btn p-0" data-dismiss="modal" data-bs-dismiss="modal">
+          <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M28 16L16 28M16 16L28 28" stroke="#667085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          </button>
+        </div>
+          <div class="mt-3">
+            <h6>@lang('lang.really_want_to_delete_route')</h6>
+          </div>
+          <div class="row mt-3 text-center">
+            <div class="col-lg-6">
+              <button class="btn btn-sm btn-outline px-5" data-bs-dismiss="modal" data-dismiss="modal" data-target="#deleteroute" style="background-color: #ffffff; border: 1px solid #D0D5DD; border-radius: 8px; width: 100%;">@lang('lang.cancel')</button>
+            </div>
+            <div class="col-lg-6">
+                <form method="post" id="DeleteData" action="deleteUsers">
+                    <input type="hidden" id="trip_id" name="trip_id">
+                    <input type="hidden" id="user_id" name="id" value="{{$user->id}}">
+                    <button  type="submit" class="btn  btn_deleteUser btn-sm btn-outline text-white px-5" style="background-color: #D92D20; border-radius: 8px; width: 100%;">
+                      <div class="spinner-border btn_spinner spinner-border-sm text-white d-none" ></div>
+                      <span id="add_btn">@lang('lang.delete')</span>
+                  </button>
+                </form>
+                </div>
+          </div>
+        </div>
+        <!-- <div class="modal-footer">
+                    
                 </div> -->
-		</div>
-	</div>
-</div>
+      </div>
+    </div>
+  </div>
 <!-- Delete Client Modal End -->
 
 <!-- duplicateroute Client Modal -->
@@ -297,16 +305,16 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
 					<h6>Really want to duplicate trip?</h6>
 					<p style="color: #475467;">All the trip data will reset when you click continue.</p>
 				</div>
+				<form method="POST" action="/create_trip" class="mb-0">
 				<div class="row mt-3 text-center">
 					<div class="col-lg-12">
-					<form method="POST" action="/create_trip" class="mb-0">
 						@csrf
-						<input id="inp_trip" type="hidden" name="id" value="">
+						<input id="inp_trip" type="hidden" name="edit_duplicate_trip_id" value="">
 						<input  type="hidden" name="duplicate_trip" value="1">
 						<button class="btn btn-lg btn-outline text-white" data-toggle="modal" data-target="#duplicateroute" style="background-color: #233A85; border-radius: 8px; width: 100%;">Continue</button>
-					</form>
 					</div>
 				</div>
+			</form>
 			</div>
 			<!-- <div class="modal-footer">
                 </div> -->

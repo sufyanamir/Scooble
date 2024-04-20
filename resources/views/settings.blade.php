@@ -97,7 +97,7 @@
 
                 <p>{{ $user->email }} 
                 @if( $user->role == user_roles('2'))  
-                <sub style=" color:#452C88;"> {{ $user->package->title ?? '' }} </sub>
+                <!-- <sub style=" color:#452C88;"> {{ $user->package->title ?? '' }} </sub> -->
                 @endif
               </p>
               </div>
@@ -111,7 +111,7 @@
                 </div>
                 <div class="col-lg-6 col-sm-12 mt-3">
                   <label class="mb-0" style="color: #452C88;" for="phone"><span><b>@lang('lang.phone_number')</b></span></label>
-                  <input type="text" class="form-control" value="{{$user->phone}}" name="phone" id="phone" placeholder="@lang('lang.enter_your_number')">
+                  <input type="number" class="form-control" value="{{$user->phone}}" name="phone" id="phone" placeholder="@lang('lang.enter_your_number')">
                 </div>
                 <!-- <div class="col-lg-6 col-sm-4 mt-3">
                   <label class="mb-0" style="color: #452C88;" for="country"><span><b>@lang('lang.country')</b></span></label>

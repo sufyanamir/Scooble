@@ -204,6 +204,7 @@ class APIController extends Controller
             $user->com_name           = $request->com_name;
             $user->address            = $request->address;
             $user->role               = $request->role;
+            $user->status               = 1;
             $user->country            = $request->country;
             $user->zip_code           = $request->zip_code;
             $user->city               = $request->city;
@@ -1110,29 +1111,35 @@ class APIController extends Controller
 
     public function storeEvent(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'id' => 'required',
-            'trip_date' => 'required|date',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['status' => 'error', 'message' => $validator->errors()], 400);
-        }
-
-        try {
-
-            $trip = Trip::find($request->id);
-
-            $isExistingTrip = $trip->exists;
-
-            $trip->trip_date = $request->trip_date;
-            $trip->updated_by = Auth::id();
-            $save = $trip->save();
-
-            $message = $isExistingTrip ? 'Trip date updated successfully' : 'Trip date saved successfully';
-            return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => 'Error updating date ', 'error' => $e->getMessage()], 500);
+        $user = auth()->user();
+        if ($user->role == 'Admin' || $user->role == 'Client') {
+            
+            $validator = Validator::make($request->all(), [
+                'id' => 'required',
+                'trip_date' => 'required|date',
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json(['status' => 'error', 'message' => $validator->errors()], 400);
+            }
+    
+            try {
+    
+                $trip = Trip::find($request->id);
+    
+                $isExistingTrip = $trip->exists;
+    
+                $trip->trip_date = $request->trip_date;
+                $trip->updated_by = Auth::id();
+                $save = $trip->save();
+    
+                $message = $isExistingTrip ? 'Trip date updated successfully' : 'Trip date saved successfully';
+                return response()->json(['status' => 'success', 'message' => $message, 'data' => $save]);
+            } catch (\Exception $e) {
+                return response()->json(['status' => 'error', 'message' => 'Error updating date ', 'error' => $e->getMessage()], 500);
+            }
+        }else{
+            return response()->json(['status' => 'error', 'message' => 'You cannot update the trip date!'], 400);
         }
     }
 

@@ -188,8 +188,16 @@ $(function() {
 
     // If trip status is 2, set draggable to true and droppable to true
     if (trip.status === 2) {
-      draggable = true;
-      droppable = true;
+      
+      @if($user->role == 'Client' || $user->role == 'Admin'){
+        draggable = true;
+        droppable = true;
+      }
+      @else{
+        draggable = false;
+        droppable = false;
+      }
+      @endif
     } else {
       // For other statuses (1, 3, or 4), set draggable to true but droppable to false
       draggable = false;

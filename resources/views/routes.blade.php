@@ -155,7 +155,7 @@
                     @if($user->role != user_roles('3') && $value['status'] == $tripStatus['Pending'])
                       <form method="POST" action="/create_trip" class="mb-0">
                         @csrf
-                        <input type="hidden" name="id" value="{{$value['id']}}">
+                        <input type="hidden" name="edit_duplicate_trip_id" value="{{$value['id']}}">
                         <button id="btn_edit_announcement" class="btn p-0">
                           <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle opacity="0.1" cx="18" cy="18" r="18" fill="#233A85" />
@@ -173,7 +173,7 @@
                       @if ($user->role != user_roles('3') &&$value['status'] == $tripStatus['Completed'])
                       <form method="POST" action="/create_trip" class="mb-0">
                         @csrf
-                        <input type="hidden" name="id" value="{{$value['id']}}">
+                        <input type="hidden" name="edit_duplicate_trip_id" value="{{$value['id']}}">
                         <input type="hidden" name="dashboard_data" value="1">
                         <button class="btn p-0">
                           <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -233,7 +233,7 @@
           <rect x="4" y="4" width="48" height="48" rx="24" stroke="#FEF3F2" stroke-width="8"/>
         </svg>
         <div class="float-right">
-          <button class="btn p-0" data-dismiss="modal">
+          <button class="btn p-0" data-dismiss="modal" data-bs-dismiss="modal">
           <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M28 16L16 28M16 16L28 28" stroke="#667085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -244,7 +244,7 @@
           </div>
           <div class="row mt-3 text-center">
             <div class="col-lg-6">
-              <button class="btn btn-sm btn-outline px-5" data-toggle="modal" data-target="#deleteroute" style="background-color: #ffffff; border: 1px solid #D0D5DD; border-radius: 8px; width: 100%;">@lang('lang.cancel')</button>
+              <button class="btn btn-sm btn-outline px-5" data-bs-dismiss="modal" data-dismiss="modal" data-target="#deleteroute" style="background-color: #ffffff; border: 1px solid #D0D5DD; border-radius: 8px; width: 100%;">@lang('lang.cancel')</button>
             </div>
             <div class="col-lg-6">
               <form method="post" id="DeleteData" action="deleteUsers">
@@ -254,7 +254,7 @@
                       <div class="spinner-border btn_spinner spinner-border-sm text-white d-none" ></div>
                       <span id="add_btn">@lang('lang.delete')</span>
                   </button>
-                  </from>
+                  </form>
                 </div>
           </div>
         </div>

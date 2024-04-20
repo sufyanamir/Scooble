@@ -156,7 +156,7 @@
             </select>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-sm text-white px-5" id="change_sts" name="change_sts" type="submit" style="background-color: #233A85; border-radius: 8px;">
+            <button class="btn btn-sm text-white px-5" disabled id="change_sts" name="change_sts" type="submit" style="background-color: #233A85; border-radius: 8px;">
               <div class="spinner-border spinner-border-sm text-white d-none" id="spinner"></div>
               <span id="add_btn">@lang('lang.ok')</span>
             </button>
@@ -324,32 +324,30 @@
     });
   </script>
 
-  <script>
-    const assignedCheckbox = document.getElementById('assignedCheckbox');
-    const completedCheckbox = document.getElementById('completedCheckbox');
-    const dontDeleteCheckbox = document.getElementById('dontDeleteCheckbox');
-
-    assignedCheckbox.addEventListener('change', function() {
-      if (this.checked) {
-        completedCheckbox.checked = false;
-        dontDeleteCheckbox.checked = false;
+<script>
+  $(document).ready(function() {
+    $('#assignedCheckbox').change(function() {
+      if ($(this).prop('checked')) {
+        $('#completedCheckbox').prop('checked', false);
+        $('#dontDeleteCheckbox').prop('checked', false);
       }
     });
 
-    completedCheckbox.addEventListener('change', function() {
-      if (this.checked) {
-        assignedCheckbox.checked = false;
-        dontDeleteCheckbox.checked = false;
+    $('#completedCheckbox').change(function() {
+      if ($(this).prop('checked')) {
+        $('#assignedCheckbox').prop('checked', false);
+        $('#dontDeleteCheckbox').prop('checked', false);
       }
     });
 
-    dontDeleteCheckbox.addEventListener('change', function() {
-      if (this.checked) {
-        assignedCheckbox.checked = false;
-        completedCheckbox.checked = false;
+    $('#dontDeleteCheckbox').change(function() {
+      if ($(this).prop('checked')) {
+        $('#assignedCheckbox').prop('checked', false);
+        $('#completedCheckbox').prop('checked', false);
       }
     });
-  </script>
+  });
+</script>
 
 
   <script>
@@ -450,3 +448,8 @@
       return re.test(email);
     }
   </script>
+<script>
+  $('#status').change(function(){
+    $('#change_sts').removeAttr('disabled');
+  });
+</script>

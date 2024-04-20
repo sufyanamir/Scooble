@@ -259,10 +259,10 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
                     <th colspan="6" class="th">Addresses Details</th>
                 </tr>
                 <tr>
-                    <th class="th">Address</th>
+                    <th class="th" style="width: 30%;">Address</th>
                     <th class="th">Description</th>
                     <th class="th">Status</th>
-                    <th class="th" style="width: 25% !important;">Note</th>
+                    <th class="th" style="width: 20% !important;">Note</th>
                     <th class="th">Signature</th>
                     <th class="th">Picture</th>
                 </tr>
@@ -299,7 +299,7 @@ $tripStatus_trans = config('constants.TRIP_STATUS_' . app()->getLocale());
                     <td class="td">
                         @if($address['driv_trip_pic'])
                         <!-- <i class="fa-solid fa-check"></i> -->
-                        <img style="width: 50px; height: 50px; object-fit: cover;" src="{{ asset('storage/' . $address['driv_trip_pic']) }}" alt="">
+                        <img style="width: 75px; height: 75px; object-fit: cover;" src="{{ asset('storage/' . $address['driv_trip_pic']) }}" alt="">
                         @else
                         <i class="fa-solid fa-xmark"></i>
                         @endif

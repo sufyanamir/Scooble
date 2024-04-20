@@ -758,6 +758,8 @@
                             if (response.tripDleted == 'yes') {
                                 $('#routes-table').load(location.href +
                                     " #routes-table > *");
+                                    $('#canlendar-table').load(location.href +
+                                    " #canlendar-table > *");
                                 $('#deleteroute').modal('hide');
                                 showAlert("Success", response.message, response.status);
                             }
@@ -940,7 +942,7 @@
         });
 
         // deleting users ... calling modals
-        $(document).on('click', '#btn_dellu_ser', function() {
+        $(document).on('click', '#btn_dell_user', function() {
 
             let user_id = $(this).attr('data-id');
             let driver_id = $(this).attr('driver-id');

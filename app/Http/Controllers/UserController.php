@@ -324,7 +324,7 @@ class UserController extends Controller
         return redirect()->back();
     }
     $data['duplicate_trip'] = null;
-    if ($request->has('id')) {
+    if ($request->has('edit_duplicate_trip_id')) {
 
         $data['duplicate_trip'] = $request->duplicate_trip ?? null;
 
@@ -332,7 +332,7 @@ class UserController extends Controller
             //for admin
             $trip = Trip::with(['addresses' => function ($query) {
                 $query->orderBy('order_no', 'ASC');
-            }])->find($request->id);
+            }])->find($request->edit_duplicate_trip_id);
 
             $data['data'] = $trip->toArray();
             $data['data']['addresses'] = $trip->addresses->toArray();
@@ -352,7 +352,7 @@ class UserController extends Controller
         } else {
             $trip = Trip::with(['addresses' => function ($query) {
                 $query->orderBy('order_no', 'ASC');
-            }])->find($request->id);
+            }])->find($request->edit_duplicate_trip_id);
 
             $data['data'] = $trip->toArray();
             $data['data']['addresses'] = $trip->addresses->toArray();
