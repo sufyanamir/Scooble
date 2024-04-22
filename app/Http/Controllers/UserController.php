@@ -889,7 +889,7 @@ class UserController extends Controller
                 $emailData = [
                     'otp' => 'Account Activation',
                     'name' => $user->name,
-                    'body' => 'Dear You Account has been activated successfully :',
+                    'body' => 'Dear Your Account has been activated successfully :',
                 ];
                 $mail = new otpVerifcation($emailData);
 
@@ -904,6 +904,13 @@ class UserController extends Controller
         }
         else{
             $user->status     = $request->status;
+            if ($user->role == 'Client') {
+                $drivers = User::where('role', 'Driver')->get();
+                foreach ($drivers as $driver) {
+                    $driver->status = $request->status;
+                    $driver->save();
+                }
+            }
             $save = $user->save();
             echo $save;
         }

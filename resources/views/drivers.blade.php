@@ -108,7 +108,7 @@
                     @if($value['status'] == 1)
                     <td>
                       <button class="btn btn_status">
-                        <span data-client_id="{{$value['id']}}">
+                        <span data-client_id="{{$value['id']}}" data-status="{{$value['status']}}">
                           <div style="width: 100%; height: 100%; padding-top: 5px; padding-bottom: 5px; padding-left: 19px; padding-right: 20px; background: rgba(48.62, 165.75, 19.34, 0.18); border-radius: 3px; justify-content: center; align-items: center; display: inline-flex">
                             <div style="color: #31A613; font-size: 14px; font-weight: 500; word-wrap: break-word">Active</div>
                           </div>
@@ -118,7 +118,7 @@
                     @elseif($value['status'] == 2)
                     <td>
                       <button class="btn btn_status">
-                        <span data-client_id="{{$value['id']}}">
+                        <span data-client_id="{{$value['id']}}" data-status="{{$value['status']}}">
                         <div style="width: 100%; height: 100%; padding-top: 6px; padding-bottom: 4px; padding-left: 15px; padding-right: 13px; background: rgba(77, 77, 77, 0.12); border-radius: 3px; justify-content: center; align-items: center; display: inline-flex">
                           <div style="text-align: center; color: #8F9090; font-size: 14px; font-weight: 500; word-wrap: break-word">@lang('lang.pending')</div>
                         </div>
@@ -128,7 +128,7 @@
                     @elseif($value['status'] == 5)
                     <td>
                       <button class="btn btn_status">
-                        <span data-client_id="{{$value['id']}}">
+                        <span data-client_id="{{$value['id']}}" data-status="{{$value['status']}}">
                         <div style="width: 100%; height: 100%; padding-top: 6px; padding-bottom: 7px; padding-left: 14px; padding-right: 12px;    background: rgba(245, 34, 45, 0.19); border-radius: 3px; justify-content: center; align-items: center; display: inline-flex">
                           <div style="text-align: center; color: #F5222D; font-size: 14px; font-weight: 500; word-wrap: break-word">@lang('lang.deleted')</div>
                       </div>
@@ -139,7 +139,7 @@
                     @else
                     <td>
                       <button class="btn btn_status">
-                        <span data-client_id="{{$value['id']}}">
+                        <span data-client_id="{{$value['id']}}" data-status="{{$value['status']}}">
                         <div style="width: 100%; height: 100%; padding-top: 6px; padding-bottom: 7px; padding-left: 14px; padding-right: 12px;    background: rgba(245, 34, 45, 0.19); border-radius: 3px; justify-content: center; align-items: center; display: inline-flex">
                           <div style="text-align: center; color: #F5222D; font-size: 14px; font-weight: 500; word-wrap: break-word">@lang('lang.suspend')</div>
                       </div>

@@ -1296,6 +1296,9 @@
                     requirment_filled.push('yes');
                 }
             } else {
+                const signatureDataUrl = signaturePad.toDataURL();
+
+                formData.set('driv_signature', signatureDataUrl);
                 requirment_filled.push('yes');
             }
 
@@ -1336,6 +1339,7 @@
                             if (response.data.waypoint.id) {
                                 $('#btn_complete_add').trigger('click');
                                 form[0].reset();
+                                $("#charCount1").text("150");
                                 $('#clear-btn').trigger('click');
                                 $('.upload-text').text('Upload Image')
                                 $('#btn-waypoint_details').fadeOut('slow').attr(
@@ -1558,8 +1562,10 @@
         //user status
         $(document).on('click', '.btn_status', function() {
             var id = $(this).find('span').attr('data-client_id');
+            var status = $(this).find('span').attr('data-status');
             $('#user_sts_modal').modal('show');
             $('#user_sts').data('id', id);
+            $('#status').val(status);
         });
 
         $(document).on('click', '#btn_dell_client', function() {
@@ -1675,11 +1681,11 @@
                         function addressStatus(value) {
                             if (value === 1) {
                                 return `<i class="fa-solid fa-hourglass-start"></i>`;
-                            } else if (value === 2) {
+                            } else if (value == 2) {
                                 return `<i class="fa-solid fa-spinner"></i>`;
-                            } else if (value === 3) {
+                            } else if (value == 3) {
                                 return `<i class="fa-solid fa-check"></i>`;
-                            } else if (value === 4) {
+                            } else if (value == 4) {
                                 return `<i class="fa-solid fa-forward"></i>`;
                             }
                         }
@@ -1687,11 +1693,11 @@
                         function addressStatusText(value) {
                             if (value === 1) {
                                 return `On Going`;
-                            } else if (value === 2) {
+                            } else if (value == 2) {
                                 return `Pending`;
-                            } else if (value === 3) {
+                            } else if (value == 3) {
                                 return `Completed`;
-                            } else if (value === 4) {
+                            } else if (value == 4) {
                                 return `Skipped`;
                             }
                         }
