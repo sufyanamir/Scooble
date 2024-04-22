@@ -108,24 +108,35 @@ class UserController extends Controller
 
                         // $data['announcements'] = Announcement::where('start_date', '<=', $current_date)->where('end_date', '>=', $current_date)->get()->toArray();
 
-                        $data['user']           = $user;
-                        $data['drivers'] = User::where(['role' => user_roles('3'), 'client_id' => $user->id, 'status' => $this->userStatus['Active']])
-                        ->select('id', 'name', 'user_pic')
-                        ->addSelect(DB::raw('ROUND(((
-                            SELECT COUNT(*)
-                            FROM trips
-                            WHERE trips.driver_id = users.id
-                            AND DATE(trip_date) = CURDATE()
-                            AND status = 1
-                        ) / (
-                            SELECT COUNT(*)
-                            FROM trips
-                            WHERE trips.driver_id = users.id
-                            AND DATE(trip_date) = CURDATE()
-                            AND status IN (1, 2)
-                        )) * 100, 2) as driv_active_percentage'))
-                        ->get()
-                        ->toArray();
+                        $data['user'] = $user;
+                        $drivers = User::where(['role' => user_roles('3'), 'client_id' => $user->id, 'status' => $this->userStatus['Active']])
+                            ->select('id', 'name', 'user_pic')
+                            ->get();
+
+                        $totalCompletedTrips = 0;
+                        $totalTrips = 0;
+
+                        foreach ($drivers as $driver) {
+                            $completedTrips = Trip::where('driver_id', $driver->id)
+                                ->whereDate('trip_date', Carbon::today())
+                                ->where('status', 3) // Completed trips status
+                                ->count();
+
+                            $inProgressTrips = Trip::where('driver_id', $driver->id)
+                                ->whereDate('trip_date', Carbon::today())
+                                ->where('status', 2) // Pending and In Progress trips status
+                                ->count();
+
+                            $totalTrips = $completedTrips + $inProgressTrips;
+                            $driv_active_percentage = ($totalTrips > 0) ? round(($completedTrips / $totalTrips) * 100, 2) : 0;
+
+                            $driver->driv_active_percentage = $driv_active_percentage;
+
+                            $totalCompletedTrips += $completedTrips;
+                        }
+
+                        $data['drivers'] = $drivers->toArray();
+                        $data['driv_active_percentage'] = ($totalTrips > 0) ? round(($totalCompletedTrips / $totalTrips) * 100, 2) : 0;
 
                         $data['driversCount'] = count($data['drivers'] ?? []);
 
