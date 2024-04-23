@@ -14,7 +14,7 @@
       </h3>
     </div>
     <div class="container-fluid">
-      <div class="row mb-4">
+      <!-- <div class="row mb-4">
         <div class="col-lg-2">
           <span class="mx-3">
             <div class="row">
@@ -37,7 +37,7 @@
             </div>
           </span>
         </div>
-      </div>
+      </div> -->
       @if($data)
       @if(count($data) > 0)
           @foreach($data as $key => $value)
