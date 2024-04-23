@@ -46,8 +46,9 @@
         }
     }
 
-    // Function to make the AJAX call and update the charts
-    function updateCharts(selectedDate, user_id) {
+    $('#datePickerInput').change(function () {
+        var selectedDate = $(this).val();
+        var user_id = "{{$user->id}}";
         var apiname = 'trip_charts';
         var apiurl = "{{ end_url('') }}" + apiname;  
         var bearerToken = "{{session('user')}}";
@@ -73,6 +74,7 @@
                     drawChart("canvas", "procent",data.actvTrp_percentage,true);
                     drawChart("canvas1", "procent1",data.compTrp_percentage,true);
                     drawChart("canvas2", "procent2",data.pendTrp_percentage,true);
+                    $("#completed_trips").text(data.completedTrips);
                 } else {
                     // Handle other status cases if needed
                 }
@@ -81,13 +83,7 @@
                 console.log("Error:" +error);
             }
         });
-    }
-
-    // Bind the AJAX call to the date picker change event
-    $('#datePickerInput').change(function () {
-        var selectedDate = $(this).val();
-        var user_id = "{{$user->id}}";
-        updateCharts(selectedDate, user_id);
     });
+
 </script>
 

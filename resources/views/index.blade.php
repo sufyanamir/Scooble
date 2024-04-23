@@ -131,15 +131,23 @@ span#procent2::after {
 <!-- partial -->
   <div class="content-wrapper py-0 my-2">
     <div class="bg-white pb-0 px-3 pt-2" style="border-radius: 20px;">
-      <div class="page-header">
-        <h3 class="page-title">
-          <span class="page-title-icon bg-gradient-primary text-white me-2 py-2">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M2.54 0H5.92C7.33 0 8.46 1.15 8.46 2.561V5.97C8.46 7.39 7.33 8.53 5.92 8.53H2.54C1.14 8.53 0 7.39 0 5.97V2.561C0 1.15 1.14 0 2.54 0ZM2.54 11.4697H5.92C7.33 11.4697 8.46 12.6107 8.46 14.0307V17.4397C8.46 18.8497 7.33 19.9997 5.92 19.9997H2.54C1.14 19.9997 0 18.8497 0 17.4397V14.0307C0 12.6107 1.14 11.4697 2.54 11.4697ZM17.4601 0H14.0801C12.6701 0 11.5401 1.15 11.5401 2.561V5.97C11.5401 7.39 12.6701 8.53 14.0801 8.53H17.4601C18.8601 8.53 20.0001 7.39 20.0001 5.97V2.561C20.0001 1.15 18.8601 0 17.4601 0ZM14.0801 11.4697H17.4601C18.8601 11.4697 20.0001 12.6107 20.0001 14.0307V17.4397C20.0001 18.8497 18.8601 19.9997 17.4601 19.9997H14.0801C12.6701 19.9997 11.5401 18.8497 11.5401 17.4397V14.0307C11.5401 12.6107 12.6701 11.4697 14.0801 11.4697Z" fill="white" />
-            </svg>
-          </span>
-          <span>@lang('lang.dashboard')</span>
-        </h3>
+      <div class="pb-5">
+      <div class=" row">
+        <div class=" col-lg-6">
+            <h3 class="page-title">
+              <span class="page-title-icon bg-gradient-primary text-white me-2 py-2">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.54 0H5.92C7.33 0 8.46 1.15 8.46 2.561V5.97C8.46 7.39 7.33 8.53 5.92 8.53H2.54C1.14 8.53 0 7.39 0 5.97V2.561C0 1.15 1.14 0 2.54 0ZM2.54 11.4697H5.92C7.33 11.4697 8.46 12.6107 8.46 14.0307V17.4397C8.46 18.8497 7.33 19.9997 5.92 19.9997H2.54C1.14 19.9997 0 18.8497 0 17.4397V14.0307C0 12.6107 1.14 11.4697 2.54 11.4697ZM17.4601 0H14.0801C12.6701 0 11.5401 1.15 11.5401 2.561V5.97C11.5401 7.39 12.6701 8.53 14.0801 8.53H17.4601C18.8601 8.53 20.0001 7.39 20.0001 5.97V2.561C20.0001 1.15 18.8601 0 17.4601 0ZM14.0801 11.4697H17.4601C18.8601 11.4697 20.0001 12.6107 20.0001 14.0307V17.4397C20.0001 18.8497 18.8601 19.9997 17.4601 19.9997H14.0801C12.6701 19.9997 11.5401 18.8497 11.5401 17.4397V14.0307C11.5401 12.6107 12.6701 11.4697 14.0801 11.4697Z" fill="white" />
+                </svg>
+              </span>
+              <span>@lang('lang.dashboard')</span>
+            </h3>
+        </div>
+        <div class=" col-lg-6 text-right">
+          <span class="text-muted font-weight-semibold">@lang('lang.show'):</span>
+          <input type="date" class=" date-input" value="{{ date('Y-m-d') }}" id="datePickerInput">
+        </div>
+      </div>  
       </div>
       <div class="container-fluid">
         <div class="row mb-2">
@@ -231,7 +239,7 @@ span#procent2::after {
               <div class="d-flex justify-content-between">
                 <div>
                   <h6 style="color: #452C88;"><span>@lang('lang.completed_trips')</span></h6>
-                  <h5 style="color: #E45F00;">{{ $completedTrips ?? $completedTrips}}</h5>
+                  <h5 style="color: #E45F00;" id="completed_trips">{{ $completedTrips ?? $completedTrips}}</h5>
                 </div>
                 <div>
                   <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -271,8 +279,7 @@ span#procent2::after {
             <div class="row">
               <div class="col-lg-5 col-md-5">
                 <div>
-                  <span class="text-muted font-weight-semibold">@lang('lang.show'):</span>
-                  <input type="date" class=" date-input" value="{{ date('Y-m-d') }}" id="datePickerInput">
+                  
                   <!-- <b>{{ date('d-m, F Y') }}</b>
                   <span style="border: 1px solid #ACADAE; cursor: pointer ;padding: 0px 6px;">
                     <i class="fa fa-caret-down"></i>
@@ -401,49 +408,12 @@ span#procent2::after {
         }
     }
 
-    // Function to make the AJAX call and update the charts
-    function updateCharts(selectedDate, user_id) {
-        var apiname = 'trip_charts';
-        var apiurl = "{{ end_url('') }}" + apiname;  
-        var bearerToken = "{{session('user')}}";
-
-        $.ajax({
-            url: apiurl + `?selected_date=${selectedDate}&id=${user_id}`,
-            type: 'GET',
-            data: {
-                selected_date: selectedDate,
-                id: user_id,
-            },
-            headers: {
-                'Authorization': 'Bearer ' + bearerToken
-            },
-            contentType: false,
-            processData: false,
-            beforeSend: function() {
-                // Add any loading or UI updates before the API call
-            },
-            success: function(response) {
-                if (response.status === 'success') {
-                    var data = response.data; // Access the 'data' object from the response
-                    drawChart("canvas", "procent",data.actvTrp_percentage,true);
-                    drawChart("canvas1", "procent1",data.compTrp_percentage,true);
-                    drawChart("canvas2", "procent2",data.pendTrp_percentage,true);
-                } else {
-                    // Handle other status cases if needed
-                }
-            },
-            error: function(xhr, status, error) {
-                console.log("Error:" +error);
-            }
-        });
-    }
+    // // Function to make the AJAX call and update the charts
+    // function updateCharts(selectedDate, user_id) {
+        
+    // }
 
     // Bind the AJAX call to the date picker change event
-    $('#datePickerInput').change(function () {
-        var selectedDate = $(this).val();
-        var user_id = "{{$user->id}}";
-        updateCharts(selectedDate, user_id);
-    });
 
 </script>
 <!-- <script>

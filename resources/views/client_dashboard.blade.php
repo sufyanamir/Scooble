@@ -198,7 +198,7 @@ span#procent2::after {
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <h6 class="mb-0" style="color: #452C88;"><span>@lang('lang.completed_trips')</span></h6>
-                                    <h5 class="mb-0" style="color: #E45F00;">{{ $completedTrips ?? $completedTrips}}</h5>
+                                    <h5 class="mb-0" style="color: #E45F00;" id="completed_trips">{{ $completedTrips ?? $completedTrips}}</h5>
                                 </div>
                                 <div>
                                     <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
