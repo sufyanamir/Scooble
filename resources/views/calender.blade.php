@@ -33,6 +33,24 @@
     font-size: 10px;
   }
 }
+.fc .fc-toolbar{
+  justify-content: center !important;
+}
+.fc .fc-toolbar-title {
+    font-size: 1.75em;
+    margin: 0px 10px;
+}
+.fc-prev-button.btn.btn-primary {
+  background-color: transparent;
+  border: transparent;
+  color: black;
+}
+.fc-next-button.btn.btn-primary {
+  background-color: transparent;
+  border: transparent;
+  color: black;
+}
+
 </style>
 
 <!-- partial -->
@@ -221,9 +239,10 @@ $(function() {
   var calendarEl = document.getElementById('calendar');
   var calendar = new FullCalendar.Calendar(calendarEl, {
     headerToolbar: {
-      left: 'prev,next today',
-      right: 'title', 
-    },
+    left: 'prev',
+    center: 'title',
+    right: 'next'
+  },
     themeSystem: 'bootstrap',
     events: events, // Set the events data
     eventDurationEditable: false,
